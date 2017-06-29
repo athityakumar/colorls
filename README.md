@@ -1,7 +1,7 @@
 # Color LS
 
 A Ruby script that colorizes the `ls` output with format icons. Here are the screenshots of
-working example on an iTerm2 terminal (Mac OS), oh-my-zsh with powerline nerd-font.
+working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font.
 
 ![Example](readme/example.png)
 
@@ -24,7 +24,7 @@ working example on an iTerm2 terminal (Mac OS), oh-my-zsh with powerline nerd-fo
   }
   ```
 
-  _Note : I have aliased it to `lc`._
+  _Note : I have aliased it to `lc`, as it can be seen from the screenshot._
 
 # Contributing to the repository
 
