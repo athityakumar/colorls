@@ -39,7 +39,8 @@ class ColorLS
   end
 
   def load_from_yaml(filename)
-    path = $PROGRAM_NAME.gsub('/colorls.rb', '')
+    prog = $PROGRAM_NAME
+    path = prog.include?('/colorls.rb') ? prog.gsub('/colorls.rb', '') : '.'
     YAML.safe_load(File.read("#{path}/#{filename}"))
   end
 
