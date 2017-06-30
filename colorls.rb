@@ -29,7 +29,8 @@ class ColorLS
   def chunkify
     @screen_width = TermInfo.screen_size.last
     @max_width    = @contents.map(&:length).max
-    chunk_size    = @screen_width / (@max_width + 4)
+    chunk_size    = @screen_width / @max_width
+    chunk_size    = chunk_size - 1 while (chunk_size*(@max_width+16) > @screen_width)
     @contents     = @contents.each_slice(chunk_size).to_a
   end
 
@@ -64,7 +65,7 @@ class ColorLS
     chunk.each do |content|
       print fetch_string(content, *options(content))
       print ' ' * (@max_width - content.length)
-      print "\t"
+      print "\t\t"
     end
   end
 
