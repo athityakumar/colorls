@@ -1,6 +1,7 @@
 require 'colorize'
 require 'yaml'
 require 'facets'
+require 'terminfo'
 
 # Source for icons unicode: http://nerdfonts.com/
 class ColorLS
@@ -18,30 +19,53 @@ class ColorLS
   end
 
   def ls
-    @contents.each { |content| print fetch_string(content, *options(content)) }
-
-    puts "\n\n\tFound #{@contents.length} contents in this directory"\
-      "\n\t#{File.expand_path(@input)}."\
-      "\n\n\t\tFolders\t\t\t: #{@count[:folders]}"\
-      "\n\t\tRecognized files\t: #{@count[:recognized_files]}"\
-      "\n\t\tUnrecognized files\t: #{@count[:unrecognized_files]}"
-      .colorize(:white)
+    chunkify
+    @contents.each { |chunk| ls_line(chunk) }
+    display_report
   end
 
   private
+
+  def chunkify
+    @screen_width = TermInfo.screen_size.last
+    @max_width    = @contents.map(&:length).max
+    chunk_size    = @screen_width / (@max_width + 4)
+    @contents     = @contents.each_slice(chunk_size).to_a
+  end
+
+  def display_report
+    print "\n\nFound #{@contents.flatten.length} contents in directory "
+      .colorize(:white)
+
+    print File.expand_path(@input).to_s.colorize(:blue)
+
+    puts  "\n\n\tFolders\t\t\t: #{@count[:folders]}"\
+      "\n\tRecognized files\t: #{@count[:recognized_files]}"\
+      "\n\tUnrecognized files\t: #{@count[:unrecognized_files]}"
+      .colorize(:white)
+  end
 
   def fetch_string(content, key, color, increment)
     @count[increment] += 1
 
     value = @formats[key]
     logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
-    "\n\t#{logo}  #{content}".colorize(color)
+    "#{logo}  #{content}".colorize(color)
   end
 
   def load_from_yaml(filename)
     prog = $PROGRAM_NAME
     path = prog.include?('/colorls.rb') ? prog.gsub('/colorls.rb', '') : '.'
     YAML.safe_load(File.read("#{path}/#{filename}"))
+  end
+
+  def ls_line(chunk)
+    print "\n"
+    chunk.each do |content|
+      print fetch_string(content, *options(content))
+      print ' ' * (@max_width - content.length)
+      print "\t"
+    end
   end
 
   def options(content)
