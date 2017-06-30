@@ -14,12 +14,14 @@ end
 # Source for icons unicode: http://nerdfonts.com/
 class ColorLS
   def initialize(*inputs)
-    flag = inputs.map{ |x| x.start_with?('-') ? 1 : 0}.sum
-    if flag == 1
-      @inputs = inputs[1..-1]
-    else
-      @inputs = inputs[0..-1]
-    end
+    inputs = inputs.sort
+    @inputs = inputs.first.start_with?('-') ? inputs[1..-1] : inputs
+    @inputs_count = @inputs.count == 0 ? 1 : @inputs.count
+    @count       = { 
+      folders: [0]*@inputs_count,
+      recognized_files: [0]*@inputs_count,
+      unrecognized_files: [0]*@inputs_count
+    }
     @contents    = `ls #{inputs.join(' ')}`.split("\n").map { |x| x.split(' ') }.to_a
     @formats     = load_from_yaml('formats.yaml').symbolize_keys
     @aliases     = load_from_yaml('aliases.yaml')
@@ -33,15 +35,9 @@ class ColorLS
 
   def ls
     print "\n"
-    @inputs_count = @inputs.count == 0 ? 1 : @inputs.count
     i = 0
-    @count       = { 
-      folders: [0]*@inputs_count,
-      recognized_files: [0]*@inputs_count,
-      unrecognized_files: [0]*@inputs_count
-    }
-    @contents.each do |chunk|
 
+    @contents.each do |chunk|
       if chunk.empty?
         puts "\n\t"
         display_report i
@@ -87,7 +83,6 @@ class ColorLS
 
   def show(content, key, color, increment, i)
     @count[increment][i] += 1
-
     value = @formats[key]
     logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
     print "#{logo}  #{content} \t", color
