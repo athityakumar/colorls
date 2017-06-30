@@ -3,7 +3,8 @@
 A Ruby script that colorizes the `ls` output with format icons. Here are the screenshots of
 working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font.
 
-![Example](readme/example.png)
+![Example #1](readme/example1.png)
+![Example #2](readme/example2.png)
 
 # Making this work on your terminal
 
