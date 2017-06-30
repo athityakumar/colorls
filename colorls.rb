@@ -30,7 +30,7 @@ class ColorLS
     @screen_width = TermInfo.screen_size.last
     @max_width    = @contents.map(&:length).max
     chunk_size    = @screen_width / @max_width
-    chunk_size    = chunk_size - 1 while (chunk_size*(@max_width+16) > @screen_width)
+    chunk_size   -= 1 while chunk_size * (@max_width + 16) > @screen_width
     @contents     = @contents.each_slice(chunk_size).to_a
   end
 
