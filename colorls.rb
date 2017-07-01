@@ -8,7 +8,7 @@ class ColorLS
   def initialize(input, report)
     @input        = input || Dir.pwd
     @contents     = Dir.entries(@input) - ['.', '..']
-    @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
+    @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
     @report       = report
     @screen_width = TermInfo.screen_size.last
     @max_widths   = @contents.map(&:length)
