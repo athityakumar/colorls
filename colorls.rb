@@ -5,10 +5,29 @@ require 'terminfo'
 
 # Source for icons unicode: http://nerdfonts.com/
 class ColorLS
-  def initialize(input)
-    @input       = input || Dir.pwd
-    @contents    = Dir.entries(@input) - ['.', '..']
-    @count       = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
+  def initialize(input, report)
+    @input        = input || Dir.pwd
+    @contents     = Dir.entries(@input) - ['.', '..']
+    @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
+    @report       = report
+    @screen_width = TermInfo.screen_size.last
+    @max_widths   = @contents.map(&:length)
+
+    init_icons
+  end
+
+  def ls
+    @contents = chunkify
+    @contents.each { |chunk| ls_line(chunk) }
+    print "\n"
+    display_report if @report
+
+    true
+  end
+
+  private
+
+  def init_icons
     @formats     = load_from_yaml('formats.yaml').symbolize_keys
     @aliases     = load_from_yaml('aliases.yaml')
                    .to_a
@@ -18,24 +37,27 @@ class ColorLS
     @aliase_keys = @aliases.keys
   end
 
-  def ls
-    chunkify
-    @contents.each { |chunk| ls_line(chunk) }
-    display_report
+  def chunkify
+    chunk_size = @contents.count
+    chunk      = [@contents]
+
+    until in_line(chunk_size)
+      chunk_size -= 1
+      chunk       = @contents.each_slice(chunk_size).to_a
+      chunk.last += [''] * (chunk_size - chunk.last.count)
+      @max_widths = chunk.transpose.map { |c| c.map(&:length).max }
+    end
+
+    chunk
   end
 
-  private
-
-  def chunkify
-    @screen_width = TermInfo.screen_size.last
-    @max_width    = @contents.map(&:length).max
-    chunk_size    = @screen_width / @max_width
-    chunk_size   -= 1 while chunk_size * (@max_width + 16) > @screen_width
-    @contents     = @contents.each_slice(chunk_size).to_a
+  def in_line(chunk_size)
+    return false if @max_widths.sum + 6 * chunk_size > @screen_width
+    true
   end
 
   def display_report
-    print "\n\nFound #{@contents.flatten.length} contents in directory "
+    print "\n   Found #{@contents.flatten.length} contents in directory "
       .colorize(:white)
 
     print File.expand_path(@input).to_s.colorize(:blue)
@@ -62,10 +84,12 @@ class ColorLS
 
   def ls_line(chunk)
     print "\n"
-    chunk.each do |content|
+    chunk.each_with_index do |content, i|
+      break if content.empty?
+
+      print '   '
       print fetch_string(content, *options(content))
-      print ' ' * (@max_width - content.length)
-      print "\t\t"
+      print ' ' * (@max_widths[i] - content.length)
     end
   end
 
@@ -82,5 +106,19 @@ class ColorLS
   end
 end
 
-ColorLS.new(ARGV[0]).ls
+args = *ARGV
+
+if args.include?('--report')
+  report = true
+  args.delete '--report'
+else
+  report = false
+end
+
+if args.empty?
+  ColorLS.new(nil, report).ls
+else
+  args.each { |path| ColorLS.new(path, report).ls }
+end
+
 true
