@@ -1,4 +1,3 @@
-require 'colorize'
 require 'yaml'
 require 'facets'
 require 'terminfo'

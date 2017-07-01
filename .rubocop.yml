@@ -1,0 +1,87 @@
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 2.0
+
+# Preferred codebase style ---------------------------------------------
+Layout/ExtraSpacing:
+  AllowForAlignment: true
+
+Style/FormatString:
+  EnforcedStyle: percent
+
+Style/AndOr:
+  EnforcedStyle: conditionals
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+
+Layout/SpaceInsideBlockBraces:
+  EnforcedStyle: space
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
+Style/EmptyElse:
+  EnforcedStyle: empty
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/ModuleLength:
+  Max: 200
+
+Metrics/ClassLength:
+  Max: 200
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false
+
+Layout/SpaceAfterComma:
+  Enabled: false
+
+Layout/SpaceAroundOperators:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/EmptyCaseCondition:
+  Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+# See https://github.com/bbatsov/rubocop/issues/4429
+Style/YodaCondition:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '[]'
+    '%w': '[]'
+
+# Current preferred metrics --------------------------------------------
+# Better values are encouraged, but not required.
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/MethodLength:
+  Max: 15
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 10
