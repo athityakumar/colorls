@@ -1,5 +1,4 @@
-# Color LS
-
+# Color LS [![Build Status](https://travis-ci.org/athityakumar/colorls.svg?branch=master)](https://travis-ci.org/athityakumar/colorls)
 A Ruby script that colorizes the `ls` output with format icons. Here are the screenshots of
 working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font.
 
