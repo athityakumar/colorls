@@ -115,6 +115,8 @@ else
   report = false
 end
 
+args.keep_if { |arg| !arg.start_with?('-') }
+
 if args.empty?
   ColorLS.new(nil, report).ls
 else
