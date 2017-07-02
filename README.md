@@ -1,6 +1,10 @@
-# Color LS [![Build Status](https://travis-ci.org/athityakumar/colorls.svg?branch=master)](https://travis-ci.org/athityakumar/colorls)
-A Ruby script that colorizes the `ls` output with color and icons. Here are the screenshots of
-working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font.
+# Color LS 
+
+[![Build Status](https://travis-ci.org/athityakumar/colorls.svg?branch=master)](https://travis-ci.org/athityakumar/colorls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
+A Ruby script that colorizes the `ls` output with color and icons. Here are the screenshots of working example on an iTerm2
+terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font.
 
 ![Example #1](readme/usage1.png)
 
