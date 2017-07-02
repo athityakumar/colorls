@@ -1,9 +1,23 @@
 # Color LS [![Build Status](https://travis-ci.org/athityakumar/colorls.svg?branch=master)](https://travis-ci.org/athityakumar/colorls)
-A Ruby script that colorizes the `ls` output with format icons. Here are the screenshots of
+A Ruby script that colorizes the `ls` output with color and icons. Here are the screenshots of
 working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font.
 
-![Example #1](readme/example1.png)
-![Example #2](readme/example2.png)
+![Example #1](readme/usage1.png)
+
+# How to use
+
+- Just `lc` : Prints all directories, files and dotfiles in current directory.
+
+  ![Usage #1](readme/usage1.png)
+
+- With paths : `lc path(s)` prints all directories, files and dotfiles in given directory / directories.
+
+  ![Usage #2](readme/usage2.png)
+
+- With `--report` or `-r` flag : `lc path(s) -r` : Prints all directories, files and dotfiles in directories, along with a brief report about number of files and folders shown.
+
+  ![Usage #3](readme/usage3.png)
+  ![Usage #4](readme/usage4.png)
 
 # Installation steps
 
@@ -24,28 +38,21 @@ working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` 
   }
   ```
 
-  _Note : I have aliased it to `lc`, as it can be seen from the screenshot._
-
-7. Change the `aliases.yaml` and `formats.yaml` files, if required. (Say, add custom icons)
+7. Change the YAML files, if required. (Say, to add / change / remove some icons)
 8. Open a new terminal, and start using  `lc` :tada:
 
-# How to use
-
-- `lc` : Prints all directories, files and dotfiles in current directory.
-- `lc path` : Prints all directories, files and dotfiles in `path` directory.
-- `lc path1 path2` : Prints all directories, files and dotfiles in directories `path1` and `path2`.
-- `lc path1 path2 --report` : Prints above details, along with metdata such as number of folders, recognized file formats & unrecognized file formats.
+_NOTE: If you're iTerm2 on Mac, you may have to enable the nerd-font at iTerm2 > Preferences > Profiles > Text > Non-Ascii font > Knack Regular Nerd Font Complete_
 
 # Tweaking this project
 
 ![Pending formats](readme/pending.png)
 
-There are a couple of formats that aren't recognized yet. Custom file formats and icons can be added by changing the files : [formats](formats.yaml) and/or [aliases](aliases.yaml). If it looks good, feel free to send a Pull Request here.
+There are a couple of formats that aren't recognized yet. Custom file formats and icons can be added by changing the YAML files in this repository. Also, feel free to send a Pull Request here with the added icons. :smile:
 
 Please feel free to contribute to this project, by 
 - opening an issue for reporting any bug / suggesting any enhancement
 - cleaning up the `colorls.rb` ruby script with more functionalities.
-- adding support for more file [formats](formats.yaml) and/or [aliases](aliases.yaml).
+- adding support for more icons by editing the YAML files.
 
 # LICENSE
 
