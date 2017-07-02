@@ -28,27 +28,31 @@ class ColorLS
   private
 
   def init_icons
-    @formats     = load_from_yaml('formats.yaml').symbolize_keys
-    @aliases     = load_from_yaml('aliases.yaml')
-                   .to_a
-                   .map! { |k, v| [k.to_sym, v.to_sym] }
-                   .to_h
-    @format_keys = @formats.keys
-    @aliase_keys = @aliases.keys
+    @files          = load_from_yaml('files.yaml')
+    @file_aliases   = load_from_yaml('file_aliases.yaml', true)
+    @folders        = load_from_yaml('folders.yaml')
+    @folder_aliases = load_from_yaml('folder_aliases.yaml', true)
+
+    @file_keys          = @files.keys
+    @file_aliase_keys   = @file_aliases.keys
+    @folder_keys        = @folders.keys
+    @folder_aliase_keys = @folder_aliases.keys
+
+    @all_files   = @file_keys + @file_aliase_keys
+    @all_folders = @folder_keys + @folder_aliase_keys
   end
 
   def chunkify
     chunk_size = @contents.count
-    chunk      = [@contents]
 
     until in_line(chunk_size)
-      chunk_size -= 1
-      chunk       = @contents.each_slice(chunk_size).to_a
-      chunk.last += [''] * (chunk_size - chunk.last.count)
-      @max_widths = chunk.transpose.map { |c| c.map(&:length).max }
+      chunk_size  -= 1
+      chunk        = @contents.each_slice(chunk_size).to_a
+      chunk.last  += [''] * (chunk_size - chunk.last.count)
+      @max_widths  = chunk.transpose.map { |c| c.map(&:length).max }
     end
 
-    chunk
+    chunk || [@contents]
   end
 
   def in_line(chunk_size)
@@ -70,16 +74,21 @@ class ColorLS
 
   def fetch_string(content, key, color, increment)
     @count[increment] += 1
-
-    value = @formats[key]
+    value = increment == :folders ? @folders[key] : @files[key]
     logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
+
     "#{logo}  #{content}".colorize(color)
   end
 
-  def load_from_yaml(filename)
+  def load_from_yaml(filename, aliase = false)
     prog = $PROGRAM_NAME
     path = prog.include?('/colorls.rb') ? prog.gsub('/colorls.rb', '') : '.'
-    YAML.safe_load(File.read("#{path}/#{filename}"))
+    yaml = YAML.safe_load(File.read("#{path}/#{filename}")).symbolize_keys
+    return yaml unless aliase
+    yaml
+      .to_a
+      .map! { |k, v| [k, v.to_sym] }
+      .to_h
   end
 
   def ls_line(chunk)
@@ -87,30 +96,34 @@ class ColorLS
     chunk.each_with_index do |content, i|
       break if content.empty?
 
-      print '   '
-      print fetch_string(content, *options(content))
+      print "  #{fetch_string(content, *options(content))}"
+      print Dir.exist?("#{@input}/#{content}") ? '/'.colorize(:blue) : ' '
       print ' ' * (@max_widths[i] - content.length)
     end
   end
 
   def options(content)
-    return %i[folder blue folders] if Dir.exist?("#{@input}/#{content}")
+    if Dir.exist?("#{@input}/#{content}")
+      key = content.to_sym
+      return %i[folder blue folders] unless @all_folders.include?(key)
+      key = @folder_aliases[key] unless @folder_keys.include?(key)
+      return [key, :blue, :folders]
+    end
 
-    all_keys = @format_keys + @aliase_keys
     key = content.split('.').last.downcase.to_sym
 
-    return %i[file yellow unrecognized_files] unless all_keys.include?(key)
+    return %i[file yellow unrecognized_files] unless @all_files.include?(key)
 
-    key = @aliases[key] unless @format_keys.include?(key)
+    key = @file_aliases[key] unless @file_keys.include?(key)
     [key, :green, :recognized_files]
   end
 end
 
 args = *ARGV
 
-if args.include?('--report')
+if args.include?('--report') || args.include?('-r')
   report = true
-  args.delete '--report'
+  args -= %w[--report -r]
 else
   report = false
 end
