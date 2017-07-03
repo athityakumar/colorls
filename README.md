@@ -39,7 +39,7 @@ cd ~/bin && git clone https://github.com/athityakumar/colorls.git
   ``` 
 6. For CLI functionality, add a function (say, `lc`) to your shell configuration file (`~/.bashrc` or `~/.zshrc`) : 
   ```sh
-  lc () { ruby /Users/ericp/bin/colorls/colorls.rb $1; }
+  lc () { ruby ~/bin/colorls/colorls.rb $1; }
   ```
 7. If you like the report flag you can make it default by adding:
   ```sh
