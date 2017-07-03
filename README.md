@@ -27,7 +27,10 @@ terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-fon
 
 1. Install Ruby (prefably, version > 2.1)
 2. Install the patched fonts of powerline nerd-font and/or font-awesome.
-3. Clone this repository with `git clone https://github.com/athityakumar/colorls.git`
+3. Clone this repository to `~/bin` (create if not exist or clone elsewhere) with
+```sh
+cd ~/bin && git clone https://github.com/athityakumar/colorls.git
+```
 4. Navigate to this cloned directory : `cd colorls`
 5. Install bundler and dependencies :
   ```
@@ -36,14 +39,14 @@ terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-fon
   ``` 
 6. For CLI functionality, add a function (say, `lc`) to your shell configuration file (`~/.bashrc` or `~/.zshrc`) : 
   ```sh
-  function lc()
-  {
-    ruby /path/to/colorls/colorls.rb $1;
-  }
+  lc () { ruby ~/bin/colorls/colorls.rb $1; }
   ```
-
-7. Change the YAML files, if required. (Say, to add / change / remove some icons)
-8. Open a new terminal, and start using  `lc` :tada:
+7. If you like the report flag you can make it default by adding:
+  ```sh
+  alias lc='lc -r'
+  ```
+8. Change the YAML files, if required. (Say, to add / change / remove some icons)
+9. Open a new terminal, and start using  `lc` :tada:
 
 _NOTE: If you're iTerm2 on Mac, you may have to enable the nerd-font at iTerm2 > Preferences > Profiles > Text > Non-Ascii font > Knack Regular Nerd Font Complete_
 
