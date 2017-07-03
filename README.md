@@ -27,7 +27,7 @@ terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-fon
 
 1. Install Ruby (prefably, version > 2.1)
 2. Install the patched fonts of powerline nerd-font and/or font-awesome.
-3. Clone this repository with `git clone https://github.com/athityakumar/colorls.git`
+3. Clone this repository to `~/bin` (or elsewhere) with `cd ~/bin && git clone https://github.com/athityakumar/colorls.git`
 4. Navigate to this cloned directory : `cd colorls`
 5. Install bundler and dependencies :
   ```
@@ -38,7 +38,7 @@ terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-fon
   ```sh
   function lc()
   {
-    ruby /path/to/colorls/colorls.rb $1;
+    ruby ~/bin/colorls/colorls.rb $1;
   }
   ```
 
