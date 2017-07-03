@@ -45,14 +45,19 @@ class ColorLS
   def chunkify
     chunk_size = @contents.count
 
-    until in_line(chunk_size)
+    until in_line(chunk_size) || chunk_size <= 1
       chunk_size  -= 1
-      chunk        = @contents.each_slice(chunk_size).to_a
-      chunk.last  += [''] * (chunk_size - chunk.last.count)
-      @max_widths  = chunk.transpose.map { |c| c.map(&:length).max }
+      chunk        = get_chunk(chunk_size)
     end
 
     chunk || [@contents]
+  end
+
+  def get_chunk(chunk_size)
+    chunk        = @contents.each_slice(chunk_size).to_a
+    chunk.last  += [''] * (chunk_size - chunk.last.count)
+    @max_widths  = chunk.transpose.map { |c| c.map(&:length).max }
+    chunk
   end
 
   def in_line(chunk_size)
