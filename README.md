@@ -29,7 +29,8 @@ terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-fon
 2. Install the patched fonts of powerline nerd-font and/or font-awesome.
 3. Clone this repository to `~/bin` (create if not exist or clone elsewhere) with
 ```sh
-cd ~/bin && git clone https://github.com/athityakumar/colorls.git```
+cd ~/bin && git clone https://github.com/athityakumar/colorls.git
+```
 4. Navigate to this cloned directory : `cd colorls`
 5. Install bundler and dependencies :
   ```
