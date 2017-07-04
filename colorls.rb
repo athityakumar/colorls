@@ -8,8 +8,18 @@ require 'terminfo'
 # Source for icons unicode: http://nerdfonts.com/
 class ColorLS
   def initialize(input, report, sort, one_per_line)
-    @input        = input || Dir.pwd
-    @contents     = Dir.entries(@input) - ['.', '..']
+    @input = input || Dir.pwd
+
+    if Dir.exists?(@input)
+      @contents = Dir.entries(@input) - ['.', '..']
+    else
+      if File.exists?(@input)
+        @contents = [@input]
+      else
+        raise ArgumentError, "Specified path doesn't exist: " + @input
+      end
+    end
+
     @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
     @report       = report
     @screen_width = TermInfo.screen_size.last
