@@ -7,12 +7,13 @@ require 'terminfo'
 
 # Source for icons unicode: http://nerdfonts.com/
 class ColorLS
-  def initialize(input, report, sort)
+  def initialize(input, report, sort, one_per_line)
     @input        = input || Dir.pwd
     @contents     = Dir.entries(@input) - ['.', '..']
     @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
     @report       = report
     @screen_width = TermInfo.screen_size.last
+    @one_per_line = one_per_line
 
     @contents.sort! { |a, b|
       if sort == 'dirs-first'
@@ -61,14 +62,20 @@ class ColorLS
   end
 
   def chunkify
-    chunk_size = @contents.count
+    if @one_per_line
+      chunks      = @contents.map { |x| [x] }
+      @max_widths = chunks.transpose.map { |c| c.map(&:length).max }
+      chunks
+    else
+      chunk_size = @contents.count
 
-    until in_line(chunk_size) || chunk_size <= 1
-      chunk_size  -= 1
-      chunk        = get_chunk(chunk_size)
+      until in_line(chunk_size) || chunk_size <= 1
+        chunk_size  -= 1
+        chunk        = get_chunk(chunk_size)
+      end
+
+      chunk || [@contents]
     end
-
-    chunk || [@contents]
   end
 
   def get_chunk(chunk_size)
@@ -142,13 +149,18 @@ class ColorLS
   end
 end
 
-args   = *ARGV
-report = false
-sort   = false
+args         = *ARGV
+report       = false
+sort         = false
+one_per_line = false
 
 args.each { |arg|
   if arg == '--report' || arg == '-r'
     report = true
+  end
+
+  if arg == '-1'
+    one_per_line = true
   end
 
   if match = arg.match(/^--sort=?(.*)?$/)
@@ -159,9 +171,9 @@ args.each { |arg|
 args.keep_if { |arg| !arg.start_with?('-') }
 
 if args.empty?
-  ColorLS.new(nil, report, sort).ls
+  ColorLS.new(nil, report, sort, one_per_line).ls
 else
-  args.each { |path| ColorLS.new(path, report, sort).ls }
+  args.each { |path| ColorLS.new(path, report, sort, one_per_line).ls }
 end
 
 true
