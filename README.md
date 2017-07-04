@@ -50,6 +50,14 @@ cd ~/bin && git clone https://github.com/athityakumar/colorls.git
 
 _NOTE: If you're iTerm2 on Mac, you may have to enable the nerd-font at iTerm2 > Preferences > Profiles > Text > Non-Ascii font > Knack Regular Nerd Font Complete_
 
+# Uninstall Instructions
+
+Want to uninstall and revert back to the old style?
+```sh
+rm -rf /path/to/colorls
+```
+Run the above command and reset your terminal profile.
+
 # Tweaking this project
 
 ![Pending formats](readme/pending.png)
