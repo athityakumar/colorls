@@ -5,13 +5,19 @@ require 'terminfo'
 
 # Source for icons unicode: http://nerdfonts.com/
 class ColorLS
-  def initialize(input, report)
+  def initialize(input, report, sort)
     @input        = input || Dir.pwd
     @contents     = Dir.entries(@input) - ['.', '..']
     @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
     @report       = report
+    @sort         = sort
     @screen_width = TermInfo.screen_size.last
-    @max_widths   = @contents.map(&:length)
+
+    @contents.sort! {
+      |a, b| a.downcase <=> b.downcase
+    } if @sort
+
+    @max_widths = @contents.map(&:length)
 
     init_icons
   end
@@ -133,12 +139,19 @@ else
   report = false
 end
 
+if args.include?('--sort')
+  sort = true
+  args -= %w[--sort]
+else
+  sort = false
+end
+
 args.keep_if { |arg| !arg.start_with?('-') }
 
 if args.empty?
-  ColorLS.new(nil, report).ls
+  ColorLS.new(nil, report, sort).ls
 else
-  args.each { |path| ColorLS.new(path, report).ls }
+  args.each { |path| ColorLS.new(path, report, sort).ls }
 end
 
 true
