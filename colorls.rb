@@ -6,47 +6,63 @@ require 'facets'
 require 'terminfo'
 
 # Source for icons unicode: http://nerdfonts.com/
-class ColorLS
+class ColorLS # rubocop:disable ClassLength
   def initialize(input, report, sort, one_per_line)
-    @input = input || Dir.pwd
-
-    if Dir.exists?(@input)
-      @contents = Dir.entries(@input) - ['.', '..']
-    else
-      if File.exists?(@input)
-        @contents = [@input]
-      else
-        raise ArgumentError, "Specified path doesn't exist: " + @input
-      end
-    end
-
+    @input        = input || Dir.pwd
     @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
     @report       = report
-    @screen_width = TermInfo.screen_size.last
+    @sort         = sort
     @one_per_line = one_per_line
+    @screen_width = TermInfo.screen_size.last
 
-    @contents.sort! { |a, b|
-      if sort == 'dirs-first'
-        case
-        when   Dir.exist?("#{@input}/#{a}") && ! Dir.exist?("#{@input}/#{b}")
-          -1
-        when ! Dir.exist?("#{@input}/#{a}") &&   Dir.exist?("#{@input}/#{b}")
-          1
-        else
-          a.downcase <=> b.downcase
-        end
-      else
-        a.downcase <=> b.downcase
-      end
-    } if sort
+    init_contents
 
     @max_widths = @contents.map(&:length)
 
     init_icons
   end
 
+  def init_contents
+    if Dir.exist?(@input)
+      @contents = Dir.entries(@input) - ['.', '..']
+    elsif File.exist?(@input)
+      @contents = [@input]
+    else
+      raise ArgumentError, "Specified path doesn't exist: " + @input
+    end
+
+    sort_contents
+  end
+
+  def sort_contents
+    return unless @sort
+
+    @contents.sort! do |a, b|
+      if @sort == 'dirs-first'
+        cmp_by_dirs(a, b)
+      else
+        cmp_by_alpha(a, b)
+      end
+    end
+  end
+
+  def cmp_by_dirs(a, b)
+    if     Dir.exist?("#{@input}/#{a}") && !Dir.exist?("#{@input}/#{b}")
+      -1
+    elsif !Dir.exist?("#{@input}/#{a}") &&  Dir.exist?("#{@input}/#{b}")
+      1
+    else
+      cmp_by_alpha(a, b)
+    end
+  end
+
+  def cmp_by_alpha(a, b)
+    a.downcase <=> b.downcase
+  end
+
   def ls
     @contents = chunkify
+    @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
     @contents.each { |chunk| ls_line(chunk) }
     print "\n"
     display_report if @report
@@ -73,9 +89,7 @@ class ColorLS
 
   def chunkify
     if @one_per_line
-      chunks      = @contents.map { |x| [x] }
-      @max_widths = chunks.transpose.map { |c| c.map(&:length).max }
-      chunks
+      @contents.map { |x| [x] }
     else
       chunk_size = @contents.count
 
@@ -91,7 +105,6 @@ class ColorLS
   def get_chunk(chunk_size)
     chunk        = @contents.each_slice(chunk_size).to_a
     chunk.last  += [''] * (chunk_size - chunk.last.count)
-    @max_widths  = chunk.transpose.map { |c| c.map(&:length).max }
     chunk
   end
 
@@ -164,19 +177,16 @@ report       = false
 sort         = false
 one_per_line = false
 
-args.each { |arg|
-  if arg == '--report' || arg == '-r'
-    report = true
-  end
+args.each do |arg|
+  report       = true if ['--report', '-r'].include?(arg)
+  one_per_line = true if arg == '-1'
 
-  if arg == '-1'
-    one_per_line = true
-  end
+  match = arg.match(/^--sort=?(.*)?$/)
 
-  if match = arg.match(/^--sort=?(.*)?$/)
-    sort = match.captures && match.captures[0] == 'dirs-first' ? 'dirs-first' : true
+  if match
+    sort = match.captures[0] == 'dirs-first' ? 'dirs-first' : true
   end
-}
+end
 
 args.keep_if { |arg| !arg.start_with?('-') }
 
