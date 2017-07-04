@@ -54,7 +54,7 @@ _NOTE: If you're iTerm2 on Mac, you may have to enable the nerd-font at iTerm2 >
 
 Want to uninstall and revert back to the old style?
 ```sh
-rm -rf /path/to/colorls
+rm -rf ~/bin/colorls
 ```
 Run the above command and reset your terminal profile.
 
