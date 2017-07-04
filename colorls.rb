@@ -12,12 +12,22 @@ class ColorLS
     @contents     = Dir.entries(@input) - ['.', '..']
     @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
     @report       = report
-    @sort         = sort
     @screen_width = TermInfo.screen_size.last
 
-    @contents.sort! {
-      |a, b| a.downcase <=> b.downcase
-    } if @sort
+    @contents.sort! { |a, b|
+      if sort == 'dirs-first'
+        case
+        when   Dir.exist?("#{@input}/#{a}") && ! Dir.exist?("#{@input}/#{b}")
+          -1
+        when ! Dir.exist?("#{@input}/#{a}") &&   Dir.exist?("#{@input}/#{b}")
+          1
+        else
+          a.downcase <=> b.downcase
+        end
+      else
+        a.downcase <=> b.downcase
+      end
+    } if sort
 
     @max_widths = @contents.map(&:length)
 
@@ -132,21 +142,19 @@ class ColorLS
   end
 end
 
-args = *ARGV
+args   = *ARGV
+report = false
+sort   = false
 
-if args.include?('--report') || args.include?('-r')
-  report = true
-  args -= %w[--report -r]
-else
-  report = false
-end
+args.each { |arg|
+  if arg == '--report' || arg == '-r'
+    report = true
+  end
 
-if args.include?('--sort')
-  sort = true
-  args -= %w[--sort]
-else
-  sort = false
-end
+  if match = arg.match(/^--sort=?(.*)?$/)
+    sort = match.captures && match.captures[0] == 'dirs-first' ? 'dirs-first' : true
+  end
+}
 
 args.keep_if { |arg| !arg.start_with?('-') }
 
