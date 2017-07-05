@@ -1,4 +1,4 @@
-# Color LS 
+# Color LS
 
 [![Build Status](https://travis-ci.org/athityakumar/colorls.svg?branch=master)](https://travis-ci.org/athityakumar/colorls)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
@@ -23,6 +23,12 @@ terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-fon
   ![Usage #3](readme/usage3.png)
   ![Usage #4](readme/usage4.png)
 
+- With `--sort-dirs` / `-sd` or `--sort-files` / `-sf` : Entries are sorted directories-first or files-first, and then alphabetically (case-insensitively) before being printed.
+
+-With `--dirs` / `-d` or `--files` / `-f` : Entries are filtered so that only directories or files are shown.
+
+- With `-1` : Entries are printed in a column (one per line), just like `ls -1` does.
+
 # Installation steps
 
 1. Install Ruby (prefably, version > 2.1)
@@ -36,8 +42,8 @@ cd ~/bin && git clone https://github.com/athityakumar/colorls.git
   ```
   gem install bundler
   bundle install
-  ``` 
-6. For CLI functionality, add a function (say, `lc`) to your shell configuration file (`~/.bashrc` or `~/.zshrc`) : 
+  ```
+6. For CLI functionality, add a function (say, `lc`) to your shell configuration file (`~/.bashrc` or `~/.zshrc`) :
   ```sh
   lc () { ruby ~/bin/colorls/colorls.rb $1; }
   ```
@@ -64,7 +70,7 @@ Run the above command and reset your terminal profile.
 
 There are a couple of formats that aren't recognized yet. Custom file formats and icons can be added by changing the YAML files in this repository. Also, feel free to send a Pull Request here with the added icons. :smile:
 
-Please feel free to contribute to this project, by 
+Please feel free to contribute to this project, by
 - opening an issue for reporting any bug / suggesting any enhancement
 - cleaning up the `colorls.rb` ruby script with more functionalities.
 - adding support for more icons by editing the YAML files.

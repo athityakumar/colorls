@@ -1,19 +1,74 @@
+#!/usr/bin/env ruby
+
 require 'colorize'
 require 'yaml'
 require 'facets'
 require 'terminfo'
 
 # Source for icons unicode: http://nerdfonts.com/
-class ColorLS
-  def initialize(input, report)
+class ColorLS # rubocop:disable ClassLength
+  def initialize(input, report:, sort:, show:, one_per_line:)
     @input        = input || Dir.pwd
-    @contents     = Dir.entries(@input) - ['.', '..']
     @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
     @report       = report
+    @sort         = sort
+    @show         = show
+    @one_per_line = one_per_line
     @screen_width = TermInfo.screen_size.last
-    @max_widths   = @contents.map(&:length)
+
+    init_contents
+
+    @max_widths = @contents.map(&:length)
 
     init_icons
+  end
+
+  def init_contents
+    unless Dir.exist?(@input)
+      raise ArgumentError, "Specified directory doesn't exist: " + @input
+    end
+
+    @contents = Dir.entries(@input) - ['.', '..']
+
+    filter_contents
+    sort_contents
+  end
+
+  def filter_contents
+    return unless @show
+
+    @contents.keep_if do |x|
+      if @show == 'dirs'
+        Dir.exist?("#{@input}/#{x}")
+      else
+        !Dir.exist?("#{@input}/#{x}")
+      end
+    end
+  end
+
+  def sort_contents
+    return unless @sort
+
+    @contents.sort! do |a, b|
+      cmp_by_dirs(a, b)
+    end
+  end
+
+  def cmp_by_dirs(a, b)
+    is_a_dir = Dir.exist?("#{@input}/#{a}")
+    is_b_dir = Dir.exist?("#{@input}/#{b}")
+
+    if is_a_dir ^ is_b_dir
+      result = is_a_dir ? -1 : 1
+      result *= -1 if @sort == 'files'
+      result
+    else
+      cmp_by_alpha(a, b)
+    end
+  end
+
+  def cmp_by_alpha(a, b)
+    a.downcase <=> b.downcase
   end
 
   def ls
@@ -43,20 +98,25 @@ class ColorLS
   end
 
   def chunkify
+    if @one_per_line
+      @max_widths = [@max_widths.max]
+      return @contents.zip
+    end
+
     chunk_size = @contents.count
 
     until in_line(chunk_size) || chunk_size <= 1
-      chunk_size  -= 1
-      chunk        = get_chunk(chunk_size)
+      chunk_size -= 1
+      chunk       = get_chunk(chunk_size)
     end
 
     chunk || [@contents]
   end
 
   def get_chunk(chunk_size)
-    chunk        = @contents.each_slice(chunk_size).to_a
-    chunk.last  += [''] * (chunk_size - chunk.last.count)
-    @max_widths  = chunk.transpose.map { |c| c.map(&:length).max }
+    chunk       = @contents.each_slice(chunk_size).to_a
+    chunk.last += [''] * (chunk_size - chunk.last.count)
+    @max_widths = chunk.transpose.map { |c| c.map(&:length).max }
     chunk
   end
 
@@ -124,21 +184,54 @@ class ColorLS
   end
 end
 
-args = *ARGV
+args             = *ARGV
+report           = args.include?('--report') || args.include?('-r')
+one_per_line     = args.include?('-1')
+sort_files_first = args.include?('-sf') || args.include?('--sort-files')
+sort_dirs_first  = args.include?('-sd') || args.include?('--sort-dirs')
+show_files_only  = args.include?('-f') || args.include?('--files')
+show_dirs_only   = args.include?('-d') || args.include?('--dirs')
 
-if args.include?('--report') || args.include?('-r')
-  report = true
-  args -= %w[--report -r]
-else
-  report = false
+if sort_dirs_first && sort_files_first
+  raise ArgumentError, 'Restrain from using -sd and -sf flags together'
 end
+
+if show_files_only && show_dirs_only
+  raise ArgumentError, 'Restrain from using -d and -f flags together'
+end
+
+sort = if sort_files_first
+         'files'
+       elsif sort_dirs_first
+         'dirs'
+       else
+         false
+       end
+
+show = if show_files_only
+         'files'
+       elsif show_dirs_only
+         'dirs'
+       else
+         false
+       end
 
 args.keep_if { |arg| !arg.start_with?('-') }
 
 if args.empty?
-  ColorLS.new(nil, report).ls
+  ColorLS.new(nil,
+              report:       report,
+              sort:         sort,
+              show:         show,
+              one_per_line: one_per_line).ls
 else
-  args.each { |path| ColorLS.new(path, report).ls }
+  args.each do |path|
+    ColorLS.new(path,
+                report:       report,
+                sort:         sort,
+                show:         show,
+                one_per_line: one_per_line).ls
+  end
 end
 
 true
