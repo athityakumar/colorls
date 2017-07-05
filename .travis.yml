@@ -9,8 +9,15 @@ rvm:
 
 script:
   - bundle exec rubocop
+  - bundle exec rspec
   - rake install
   - lc
+  - lc -d
+  - lc -f
+  - lc -sd
+  - lc -sf
+  - lc -1
+  - lc -r
 
 install:
   - gem install bundler
