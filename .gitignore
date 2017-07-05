@@ -1,1 +1,12 @@
+pkg/
+*.gem
+.bundle/
+.yardoc/
 Gemfile.lock
+/_yardoc/
+*.DS_store
+.rspec_status
+coverage/
+dump.rdb
+doc/
+docs/
