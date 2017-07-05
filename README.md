@@ -25,9 +25,17 @@ terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-fon
 
 - With `--sort-dirs` / `-sd` or `--sort-files` / `-sf` : Entries are sorted directories-first or files-first, and then alphabetically (case-insensitively) before being printed.
 
--With `--dirs` / `-d` or `--files` / `-f` : Entries are filtered so that only directories or files are shown.
+  ![Usage #5](readme/usage5.png)
+  ![Usage #6](readme/usage6.png)
+
+- With `--dirs` / `-d` or `--files` / `-f` : Entries are filtered so that only directories or files are shown.
+
+  ![Usage #7](readme/usage7.png)
+  ![Usage #8](readme/usage8.png)
 
 - With `-1` : Entries are printed in a column (one per line), just like `ls -1` does.
+
+  ![Usage #9](readme/usage9.png)
 
 # Installation steps
 
