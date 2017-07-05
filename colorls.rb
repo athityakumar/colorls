@@ -73,7 +73,6 @@ class ColorLS # rubocop:disable ClassLength
 
   def ls
     @contents = chunkify
-    @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
     @contents.each { |chunk| ls_line(chunk) }
     print "\n"
     display_report if @report
@@ -100,22 +99,24 @@ class ColorLS # rubocop:disable ClassLength
 
   def chunkify
     if @one_per_line
-      @contents.zip
-    else
-      chunk_size = @contents.count
-
-      until in_line(chunk_size) || chunk_size <= 1
-        chunk_size  -= 1
-        chunk        = get_chunk(chunk_size)
-      end
-
-      chunk || [@contents]
+      @max_widths = [@max_widths.max]
+      return @contents.zip
     end
+
+    chunk_size = @contents.count
+
+    until in_line(chunk_size) || chunk_size <= 1
+      chunk_size -= 1
+      chunk       = get_chunk(chunk_size)
+    end
+
+    chunk || [@contents]
   end
 
   def get_chunk(chunk_size)
-    chunk        = @contents.each_slice(chunk_size).to_a
-    chunk.last  += [''] * (chunk_size - chunk.last.count)
+    chunk       = @contents.each_slice(chunk_size).to_a
+    chunk.last += [''] * (chunk_size - chunk.last.count)
+    @max_widths = chunk.transpose.map { |c| c.map(&:length).max }
     chunk
   end
 
