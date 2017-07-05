@@ -7,11 +7,12 @@ require 'terminfo'
 
 # Source for icons unicode: http://nerdfonts.com/
 class ColorLS # rubocop:disable ClassLength
-  def initialize(input, report, sort, one_per_line)
+  def initialize(input, report:, sort:, show:, one_per_line:)
     @input        = input || Dir.pwd
     @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
     @report       = report
     @sort         = sort
+    @show         = show
     @one_per_line = one_per_line
     @screen_width = TermInfo.screen_size.last
 
@@ -31,26 +32,38 @@ class ColorLS # rubocop:disable ClassLength
       raise ArgumentError, "Specified path doesn't exist: " + @input
     end
 
+    filter_contents
     sort_contents
+  end
+
+  def filter_contents
+    return unless @show
+
+    @contents.keep_if do |x|
+      if @show == 'dirs'
+        Dir.exist?("#{@input}/#{x}")
+      else
+        !Dir.exist?("#{@input}/#{x}")
+      end
+    end
   end
 
   def sort_contents
     return unless @sort
 
     @contents.sort! do |a, b|
-      if @sort == 'dirs-first'
-        cmp_by_dirs(a, b)
-      else
-        cmp_by_alpha(a, b)
-      end
+      cmp_by_dirs(a, b)
     end
   end
 
   def cmp_by_dirs(a, b)
-    if     Dir.exist?("#{@input}/#{a}") && !Dir.exist?("#{@input}/#{b}")
-      -1
-    elsif !Dir.exist?("#{@input}/#{a}") &&  Dir.exist?("#{@input}/#{b}")
-      1
+    is_a_dir = Dir.exist?("#{@input}/#{a}")
+    is_b_dir = Dir.exist?("#{@input}/#{b}")
+
+    if is_a_dir ^ is_b_dir
+      result = is_a_dir ? -1 : 1
+      result *= -1 if @sort == 'files'
+      result
     else
       cmp_by_alpha(a, b)
     end
@@ -89,7 +102,7 @@ class ColorLS # rubocop:disable ClassLength
 
   def chunkify
     if @one_per_line
-      @contents.map { |x| [x] }
+      @contents.zip
     else
       chunk_size = @contents.count
 
@@ -172,28 +185,46 @@ class ColorLS # rubocop:disable ClassLength
   end
 end
 
-args         = *ARGV
-report       = false
-sort         = false
-one_per_line = false
+args             = *ARGV
+report           = args.include?('--report') || args.include?('-r')
+one_per_line     = args.include?('-1')
+sort_files_first = args.include?('-sf') || args.include?('--sort-files')
+sort_dirs_first  = args.include?('-sd') || args.include?('--sort-dirs')
+show_files_only  = args.include?('-f') || args.include?('--files')
+show_dirs_only   = args.include?('-d') || args.include?('--dirs')
 
-args.each do |arg|
-  report       = true if ['--report', '-r'].include?(arg)
-  one_per_line = true if arg == '-1'
+sort = if sort_files_first
+         'files'
+       elsif sort_dirs_first
+         'dirs'
+       else
+         false
+       end
 
-  match = arg.match(/^--sort=?(.*)?$/)
-
-  if match
-    sort = match.captures[0] == 'dirs-first' ? 'dirs-first' : true
-  end
-end
+show = if show_files_only
+         'files'
+       elsif show_dirs_only
+         'dirs'
+       else
+         false
+       end
 
 args.keep_if { |arg| !arg.start_with?('-') }
 
 if args.empty?
-  ColorLS.new(nil, report, sort, one_per_line).ls
+  ColorLS.new(nil,
+              report:       report,
+              sort:         sort,
+              show:         show,
+              one_per_line: one_per_line).ls
 else
-  args.each { |path| ColorLS.new(path, report, sort, one_per_line).ls }
+  args.each do |path|
+    ColorLS.new(path,
+                report:       report,
+                sort:         sort,
+                show:         show,
+                one_per_line: one_per_line).ls
+  end
 end
 
 true
