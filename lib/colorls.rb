@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+require 'colorls/version'
 
 require 'colorize'
 require 'yaml'
@@ -6,15 +6,15 @@ require 'facets'
 require 'terminfo'
 
 # Source for icons unicode: http://nerdfonts.com/
-class ColorLS # rubocop:disable ClassLength
-  def initialize(input = nil, report:, sort:, show:, one_per_line:)
+class ColorLS
+  def initialize(input=nil, report:, sort:, show:, one_per_line:)
     @input        = input || Dir.pwd
-    @count        = { folders: 0, recognized_files: 0, unrecognized_files: 0 }
+    @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
     @report       = report
     @sort         = sort
     @show         = show
     @one_per_line = one_per_line
-    @screen_width = TermInfo.screen_size.last
+    @screen_width = ::TermInfo.screen_size.last
 
     init_contents
     @max_widths = @contents.map(&:length)
@@ -128,10 +128,9 @@ class ColorLS # rubocop:disable ClassLength
     "#{logo}  #{content}".colorize(color)
   end
 
-  def load_from_yaml(filename, aliase = false)
-    prog = $PROGRAM_NAME
-    path = prog.include?('/colorls.rb') ? prog.gsub('/colorls.rb', '') : '.'
-    yaml = YAML.safe_load(File.read("#{path}/#{filename}")).symbolize_keys
+  def load_from_yaml(filename, aliase=false)
+    filepath = File.join(File.dirname(__FILE__),"yaml/#{filename}")
+    yaml     = YAML.safe_load(File.read(filepath)).symbolize_keys
     return yaml unless aliase
     yaml
       .to_a
@@ -166,55 +165,3 @@ class ColorLS # rubocop:disable ClassLength
     [key, :green, :recognized_files]
   end
 end
-
-args             = *ARGV
-opts             = {}
-
-opts[:report]       = args.include?('-r') || args.include?('--report')
-opts[:one_per_line] = args.include?('-1')
-
-show_dirs_only   = args.include?('-d')  || args.include?('--dirs')
-show_files_only  = args.include?('-f')  || args.include?('--files')
-sort_dirs_first  = args.include?('-sd') || args.include?('--sort-dirs')
-sort_files_first = args.include?('-sf') || args.include?('--sort-files')
-
-if sort_dirs_first && sort_files_first
-  STDERR.puts "\n  Restrain from using -sd and -sf flags together."
-    .colorize(:red)
-  return
-end
-
-if show_files_only && show_dirs_only
-  STDERR.puts "\n  Restrain from using -d and -f flags together."
-    .colorize(:red)
-  return
-end
-
-opts[:sort] = if sort_files_first
-                :files
-              elsif sort_dirs_first
-                :dirs
-              end
-
-opts[:show] = if show_files_only
-                :files
-              elsif show_dirs_only
-                :dirs
-              end
-
-args.keep_if { |arg| !arg.start_with?('-') }
-
-if args.empty?
-  ColorLS.new(opts).ls
-else
-  args.each do |path|
-    if Dir.exist?(path)
-      ColorLS.new(path, opts).ls
-    else
-      next STDERR.puts "\n  Specified directory '#{path}' doesn't exist."
-        .colorize(:red)
-    end
-  end
-end
-
-true
