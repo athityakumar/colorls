@@ -192,6 +192,14 @@ sort_dirs_first  = args.include?('-sd') || args.include?('--sort-dirs')
 show_files_only  = args.include?('-f') || args.include?('--files')
 show_dirs_only   = args.include?('-d') || args.include?('--dirs')
 
+if sort_dirs_first && sort_files_first
+  raise ArgumentError, 'Restrain from using -sd and -sf flags together'
+end
+
+if show_files_only && show_dirs_only
+  raise ArgumentError, 'Restrain from using -d and -f flags together'
+end
+
 sort = if sort_files_first
          'files'
        elsif sort_dirs_first
