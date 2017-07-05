@@ -24,13 +24,11 @@ class ColorLS # rubocop:disable ClassLength
   end
 
   def init_contents
-    if Dir.exist?(@input)
-      @contents = Dir.entries(@input) - ['.', '..']
-    elsif File.exist?(@input)
-      @contents = [@input]
-    else
-      raise ArgumentError, "Specified path doesn't exist: " + @input
+    unless Dir.exist?(@input)
+      raise ArgumentError, "Specified directory doesn't exist: " + @input
     end
+
+    @contents = Dir.entries(@input) - ['.', '..']
 
     filter_contents
     sort_contents
