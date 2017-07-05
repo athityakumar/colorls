@@ -9,7 +9,8 @@ rvm:
 
 script:
   - bundle exec rubocop
-  - ruby colorls.rb
+  - rake install
+  - lc
 
 install:
   - gem install bundler
