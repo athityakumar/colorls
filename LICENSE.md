@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2017 Athitya
+Copyright (c) 2017 [Athitya Kumar](https://github.com/athityakumar/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

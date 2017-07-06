@@ -7,9 +7,20 @@
 
 A Ruby script that colorizes the `ls` output with color and icons. Here are the screenshots of working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font with the `Solarized Dark` color theme. 
 
+# Table of contents
+
+- [Usage](#usage)
+- [Installatation](#installation)
+- [Optional configurations](#optional-configurations)
+- [Uninstallation](#uninstallation)
+- [Contribute to this gem](CONTRIBUTING.md)
+- [License](LICENSE.md)
+
 ![Example #1](readme/usage1.png)
 
-# How to use
+# Usage
+
+[Back to top](#table-of-contents)
 
 - Just `lc` : Prints all directories, files and dotfiles in current directory.
 
@@ -38,14 +49,18 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
   ![Usage #9](readme/usage9.png)
 
-# Installation steps
+# Installation
+
+[Back to top](#table-of-contents)
 
 1. Install Ruby (prefably, version > 2.1)
 2. Install the patched fonts of powerline nerd-font and/or font-awesome.
 3. Install the [colorls](https://rubygems.org/gems/colorls/) ruby gem with `gem install colorls`
 4. Start using `lc` :tada:
 
-# Tweaking the configurations
+# Optional configurations
+
+[Back to top](#table-of-contents)
 
 1. To add some flag options by default, add this to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) :
   ```sh
@@ -59,24 +74,11 @@ subl $(gem which colorls)/../yaml/
 
 _NOTE: If you're using iTerm2 on Mac, you may have to enable the nerd-font at iTerm2 > Preferences > Profiles > Text > Non-Ascii font > Knack Regular Nerd Font Complete_
 
-# Uninstallation steps
+# Uninstall
+
+[Back to top](#table-of-contents)
 
 Want to uninstall and revert back to the old style?
 ```sh
 gem uninstall colorls
 ```
-
-# Tweaking this project
-
-![Pending formats](readme/pending.png)
-
-There are a couple of formats that aren't recognized yet. Custom file formats and icons can be added by changing the YAML files in this repository. Also, feel free to send a Pull Request here with the added icons. :smile:
-
-Please feel free to contribute to this project, by
-- opening an issue for reporting any bug / suggesting any enhancement.
-- cleaning up the ruby scripts of the gem.
-- adding support for more icons by editing the [YAML files](lib/yaml/).
-
-# LICENSE
-
-MIT License 2017 - [Athitya Kumar](https://github.com/athityakumar/).
