@@ -54,19 +54,15 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 [(Back to top)](#table-of-contents)
 
 1. Install Ruby (prefably, version > 2.1)
-
 2. Install the patched fonts of powerline nerd-font and/or font-awesome.
-
 3. Install the [colorls](https://rubygems.org/gems/colorls/) ruby gem with `gem install colorls`
 
-    _Note: rbenv users may have see load errors. Rehashing rbenv and the shell by running the following may help: _
+  *Note for `rbenv` users - In case of load error when using `lc`, please try the below patch.*
 
-    ```shell
-    gem uninstall colorls
-    gem install colorls
-    rbenv rehash
-    rehash
-    ```
+  ```sh
+  rbenv rehash
+  rehash
+  ```
 
 4. Start using `lc` :tada:
 
