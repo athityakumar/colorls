@@ -15,8 +15,8 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 - [Installatation](#installation)
 - [Optional configurations](#optional-configurations)
 - [Uninstallation](#uninstallation)
-- [Contribute to this gem](#contributing)
-- [License](LICENSE.md)
+- [Contributing](#contributing)
+- [License](#license)
 
 # Usage
 
@@ -86,4 +86,13 @@ gem uninstall colorls
 
 # Contributing
 
-Your contributions are always welcome! Please have a look at the [contribution guidelines](CONTRIBUTING.md) first :tada:.
+[(Back to top)](#table-of-contents)
+
+Your contributions are always welcome! Please have a look at the [contribution guidelines](CONTRIBUTING.md) first. :tada:
+
+# License
+
+[(Back to top)](#table-of-contents)
+
+
+The MIT License (MIT) 2017 - [Athitya Kumar](https://github.com/athityakumar/). Please have a look at the [LICENSE.md](LICENSE.md) for more details.
