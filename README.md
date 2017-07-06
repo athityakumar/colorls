@@ -86,7 +86,7 @@ subl $(gem which colorls)/../yaml/
 
 _NOTE: If you're using iTerm2 on Mac, you may have to enable the nerd-font at iTerm2 > Preferences > Profiles > Text > Non-Ascii font > Knack Regular Nerd Font Complete_
 
-# Uninstall
+# Uninstallation
 
 [(Back to top)](#table-of-contents)
 
