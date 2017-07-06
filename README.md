@@ -7,6 +7,8 @@
 
 A Ruby script that colorizes the `ls` output with color and icons. Here are the screenshots of working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font with the `Solarized Dark` color theme. 
 
+![Example #1](readme/usage1.png)
+
 # Table of contents
 
 - [Usage](#usage)
@@ -16,11 +18,9 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 - [Contribute to this gem](CONTRIBUTING.md)
 - [License](LICENSE.md)
 
-![Example #1](readme/usage1.png)
-
 # Usage
 
-[Back to top](#table-of-contents)
+[(Back to top)](#table-of-contents)
 
 - Just `lc` : Prints all directories, files and dotfiles in current directory.
 
@@ -51,7 +51,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 # Installation
 
-[Back to top](#table-of-contents)
+[(Back to top)](#table-of-contents)
 
 1. Install Ruby (prefably, version > 2.1)
 2. Install the patched fonts of powerline nerd-font and/or font-awesome.
@@ -60,7 +60,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 # Optional configurations
 
-[Back to top](#table-of-contents)
+[(Back to top)](#table-of-contents)
 
 1. To add some flag options by default, add this to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) :
   ```sh
@@ -76,9 +76,10 @@ _NOTE: If you're using iTerm2 on Mac, you may have to enable the nerd-font at iT
 
 # Uninstall
 
-[Back to top](#table-of-contents)
+[(Back to top)](#table-of-contents)
 
-Want to uninstall and revert back to the old style?
+Want to uninstall and revert back to the old style? No issues (sob). Please feel free to open an issue regarding how we can enhance `colorls`.
+
 ```sh
 gem uninstall colorls
 ```
