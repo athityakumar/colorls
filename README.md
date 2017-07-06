@@ -13,7 +13,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 - [Installatation](#installation)
 - [Optional configurations](#optional-configurations)
 - [Uninstallation](#uninstallation)
-- [Contribute to this gem](CONTRIBUTING.md)
+- [Contribute to this gem](#contributing)
 - [License](LICENSE.md)
 
 ![Example #1](readme/usage1.png)
@@ -82,3 +82,7 @@ Want to uninstall and revert back to the old style?
 ```sh
 gem uninstall colorls
 ```
+
+# Contributing
+
+Your contributions are always welcome! Please have a look at the [contribution guidelines](CONTRIBUTING.md) first :tada:.
