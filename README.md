@@ -55,7 +55,10 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 [(Back to top)](#table-of-contents)
 
 1. Install Ruby (prefably, version > 2.1)
-2. Install the patched fonts of powerline nerd-font and/or font-awesome.
+2. Install the patched fonts of powerline nerd-font and/or font-awesome. Have a look at [nerdfont's README](https://github.com/ryanoasis/nerd-fonts/blob/master/readme.md) for more installation instructions.
+
+    *Note for `iTerm2` users - Please enable the nerd-font at iTerm2 > Preferences > Profiles > Text > Non-Ascii font > Knack Regular Nerd Font Complete.*
+
 3. Install the [colorls](https://rubygems.org/gems/colorls/) ruby gem with `gem install colorls`
 
     *Note for `rbenv` users - In case of load error when using `lc`, please try the below patch.*
@@ -67,7 +70,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 4. Start using `colorls` :tada:
 
-# Optional configurations
+# Recommended configurations
 
 [(Back to top)](#table-of-contents)
 
@@ -80,10 +83,6 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     ```sh
     subl $(gem which colorls)/../yaml/
     ```
-
-_NOTE: If you're using iTerm2 on Mac, you may have to enable the nerd-font at iTerm2 > Preferences > Profiles > Text > Non-Ascii font > Knack Regular Nerd Font Complete_
-
-
 
 # Updating
 
