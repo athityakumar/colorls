@@ -17,14 +17,14 @@ module ColorLS
     end
 
     def ls
-      unless @contents.empty?
+      if @contents.empty
+        print "it is empty baby \uf119\n".colorize(:blue)
+      else
         @contents = chunkify
         @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
         @contents.each { |chunk| ls_line(chunk) }
         print "\n"
         display_report if @report
-      else
-        print "it is empty baby \uf119\n".colorize(:blue)
       end
 
       true
