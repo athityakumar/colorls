@@ -12,7 +12,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 # Table of contents
 
 - [Usage](#usage)
-- [Installatation](#installation)
+- [Installation](#installation)
 - [Recommended configurations](#recommended-configurations)
 - [Updating](#updating)
 - [Uninstallation](#uninstallation)
