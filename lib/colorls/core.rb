@@ -17,7 +17,7 @@ module ColorLS
     end
 
     def ls
-      if @contents.empty
+      if @contents.empty?
         print "it is empty baby \uf119\n".colorize(:blue)
       else
         @contents = chunkify
