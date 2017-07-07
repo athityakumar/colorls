@@ -7,7 +7,7 @@ require 'colorls/version'
 Gem::Specification.new do |spec|
   spec.name          = 'colorls'
   spec.version       = ColorLS::VERSION
-  spec.authors       = ['Athitya']
+  spec.authors       = ['Athitya Kumar']
   spec.email         = ['athityakumar@gmail.com']
 
   spec.summary       = "A Ruby CLI gem that beautifies the terminal's ls command, with color and font-awesome icons."
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = 'exe'
-  spec.executables   = 'lc'
+  spec.executables   = 'colorls'
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'colorize'

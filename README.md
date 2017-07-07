@@ -13,7 +13,8 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 - [Usage](#usage)
 - [Installation](#installation)
-- [Optional configurations](#optional-configurations)
+- [Recommended configurations](#recommended-configurations)
+- [Updating](#updating)
 - [Uninstallation](#uninstallation)
 - [Contributing](#contributing)
 - [License](#license)
@@ -64,15 +65,15 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     rehash
     ```
 
-4. Start using `lc` :tada:
+4. Start using `colorls` :tada:
 
 # Optional configurations
 
 [(Back to top)](#table-of-contents)
 
-1. To add some flag options by default, add this to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) :
+1. To add some short command (say, `lc`) with some flag options (say, `-r`)b y default, add this to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) :
     ```sh
-    alias lc='lc -r'
+    alias lc='colorls -r'
     ```
 2. For changing the icon(s) to other unicode icons of choice (select icons from [here](https://nerdfonts.com/)), change the YAML files in a text editor of your choice (say, `subl`)
 
@@ -81,6 +82,18 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     ```
 
 _NOTE: If you're using iTerm2 on Mac, you may have to enable the nerd-font at iTerm2 > Preferences > Profiles > Text > Non-Ascii font > Knack Regular Nerd Font Complete_
+
+
+
+# Updating
+
+[(Back to top)](#table-of-contents)
+
+Want to update to the latest version of `colorls`?
+
+```sh
+gem update colorls
+```
 
 # Uninstallation
 
