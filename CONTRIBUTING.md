@@ -14,17 +14,16 @@ Please proceed with a Pull Request only after you're assigned. It'd be sad if yo
 1. Install with
 
   ```sh
-  git clone 
+  git clone https://github.com/athityakumar/colorls
   cd colorls
   gem install bundler
   bundle install
   ```
 
-2. Make your changes in a different git branch. These changes can be
+2. Make your changes in a different git branch (say, `add-l-flag`). These changes can be
 
-  - add better icons to [YAML files](lib/yaml/)
-  - add more flag options to the ruby gem.
-
+  - adding better icons to [YAML files](lib/yaml/)
+  - adding more flag options to the ruby gem.
 
 3. (Optional) To test whether `lc` is working properly, do 
   ```sh
