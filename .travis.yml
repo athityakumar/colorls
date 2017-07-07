@@ -11,13 +11,13 @@ script:
   - bundle exec rubocop
   - bundle exec rspec
   - rake install
-  - lc
-  - lc -d
-  - lc -f
-  - lc -sd
-  - lc -sf
-  - lc -1
-  - lc -r
+  - colorls
+  - colorls -d
+  - colorls -f
+  - colorls -sd
+  - colorls -sf
+  - colorls -1
+  - colorls -r
 
 install:
   - gem install bundler

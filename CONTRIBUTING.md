@@ -25,10 +25,10 @@ Please proceed with a Pull Request only after you're assigned. It'd be sad if yo
     - adding better icons to [YAML files](lib/yaml/)
     - adding more flag options to the ruby gem.
 
-3. (Optional) To test whether `lc` is working properly, do 
+3. (Optional) To test whether `colorls` executable is working properly, do 
     ```sh
     rake install
-    lc # start using lc
+    colorls # start using colorls
     ```
 
 4. (Required for YAML file changes) These are the specifications for the YAML files -
