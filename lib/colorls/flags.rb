@@ -5,6 +5,7 @@ module ColorLS
       @opts = {
         show: fetch_show_opts,
         sort: fetch_sort_opts,
+        all: flag_given?(%w[-a --all]),
         report: flag_given?(%w[-r --report]),
         one_per_line: flag_given?(%w[-1])
       }

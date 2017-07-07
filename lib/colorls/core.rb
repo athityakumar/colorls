@@ -1,8 +1,10 @@
 module ColorLS
   class Core
-    def initialize(input=nil, report: false, sort: false, show: false, one_per_line: false)
+    def initialize(input=nil, all: false, report: false, sort: false, show: false,
+      one_per_line: false)
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
+      @all          = all
       @report       = report
       @sort         = sort
       @show         = show
@@ -29,6 +31,7 @@ module ColorLS
     def init_contents
       @contents = Dir.entries(@input) - %w[. ..]
 
+      @contents.keep_if { |x| !x.start_with? '.' } unless @all
       filter_contents if @show
       sort_contents   if @sort
 

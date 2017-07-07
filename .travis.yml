@@ -12,6 +12,7 @@ script:
   - bundle exec rspec
   - rake install
   - colorls
+  - colorls -a
   - colorls -d
   - colorls -f
   - colorls -sd
