@@ -18,7 +18,7 @@ module ColorLS
 
     def ls
       if @contents.empty?
-        print "it is empty baby \uf119\n".colorize(:blue)
+        print "Nothing to show here\n".colorize(:yellow)
       else
         @contents = chunkify
         @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
