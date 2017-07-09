@@ -9,7 +9,7 @@ class YamlSortChecker
     @yaml = YAML.load_file(filename)
   end
 
-  def sorted?(type = :key)
+  def sorted?(type=:key)
     case type.to_sym
     when :key   then key_sorted?
     when :value then value_sorted?
@@ -23,13 +23,13 @@ class YamlSortChecker
   attr_reader :yaml
 
   def key_sorted?
-    sorted_yaml  = yaml.to_a.sort_by { |content| content[0].downcase }
+    sorted_yaml = yaml.to_a.sort_by { |content| content[0].downcase }
 
     different_from_yaml? sorted_yaml
   end
 
   def value_sorted?
-    sorted_yaml = yaml.to_a.sort_by do |content| 
+    sorted_yaml = yaml.to_a.sort_by do |content|
       [content[1].downcase, content[0].downcase]
     end
 
@@ -43,7 +43,7 @@ class YamlSortChecker
     difference = Diffy::Diff.new(actual_str, expected_str).to_s
 
     return if difference.empty?
-    
+
     raise NotSortedError, "\n#{difference}"
   end
 
