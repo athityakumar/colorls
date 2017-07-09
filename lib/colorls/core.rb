@@ -17,11 +17,15 @@ module ColorLS
     end
 
     def ls
-      @contents = chunkify
-      @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
-      @contents.each { |chunk| ls_line(chunk) }
-      print "\n"
-      display_report if @report
+      if @contents.empty?
+        print "Nothing to show here\n".colorize(:yellow)
+      else
+        @contents = chunkify
+        @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
+        @contents.each { |chunk| ls_line(chunk) }
+        print "\n"
+        display_report if @report
+      end
 
       true
     end
@@ -30,7 +34,6 @@ module ColorLS
 
     def init_contents
       @contents = Dir.entries(@input) - %w[. ..]
-
       @contents.keep_if { |x| !x.start_with? '.' } unless @all
       filter_contents if @show
       sort_contents   if @sort
