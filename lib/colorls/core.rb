@@ -207,7 +207,7 @@ module ColorLS
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
 
-      "#{logo.colorize(color)}  #{@long ? long_info(content) : ''} #{content.colorize(color)}"
+      "#{@long ? long_info(content) : ''} #{logo.colorize(color)}  #{content.colorize(color)}"
     end
 
     def load_from_yaml(filename, aliase=false)
