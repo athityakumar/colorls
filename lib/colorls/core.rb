@@ -46,8 +46,9 @@ module ColorLS
 
       @total_content_length = @contents.length
 
-      init_user_lengths if @long
-      init_group_lengths if @long
+      return unless @long
+      init_user_lengths
+      init_group_lengths
     end
 
     def init_user_lengths
