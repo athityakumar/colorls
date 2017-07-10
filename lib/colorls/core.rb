@@ -33,7 +33,12 @@ module ColorLS
     private
 
     def init_contents
-      @contents = Dir.entries(@input) - %w[. ..]
+      @contents = if Dir.exist?(@input)
+                    Dir.entries(@input) - %w[. ..]
+                  else
+                    [@input]
+                  end
+
       @contents.keep_if { |x| !x.start_with? '.' } unless @all
       filter_contents if @show
       sort_contents   if @sort
