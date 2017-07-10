@@ -54,9 +54,9 @@ module ColorLS
     def init_user_lengths
       @userlength = @contents.map do |c|
         begin
-          user = Etc.getpwuid(File.stat(c).uid).name
+          user = Etc.getpwuid(File.stat("#{@input}/#{c}").uid).name
         rescue ArgumentError
-          user = File.stat(c).uid
+          user = File.stat("#{@input}/#{c}").uid
         end
         user.to_s.length
       end.max
@@ -65,9 +65,9 @@ module ColorLS
     def init_group_lengths
       @grouplength = @contents.map do |c|
         begin
-          group = Etc.getgrgid(File.stat(c).gid).name
+          group = Etc.getgrgid(File.stat("#{@input}/#{c}").gid).name
         rescue ArgumentError
-          group = File.stat(c).gid
+          group = File.stat("#{@input}/#{c}").gid
         end
         group.to_s.length
       end.max
@@ -199,8 +199,8 @@ module ColorLS
     end
 
     def long_info(content)
-      stat = File.stat(content)
-      "#{mode_info(stat)} #{user_info(stat)} #{group_info(stat)} #{size_info(stat)} #{mtime_info(stat)}"
+      stat = File.stat("#{@input}/#{content}")
+      "#{mode_info(stat)}  #{user_info(stat)}  #{group_info(stat)}  #{size_info(stat)}  #{mtime_info(stat)}  "
     end
 
     def fetch_string(content, key, color, increment)
