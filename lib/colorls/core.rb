@@ -52,14 +52,22 @@ module ColorLS
 
     def init_user_lengths
       @userlength = @contents.map do |c|
-        user = Etc.getpwuid(File.stat(c).uid).name rescue File.stat(c).uid
+        begin
+          user = Etc.getpwuid(File.stat(c).uid).name
+        rescue ArgumentError
+          user = File.stat(c).uid
+        end
         user.to_s.length
       end.max
     end
 
     def init_group_lengths
       @grouplength = @contents.map do |c|
-        group = Etc.getgrgid(File.stat(c).gid).name rescue File.stat(c).gid
+        begin
+          group = Etc.getgrgid(File.stat(c).gid).name
+        rescue ArgumentError
+          group = File.stat(c).gid
+        end
         group.to_s.length
       end.max
     end
@@ -159,13 +167,21 @@ module ColorLS
     end
 
     def user_info(stat)
-      user = Etc.getpwuid(stat.uid).name rescue stat.uid
+      begin
+        user = Etc.getpwuid(stat.uid).name
+      rescue ArgumentError
+        user = stat.uid
+      end
       user = user.to_s.ljust(@userlength, ' ')
       user.colorize(:green) if user == Etc.getlogin
     end
 
     def group_info(stat)
-      group = Etc.getgrgid(stat.gid).name rescue stat.gid
+      begin
+        group = Etc.getgrgid(stat.gid).name
+      rescue ArgumentError
+        group = stat.gid
+      end
       group.to_s.ljust(@grouplength, ' ')
     end
 
