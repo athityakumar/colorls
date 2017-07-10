@@ -20,7 +20,7 @@ module ColorLS
       return Core.new(@opts).ls if @args.empty?
 
       @args.each do |path|
-        next STDERR.puts "\n  Specified directory '#{path}' doesn't exist.".colorize(:red) unless Dir.exist?(path)
+        next STDERR.puts "\n  Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
         Core.new(path, @opts).ls
       end
     end

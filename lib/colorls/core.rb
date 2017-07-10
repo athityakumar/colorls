@@ -34,7 +34,12 @@ module ColorLS
     private
 
     def init_contents
-      @contents = Dir.entries(@input) - %w[. ..]
+      @contents = if Dir.exist?(@input)
+                    Dir.entries(@input) - %w[. ..]
+                  else
+                    [@input]
+                  end
+
       @contents.keep_if { |x| !x.start_with? '.' } unless @all
       filter_contents if @show
       sort_contents   if @sort
@@ -233,6 +238,10 @@ module ColorLS
         key = @folder_aliases[key] unless @folder_keys.include?(key)
         return [key, :blue, :folders]
       end
+
+      key = content.downcase.to_sym
+
+      return [key, :green, :recognized_files] if @file_keys.include?(key)
 
       key = content.split('.').last.downcase.to_sym
 

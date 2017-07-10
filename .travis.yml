@@ -20,6 +20,8 @@ script:
   - colorls -1
   - colorls -r
   - colorls -l
+  - colorls README.md
+  - colorls *
 
 install:
   - gem install bundler
