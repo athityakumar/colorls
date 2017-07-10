@@ -19,6 +19,7 @@ script:
   - colorls -sf
   - colorls -1
   - colorls -r
+  - colorls -l
   - colorls README.md
   - colorls *
 

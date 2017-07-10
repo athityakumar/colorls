@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false)
+      one_per_line: false, long: false)
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -9,6 +9,7 @@ module ColorLS
       @sort         = sort
       @show         = show
       @one_per_line = one_per_line
+      @long         = long
       @screen_width = ::TermInfo.screen_size.last
 
       init_contents
@@ -44,6 +45,32 @@ module ColorLS
       sort_contents   if @sort
 
       @total_content_length = @contents.length
+
+      return unless @long
+      init_user_lengths
+      init_group_lengths
+    end
+
+    def init_user_lengths
+      @userlength = @contents.map do |c|
+        begin
+          user = Etc.getpwuid(File.stat(c).uid).name
+        rescue ArgumentError
+          user = File.stat(c).uid
+        end
+        user.to_s.length
+      end.max
+    end
+
+    def init_group_lengths
+      @grouplength = @contents.map do |c|
+        begin
+          group = Etc.getgrgid(File.stat(c).gid).name
+        rescue ArgumentError
+          group = File.stat(c).gid
+        end
+        group.to_s.length
+      end.max
     end
 
     def filter_contents
@@ -88,7 +115,7 @@ module ColorLS
     end
 
     def chunkify
-      return @contents.zip if @one_per_line
+      return @contents.zip if @one_per_line || @long
 
       chunk_size = @contents.count
 
@@ -124,12 +151,64 @@ module ColorLS
         .colorize(:white)
     end
 
+    def mode_info(stat)
+      mode = ''
+      stat.mode.to_s(2).rjust(16, '0')[-9..-1].each_char.with_index do |c, i|
+        if c == '0'
+          mode += '-'.colorize(:gray)
+        else
+          case (i % 3)
+          when 0 then mode += 'r'.colorize(:yellow)
+          when 1 then mode += 'w'.colorize(:magenta)
+          when 2 then mode += 'x'.colorize(:cyan)
+          end
+        end
+      end
+      mode
+    end
+
+    def user_info(stat)
+      begin
+        user = Etc.getpwuid(stat.uid).name
+      rescue ArgumentError
+        user = stat.uid
+      end
+      user = user.to_s.ljust(@userlength, ' ')
+      user.colorize(:green) if user == Etc.getlogin
+    end
+
+    def group_info(stat)
+      begin
+        group = Etc.getgrgid(stat.gid).name
+      rescue ArgumentError
+        group = stat.gid
+      end
+      group.to_s.ljust(@grouplength, ' ')
+    end
+
+    def size_info(stat)
+      size = Filesize.from("#{stat.size} B").pretty.split(' ')
+      "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}"
+    end
+
+    def mtime_info(stat)
+      mtime = stat.mtime.asctime
+      mtime = mtime.colorize(:yellow) if Time.now - stat.mtime < 24 * 60 * 60
+      mtime = mtime.colorize(:green)  if Time.now - stat.mtime < 60 * 60
+      mtime
+    end
+
+    def long_info(content)
+      stat = File.stat(content)
+      "#{mode_info(stat)} #{user_info(stat)} #{group_info(stat)} #{size_info(stat)} #{mtime_info(stat)}"
+    end
+
     def fetch_string(content, key, color, increment)
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
 
-      "#{logo}  #{content}".colorize(color)
+      "#{@long ? long_info(content) : ''} #{logo.colorize(color)}  #{content.colorize(color)}"
     end
 
     def load_from_yaml(filename, aliase=false)
