@@ -156,6 +156,10 @@ module ColorLS
         return [key, :blue, :folders]
       end
 
+      key = content.downcase.to_sym
+
+      return [key, :green, :recognized_files] if @file_keys.include?(key)
+
       key = content.split('.').last.downcase.to_sym
 
       return %i[file yellow unrecognized_files] unless @all_files.include?(key)
