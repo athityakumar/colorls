@@ -38,28 +38,33 @@ module ColorLS
       @contents.keep_if { |x| !x.start_with? '.' } unless @all
       filter_contents if @show
       sort_contents   if @sort
-      
+
       @total_content_length = @contents.length
-      
-      return unless @long
-      
-      @userlength = @contents.map{ |c|
+
+      init_user_lengths if @long
+      init_group_lengths if @long
+    end
+
+    def init_user_lengths
+      @userlength = @contents.map do |c|
         begin
           user = Etc.getpwuid(File.stat(c).uid).name
         rescue ArgumentError
           user = File.stat(c).uid
         end
         user.to_s.length
-      }.max
+      end.max
+    end
 
-      @grouplength = @contents.map{ |c|
+    def init_group_lengths
+      @grouplength = @contents.map do |c|
         begin
           group = Etc.getgrgid(File.stat(c).gid).name
         rescue ArgumentError
           group = File.stat(c).gid
         end
         group.to_s.length
-      }.max
+      end.max
     end
 
     def filter_contents
@@ -140,43 +145,56 @@ module ColorLS
         .colorize(:white)
     end
 
-    def long_info(content)
-      stat = File.stat(content)
-      modestr = ""
-      stat.mode.to_s(2).rjust(16, "0")[-9..-1].each_char.with_index do |c, i|
+    def mode_info(stat)
+      mode = ''
+      stat.mode.to_s(2).rjust(16, '0')[-9..-1].each_char.with_index do |c, i|
         if c == '0'
-          modestr += '-'.colorize(:gray)
+          mode += '-'.colorize(:gray)
         else
-          modestr += "r".colorize(:yellow)  if i % 3 == 0
-          modestr += "w".colorize(:magenta) if i % 3 == 1
-          modestr += "x".colorize(:cyan)    if i % 3 == 2
+          case (i % 3)
+          when 0 then mode += 'r'.colorize(:yellow)
+          when 1 then mode += 'w'.colorize(:magenta)
+          when 2 then mode += 'x'.colorize(:cyan)
+          end
         end
       end
+      mode
+    end
 
+    def user_info(stat)
       begin
         user = Etc.getpwuid(stat.uid).name
       rescue ArgumentError
         user = stat.uid
       end
-      user = user.to_s.ljust(@userlength, " ")
-      user = user.colorize(:green) if user == Etc.getlogin
+      user = user.to_s.ljust(@userlength, ' ')
+      user.colorize(:green) if user == Etc.getlogin
+    end
 
+    def group_info(stat)
       begin
         group = Etc.getgrgid(stat.gid).name
       rescue ArgumentError
         group = stat.gid
       end
-      group = group.to_s.ljust(@grouplength, " ")
-      group = group.colorize(:green) if group == Etc.getlogin
+      group.to_s.ljust(@grouplength, ' ')
+    end
 
-      size = Filesize.from("#{stat.size} B").pretty.split(" ")
-      size = "#{size[0][0..-4].rjust(3," ")} #{size[1].ljust(3," ")}"
+    def size_info(stat)
+      size = Filesize.from("#{stat.size} B").pretty.split(' ')
+      "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}"
+    end
 
+    def mtime_info(stat)
       mtime = stat.mtime.asctime
-      mtime = mtime.colorize(:yellow) if (Time.now - stat.mtime < 24 * 60 * 60)
-      mtime = mtime.colorize(:green)  if (Time.now - stat.mtime < 60 * 60)
+      mtime = mtime.colorize(:yellow) if Time.now - stat.mtime < 24 * 60 * 60
+      mtime = mtime.colorize(:green)  if Time.now - stat.mtime < 60 * 60
+      mtime
+    end
 
-      "#{modestr} #{user} #{group} #{size} #{mtime}"
+    def long_info(content)
+      stat = File.stat(content)
+      "#{mode_info(stat)} #{user_info(stat)} #{group_info(stat)} #{size_info(stat)} #{mtime_info(stat)}"
     end
 
     def fetch_string(content, key, color, increment)
@@ -184,7 +202,7 @@ module ColorLS
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
 
-      "#{logo.colorize(color)}  #{@long ? long_info(content) : ""} #{content.colorize(color)}"
+      "#{logo.colorize(color)}  #{@long ? long_info(content) : ''} #{content.colorize(color)}"
     end
 
     def load_from_yaml(filename, aliase=false)
