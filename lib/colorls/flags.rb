@@ -7,7 +7,7 @@ module ColorLS
         sort: fetch_sort_opts,
         all: flag_given?(%w[-a --all]),
         report: flag_given?(%w[-r --report]),
-        one_per_line: flag_given?(%w[-1]),
+        one_per_line: flag_given?(%w[-1]) || !STDOUT.tty?,
         long: flag_given?(%w[-l --long])
       }
 
