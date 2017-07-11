@@ -13,6 +13,7 @@ script:
   - rake install
   - colorls
   - colorls -a
+  - colorls -A
   - colorls -d
   - colorls -f
   - colorls -sd

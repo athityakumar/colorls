@@ -6,6 +6,7 @@ module ColorLS
         show: fetch_show_opts,
         sort: fetch_sort_opts,
         all: flag_given?(%w[-a --all]),
+        almost_all: flag_given?(%w[-A --almost-all]),
         report: flag_given?(%w[-r --report]),
         one_per_line: flag_given?(%w[-1]) || !STDOUT.tty?,
         long: flag_given?(%w[-l --long])
