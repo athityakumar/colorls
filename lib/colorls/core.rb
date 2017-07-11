@@ -1,10 +1,11 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, long: false)
+      one_per_line: false, long: false, almost_all: false)
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
+      @almost_all   = almost_all
       @report       = report
       @sort         = sort
       @show         = show
@@ -35,12 +36,12 @@ module ColorLS
 
     def init_contents
       @contents = if Dir.exist?(@input)
-                    Dir.entries(@input) - %w[. ..]
+                    Dir.entries(@input)
                   else
                     [@input]
                   end
 
-      @contents.keep_if { |x| !x.start_with? '.' } unless @all
+      filter_hidden_contents
       filter_contents if @show
       sort_contents   if @sort
 
@@ -49,6 +50,11 @@ module ColorLS
       return unless @long
       init_user_lengths
       init_group_lengths
+    end
+
+    def filter_hidden_contents
+      @contents -= %w[. ..] unless @all
+      @contents.keep_if { |x| !x.start_with? '.' } unless @all || @almost_all
     end
 
     def init_user_lengths
