@@ -12,19 +12,21 @@ module ColorLS
         report: flag_given?(%w[-r --report]),
         one_per_line: flag_given?(%w[-1]) || !STDOUT.tty?,
         long: flag_given?(%w[-l --long]),
+        tree: flag_given?(%w[-t --tree]),
         colors: @colors
       }
-
-      return if @opts[:show].nil? || @opts[:sort].nil?
 
       @args.keep_if { |arg| !arg.start_with?('-') }
     end
 
     def process
+      incompatible = report_incompatible_flags
+      return STDERR.puts "\n   #{incompatible}".colorize(:red) if incompatible
+
       return Core.new(@opts).ls if @args.empty?
 
       @args.each do |path|
-        next STDERR.puts "\n  Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
+        next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
         Core.new(path, @opts).ls
       end
     end
@@ -81,6 +83,16 @@ module ColorLS
         return :dirs  if sort_dirs_first
         false
       end
+    end
+
+    def report_incompatible_flags
+      return '' if @opts[:show].nil? || @opts[:sort].nil?
+
+      return 'Restrain from using -t (--tree) and -r (--report) flags together.' if @opts[:tree] && @opts[:report]
+
+      return 'Restrain from using -t (--tree) and -a (--all) flags together.' if @opts[:tree] && @opts[:all]
+
+      nil
     end
   end
 end

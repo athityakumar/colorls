@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, long: false, almost_all: false, colors: [])
+      one_per_line: false, long: false, almost_all: false, tree: false, colors: [])
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -11,46 +11,51 @@ module ColorLS
       @show         = show
       @one_per_line = one_per_line
       @long         = long
+      @tree         = tree
       @screen_width = ::TermInfo.screen_size.last
       @colors       = colors
 
-      init_contents
+      @contents   = init_contents(@input)
       @max_widths = @contents.map(&:length)
       init_icons
     end
 
     def ls
-      if @contents.empty?
-        print "Nothing to show here\n".colorize(:yellow)
+      return print "\n   Nothing to show here\n".colorize(:yellow) if @contents.empty?
+
+      if @tree
+        print "\n"
+        tree_traverse(@input, 0, 2)
       else
         @contents = chunkify
         @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
         @contents.each { |chunk| ls_line(chunk) }
-        print "\n"
-        display_report if @report
       end
+      print "\n"
+      display_report if @report
 
       true
     end
 
     private
 
-    def init_contents
-      @contents = if Dir.exist?(@input)
-                    Dir.entries(@input)
+    def init_contents(path)
+      @contents = if Dir.exist?(path)
+                    Dir.entries(path)
                   else
-                    [@input]
+                    [path]
                   end
 
       filter_hidden_contents
-      filter_contents if @show
-      sort_contents   if @sort
+      filter_contents(path) if @show
+      sort_contents(path)   if @sort
 
       @total_content_length = @contents.length
 
-      return unless @long
+      return @contents unless @long
       init_user_lengths
       init_group_lengths
+      @contents
     end
 
     def filter_hidden_contents
@@ -60,6 +65,7 @@ module ColorLS
 
     def init_user_lengths
       @userlength = @contents.map do |c|
+        next 0 unless File.exist?("#{@input}/#{c}")
         begin
           user = Etc.getpwuid(File.stat("#{@input}/#{c}").uid).name
         rescue ArgumentError
@@ -71,6 +77,7 @@ module ColorLS
 
     def init_group_lengths
       @grouplength = @contents.map do |c|
+        next 0 unless File.exist?("#{@input}/#{c}")
         begin
           group = Etc.getgrgid(File.stat("#{@input}/#{c}").gid).name
         rescue ArgumentError
@@ -80,20 +87,20 @@ module ColorLS
       end.max
     end
 
-    def filter_contents
+    def filter_contents(path)
       @contents.keep_if do |x|
-        next Dir.exist?("#{@input}/#{x}") if @show == :dirs
-        !Dir.exist?("#{@input}/#{x}")
+        next Dir.exist?("#{path}/#{x}") if @show == :dirs
+        !Dir.exist?("#{path}/#{x}")
       end
     end
 
-    def sort_contents
-      @contents.sort! { |a, b| cmp_by_dirs(a, b) }
+    def sort_contents(path)
+      @contents.sort! { |a, b| cmp_by_dirs(path, a, b) }
     end
 
-    def cmp_by_dirs(a, b)
-      is_a_dir = Dir.exist?("#{@input}/#{a}")
-      is_b_dir = Dir.exist?("#{@input}/#{b}")
+    def cmp_by_dirs(path, a, b)
+      is_a_dir = Dir.exist?("#{path}/#{a}")
+      is_b_dir = Dir.exist?("#{path}/#{b}")
 
       return cmp_by_alpha(a, b) unless is_a_dir ^ is_b_dir
 
@@ -142,7 +149,7 @@ module ColorLS
     end
 
     def in_line(chunk_size)
-      return false if @max_widths.sum + 6 * chunk_size > @screen_width
+      return false if @max_widths.sum + 7 * chunk_size > @screen_width
       true
     end
 
@@ -206,8 +213,25 @@ module ColorLS
     end
 
     def long_info(content)
+      return '' unless @long
+      unless File.exist?("#{@input}/#{content}")
+        return '[No Info]'.colorize(:red) + ' ' * (39 + @userlength + @grouplength)
+      end
       stat = File.stat("#{@input}/#{content}")
-      "#{mode_info(stat)}  #{user_info(stat)}  #{group_info(stat)}  #{size_info(stat)}  #{mtime_info(stat)}  "
+      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat)].join('  ')
+    end
+
+    def symlink_info(content)
+      return '' unless @long && File.lstat("#{@input}/#{content}").symlink?
+      if File.exist?("#{@input}/#{content}")
+        " ⇒ #{File.readlink("#{@input}/#{content}")}/".colorize(:cyan)
+      else
+        ' ⇒ [Dead link]'.colorize(:red)
+      end
+    end
+
+    def slash?(content)
+      Dir.exist?("#{@input}/#{content}") ? '/'.colorize(:blue) : ' '
     end
 
     def fetch_string(content, key, color, increment)
@@ -215,7 +239,11 @@ module ColorLS
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
 
-      "#{@long ? long_info(content) : ''} #{logo.colorize(color)}  #{content.colorize(color)}"
+      [
+        long_info(content),
+        logo.colorize(color),
+        "#{content.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
+      ].join('  ')
     end
 
     def ls_line(chunk)
@@ -223,14 +251,13 @@ module ColorLS
       chunk.each_with_index do |content, i|
         break if content.empty?
 
-        print "  #{fetch_string(content, *options(content))}"
-        print Dir.exist?("#{@input}/#{content}") ? '/'.colorize(@colors[:dir]) : ' '
-        print ' ' * (@max_widths[i] - content.length)
+        print "  #{fetch_string(content, *options(@input, content))}"
+        print ' ' * (@max_widths[i] - content.length) unless @one_per_line || @long
       end
     end
 
-    def options(content)
-      if Dir.exist?("#{@input}/#{content}")
+    def options(path, content)
+      if Dir.exist?("#{path}/#{content}")
         key = content.to_sym
         color = @colors[:dir]
         return [:folder, color, :folders] unless @all_folders.include?(key)
@@ -246,6 +273,22 @@ module ColorLS
 
       key = @file_aliases[key] unless @file_keys.include?(key)
       [key, color, :recognized_files]
+    end
+
+    def tree_traverse(path, prespace, indent)
+      contents = init_contents(path)
+      contents.each do |content|
+        icon = content == contents.last || Dir.exist?("#{path}/#{content}") ? ' └──' : ' ├──'
+        print tree_branch_preprint(prespace, indent, icon).colorize(:cyan)
+        print " #{fetch_string(content, *options(path, content))} \n"
+        next unless Dir.exist? "#{path}/#{content}"
+        tree_traverse("#{path}/#{content}", prespace + indent, indent)
+      end
+    end
+
+    def tree_branch_preprint(prespace, indent, prespace_icon)
+      return prespace_icon if prespace.zero?
+      ' │ ' * (prespace/indent) + prespace_icon + '─' * indent
     end
   end
 end
