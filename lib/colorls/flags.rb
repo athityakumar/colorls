@@ -68,9 +68,9 @@ module ColorLS
     def report_incompatible_flags
       return '' if @opts[:show].nil? || @opts[:sort].nil?
 
-      return "Restrain from using -t (--tree) and -r (--report) flags together." if @opts[:tree] && @opts[:report]
+      return 'Restrain from using -t (--tree) and -r (--report) flags together.' if @opts[:tree] && @opts[:report]
 
-      return "Restrain from using -t (--tree) and -a (--all) flags together." if @opts[:tree] && @opts[:all]
+      return 'Restrain from using -t (--tree) and -a (--all) flags together.' if @opts[:tree] && @opts[:all]
 
       nil
     end
