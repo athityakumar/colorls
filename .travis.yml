@@ -18,10 +18,12 @@ script:
   - colorls -d
   - colorls -f
   - colorls -l
+  - colorls -l spec/fixtures/symlinks
   - colorls -r
   - colorls -sd
   - colorls -sf
   - colorls -t
+  - colorls spec/fixtures/symlinks
   - colorls README.md
   - colorls *
   - colorls | grep /

@@ -64,6 +64,7 @@ module ColorLS
 
     def init_user_lengths
       @userlength = @contents.map do |c|
+        next 0 unless File.exist?("#{@input}/#{c}")
         begin
           user = Etc.getpwuid(File.stat("#{@input}/#{c}").uid).name
         rescue ArgumentError
@@ -75,6 +76,7 @@ module ColorLS
 
     def init_group_lengths
       @grouplength = @contents.map do |c|
+        next 0 unless File.exist?("#{@input}/#{c}")
         begin
           group = Etc.getgrgid(File.stat("#{@input}/#{c}").gid).name
         rescue ArgumentError
@@ -146,7 +148,7 @@ module ColorLS
     end
 
     def in_line(chunk_size)
-      return false if @max_widths.sum + 8 * chunk_size > @screen_width
+      return false if @max_widths.sum + 7 * chunk_size > @screen_width
       true
     end
 
@@ -210,8 +212,25 @@ module ColorLS
     end
 
     def long_info(content)
+      return '' unless @long
+      unless File.exist?("#{@input}/#{content}")
+        return '[No Info]'.colorize(:red) + ' ' * (39 + @userlength + @grouplength)
+      end
       stat = File.stat("#{@input}/#{content}")
-      "#{mode_info(stat)}  #{user_info(stat)}  #{group_info(stat)}  #{size_info(stat)}  #{mtime_info(stat)}  "
+      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat)].join('  ')
+    end
+
+    def symlink_info(content)
+      return '' unless @long && File.lstat("#{@input}/#{content}").symlink?
+      if File.exist?("#{@input}/#{content}")
+        " ⇒ #{File.readlink("#{@input}/#{content}")}/".colorize(:cyan)
+      else
+        ' ⇒ [Dead link]'.colorize(:red)
+      end
+    end
+
+    def slash?(content)
+      Dir.exist?("#{@input}/#{content}") ? '/'.colorize(:blue) : ' '
     end
 
     def fetch_string(content, key, color, increment)
@@ -219,7 +238,11 @@ module ColorLS
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
 
-      "#{@long ? long_info(content) : ''} #{logo.colorize(color)}  #{content.colorize(color)}"
+      [
+        long_info(content),
+        logo.colorize(color),
+        "#{content.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
+      ].join('  ')
     end
 
     def load_from_yaml(filename, aliase=false)
@@ -239,7 +262,7 @@ module ColorLS
 
         print "  #{fetch_string(content, *options(@input, content))}"
         print Dir.exist?("#{@input}/#{content}") ? '/'.colorize(:blue) : ' '
-        print ' ' * (@max_widths[i] - content.length)
+        print ' ' * (@max_widths[i] - content.length) unless @one_per_line || @long
       end
     end
 
