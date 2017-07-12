@@ -261,7 +261,6 @@ module ColorLS
         break if content.empty?
 
         print "  #{fetch_string(content, *options(@input, content))}"
-        print Dir.exist?("#{@input}/#{content}") ? '/'.colorize(:blue) : ' '
         print ' ' * (@max_widths[i] - content.length) unless @one_per_line || @long
       end
     end
