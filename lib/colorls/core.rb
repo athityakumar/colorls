@@ -21,7 +21,7 @@ module ColorLS
     end
 
     def ls
-      return print "\n   Nothing to show here\n".colorize(:yellow) if @contents.empty?
+      return print "\n   Nothing to show here\n".colorize(@colorize[:empty]) if @contents.empty?
 
       if @tree
         print "\n"
@@ -215,7 +215,7 @@ module ColorLS
     def long_info(content)
       return '' unless @long
       unless File.exist?("#{@input}/#{content}")
-        return '[No Info]'.colorize(:red) + ' ' * (39 + @userlength + @grouplength)
+        return '[No Info]'.colorize(@colors[:error]) + ' ' * (39 + @userlength + @grouplength)
       end
       stat = File.stat("#{@input}/#{content}")
       [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat)].join('  ')
@@ -224,14 +224,14 @@ module ColorLS
     def symlink_info(content)
       return '' unless @long && File.lstat("#{@input}/#{content}").symlink?
       if File.exist?("#{@input}/#{content}")
-        " ⇒ #{File.readlink("#{@input}/#{content}")}/".colorize(:cyan)
+        " ⇒ #{File.readlink("#{@input}/#{content}")}/".colorize(@colors[:link])
       else
-        ' ⇒ [Dead link]'.colorize(:red)
+        ' ⇒ [Dead link]'.colorize(@colors[:dead_link])
       end
     end
 
     def slash?(content)
-      Dir.exist?("#{@input}/#{content}") ? '/'.colorize(:blue) : ' '
+      Dir.exist?("#{@input}/#{content}") ? '/'.colorize(@colors[:dir]) : ' '
     end
 
     def fetch_string(content, key, color, increment)
@@ -279,7 +279,7 @@ module ColorLS
       contents = init_contents(path)
       contents.each do |content|
         icon = content == contents.last || Dir.exist?("#{path}/#{content}") ? ' └──' : ' ├──'
-        print tree_branch_preprint(prespace, indent, icon).colorize(:cyan)
+        print tree_branch_preprint(prespace, indent, icon).colorize(@colors[:tree])
         print " #{fetch_string(content, *options(path, content))} \n"
         next unless Dir.exist? "#{path}/#{content}"
         tree_traverse("#{path}/#{content}", prespace + indent, indent)

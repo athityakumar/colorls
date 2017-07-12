@@ -1,7 +1,11 @@
 # Main Colors
 unrecongnized_file: yellow
-recognized_file:   green
+recognized_file:    green
 dir:                blue
+
+# Link
+dead_link: red
+link:      cyan
 
 # Access Modes
 write:     magenta
@@ -16,3 +20,5 @@ hour_old: green
 # Random
 report: white
 user:   green
+tree:   cyan
+empty:  yellow

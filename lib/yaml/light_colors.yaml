@@ -3,6 +3,10 @@ unrecongnized_file: light_yellow
 recognized_file:   light_green
 dir:                light_blue
 
+# Link
+dead_link: light_red
+link:      light_cyan
+
 # Access Modes
 write:     light_magenta
 read:      light_yellow
@@ -16,3 +20,5 @@ hour_old: light_green
 # Random
 report: light_white
 user:   light_green
+tree:   light_cyan
+empty:  light_yellow
