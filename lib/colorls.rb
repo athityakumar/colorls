@@ -7,3 +7,4 @@ require 'filesize'
 
 require 'colorls/core'
 require 'colorls/flags'
+require 'colorls/load_from_yaml'

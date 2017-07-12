@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, long: false, almost_all: false)
+      one_per_line: false, long: false, almost_all: false, colors: [])
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -12,6 +12,7 @@ module ColorLS
       @one_per_line = one_per_line
       @long         = long
       @screen_width = ::TermInfo.screen_size.last
+      @colors       = colors
 
       init_contents
       @max_widths = @contents.map(&:length)
@@ -106,11 +107,10 @@ module ColorLS
     end
 
     def init_icons
-      @files          = load_from_yaml('files.yaml')
-      @file_aliases   = load_from_yaml('file_aliases.yaml', true)
-      @folders        = load_from_yaml('folders.yaml')
-      @folder_aliases = load_from_yaml('folder_aliases.yaml', true)
-      @colors         = load_from_yaml 'colors.yaml', true
+      @files          = ColorLS.load_from_yaml('files.yaml')
+      @file_aliases   = ColorLS.load_from_yaml('file_aliases.yaml', true)
+      @folders        = ColorLS.load_from_yaml('folders.yaml')
+      @folder_aliases = ColorLS.load_from_yaml('folder_aliases.yaml', true)
 
       @file_keys          = @files.keys
       @file_aliase_keys   = @file_aliases.keys
@@ -216,16 +216,6 @@ module ColorLS
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
 
       "#{@long ? long_info(content) : ''} #{logo.colorize(color)}  #{content.colorize(color)}"
-    end
-
-    def load_from_yaml(filename, aliase=false)
-      filepath = File.join(File.dirname(__FILE__),"../yaml/#{filename}")
-      yaml     = YAML.safe_load(File.read(filepath)).symbolize_keys
-      return yaml unless aliase
-      yaml
-        .to_a
-        .map! { |k, v| [k, v.to_sym] }
-        .to_h
     end
 
     def ls_line(chunk)
