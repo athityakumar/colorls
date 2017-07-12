@@ -110,6 +110,7 @@ module ColorLS
       @file_aliases   = load_from_yaml('file_aliases.yaml', true)
       @folders        = load_from_yaml('folders.yaml')
       @folder_aliases = load_from_yaml('folder_aliases.yaml', true)
+      @colors         = load_from_yaml 'colors.yaml', true
 
       @file_keys          = @files.keys
       @file_aliase_keys   = @file_aliases.keys
@@ -147,26 +148,26 @@ module ColorLS
 
     def display_report
       print "\n   Found #{@total_content_length} contents in directory "
-        .colorize(:white)
+        .colorize(@colors[:report])
 
-      print File.expand_path(@input).to_s.colorize(:blue)
+      print File.expand_path(@input).to_s.colorize(@colors[:dir])
 
       puts  "\n\n\tFolders\t\t\t: #{@count[:folders]}"\
         "\n\tRecognized files\t: #{@count[:recognized_files]}"\
         "\n\tUnrecognized files\t: #{@count[:unrecognized_files]}"
-        .colorize(:white)
+        .colorize(@colors[:report])
     end
 
     def mode_info(stat)
       mode = ''
       stat.mode.to_s(2).rjust(16, '0')[-9..-1].each_char.with_index do |c, i|
         if c == '0'
-          mode += '-'.colorize(:gray)
+          mode += '-'.colorize(@colors[:no_access])
         else
           case (i % 3)
-          when 0 then mode += 'r'.colorize(:yellow)
-          when 1 then mode += 'w'.colorize(:magenta)
-          when 2 then mode += 'x'.colorize(:cyan)
+          when 0 then mode += 'r'.colorize(@colors[:read])
+          when 1 then mode += 'w'.colorize(@colors[:write])
+          when 2 then mode += 'x'.colorize(@colors[:exec])
           end
         end
       end
@@ -180,7 +181,7 @@ module ColorLS
         user = stat.uid
       end
       user = user.to_s.ljust(@userlength, ' ')
-      user.colorize(:green) if user == Etc.getlogin
+      user.colorize(@colors[:user]) if user == Etc.getlogin
     end
 
     def group_info(stat)
@@ -199,8 +200,8 @@ module ColorLS
 
     def mtime_info(stat)
       mtime = stat.mtime.asctime
-      mtime = mtime.colorize(:yellow) if Time.now - stat.mtime < 24 * 60 * 60
-      mtime = mtime.colorize(:green)  if Time.now - stat.mtime < 60 * 60
+      mtime = mtime.colorize(@colors[:day_old]) if Time.now - stat.mtime < 24 * 60 * 60
+      mtime = mtime.colorize(@colors[:hour_old]) if Time.now - stat.mtime < 60 * 60
       mtime
     end
 
@@ -233,7 +234,7 @@ module ColorLS
         break if content.empty?
 
         print "  #{fetch_string(content, *options(content))}"
-        print Dir.exist?("#{@input}/#{content}") ? '/'.colorize(:blue) : ' '
+        print Dir.exist?("#{@input}/#{content}") ? '/'.colorize(@colors[:dir]) : ' '
         print ' ' * (@max_widths[i] - content.length)
       end
     end
@@ -241,21 +242,20 @@ module ColorLS
     def options(content)
       if Dir.exist?("#{@input}/#{content}")
         key = content.to_sym
-        return %i[folder blue folders] unless @all_folders.include?(key)
+        color = @colors[:dir]
+        return [:folder, color, :folders] unless @all_folders.include?(key)
         key = @folder_aliases[key] unless @folder_keys.include?(key)
-        return [key, :blue, :folders]
+        return [key, color, :folders]
       end
 
-      key = content.downcase.to_sym
-
-      return [key, :green, :recognized_files] if @file_keys.include?(key)
+      color = @colors[:recongnized_file]
+      return [content.downcase.to_sym, color, :recognized_files] if @file_keys.include?(key)
 
       key = content.split('.').last.downcase.to_sym
-
-      return %i[file yellow unrecognized_files] unless @all_files.include?(key)
+      return [:file, @colors[:unrecognized_files], :unrecognized_files] unless @all_files.include?(key)
 
       key = @file_aliases[key] unless @file_keys.include?(key)
-      [key, :green, :recognized_files]
+      [key, color, :recognized_files]
     end
   end
 end
