@@ -12,17 +12,18 @@ script:
   - bundle exec rspec
   - rake install
   - colorls
+  - colorls -1
   - colorls -a
   - colorls -A
   - colorls -d
   - colorls -f
+  - colorls -l
+  - colorls -l spec/fixtures/symlinks
+  - colorls -r
   - colorls -sd
   - colorls -sf
-  - colorls -1
-  - colorls -r
-  - colorls -l
+  - colorls -t
   - colorls spec/fixtures/symlinks
-  - colorls -l spec/fixtures/symlinks
   - colorls README.md
   - colorls *
   - colorls | grep /
