@@ -1,18 +1,18 @@
 # Main Colors
-unrecongnized_file: yellow
-recongnized_file:   green
-dir:                blue
+unrecongnized_file: light_yellow
+recognized_file:   light_green
+dir:                light_blue
 
 # Access Modes
-write:     magenta
-read:      yellow
-exec:      cyan
-no_access: grey
+write:     light_magenta
+read:      light_yellow
+exec:      light_cyan
+no_access: light_grey
 
 # Age
-day_old:  yellow
-hour_old: green
+day_old:  light_yellow
+hour_old: light_green
 
 # Random
-report: white
-user:   green
+report: light_white
+user:   light_green

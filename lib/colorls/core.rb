@@ -238,7 +238,7 @@ module ColorLS
         return [key, color, :folders]
       end
 
-      color = @colors[:recongnized_file]
+      color = @colors[:recognized_file]
       return [content.downcase.to_sym, color, :recognized_files] if @file_keys.include?(key)
 
       key = content.split('.').last.downcase.to_sym
