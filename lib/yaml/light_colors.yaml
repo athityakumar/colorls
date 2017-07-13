@@ -1,24 +1,26 @@
 # Main Colors
-unrecongnized_file: light_yellow
-recognized_file:   light_green
-dir:                light_blue
+unrecognized_file: yellow
+recognized_file:   green
+dir:               blue
 
 # Link
-dead_link: light_red
-link:      light_cyan
+dead_link: red
+link:      cyan
 
 # Access Modes
-write:     light_magenta
-read:      light_yellow
-exec:      light_cyan
-no_access: light_grey
+write:     red
+read:      yellow
+exec:      blue
+no_access: black
 
 # Age
-day_old:  light_yellow
-hour_old: light_green
+day_old:     yellow
+hour_old:    green
+no_modifier: black
 
 # Random
-report: light_white
-user:   light_green
-tree:   light_cyan
-empty:  light_yellow
+report: black
+user:   green
+tree:   cyan
+empty:  yellow
+normal: black

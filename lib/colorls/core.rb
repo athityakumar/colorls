@@ -197,16 +197,16 @@ module ColorLS
       rescue ArgumentError
         group = stat.gid
       end
-      group.to_s.ljust(@grouplength, ' ')
+      group.to_s.ljust(@grouplength, ' ').colorize(@colors[:normal])
     end
 
     def size_info(stat)
       size = Filesize.from("#{stat.size} B").pretty.split(' ')
-      "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}"
+      "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}".colorize(@colors[:normal])
     end
 
     def mtime_info(stat)
-      mtime = stat.mtime.asctime
+      mtime = stat.mtime.asctime.colorize(@colors[:no_modifier])
       mtime = mtime.colorize(@colors[:day_old]) if Time.now - stat.mtime < 24 * 60 * 60
       mtime = mtime.colorize(@colors[:hour_old]) if Time.now - stat.mtime < 60 * 60
       mtime
@@ -269,7 +269,7 @@ module ColorLS
       return [content.downcase.to_sym, color, :recognized_files] if @file_keys.include?(key)
 
       key = content.split('.').last.downcase.to_sym
-      return [:file, @colors[:unrecognized_files], :unrecognized_files] unless @all_files.include?(key)
+      return [:file, @colors[:unrecognized_file], :unrecognized_files] unless @all_files.include?(key)
 
       key = @file_aliases[key] unless @file_keys.include?(key)
       [key, color, :recognized_files]
