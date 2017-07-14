@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, long: false, almost_all: false, tree: false)
+      one_per_line: false, long: false, almost_all: false, tree: false, colors: [])
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -13,6 +13,7 @@ module ColorLS
       @long         = long
       @tree         = tree
       @screen_width = ::TermInfo.screen_size.last
+      @colors       = colors
 
       @contents   = init_contents(@input)
       @max_widths = @contents.map(&:length)
@@ -20,7 +21,7 @@ module ColorLS
     end
 
     def ls
-      return print "\n   Nothing to show here\n".colorize(:yellow) if @contents.empty?
+      return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
       if @tree
         print "\n"
@@ -113,10 +114,10 @@ module ColorLS
     end
 
     def init_icons
-      @files          = load_from_yaml('files.yaml')
-      @file_aliases   = load_from_yaml('file_aliases.yaml', true)
-      @folders        = load_from_yaml('folders.yaml')
-      @folder_aliases = load_from_yaml('folder_aliases.yaml', true)
+      @files          = ColorLS.load_from_yaml('files.yaml')
+      @file_aliases   = ColorLS.load_from_yaml('file_aliases.yaml', true)
+      @folders        = ColorLS.load_from_yaml('folders.yaml')
+      @folder_aliases = ColorLS.load_from_yaml('folder_aliases.yaml', true)
 
       @file_keys          = @files.keys
       @file_aliase_keys   = @file_aliases.keys
@@ -154,26 +155,26 @@ module ColorLS
 
     def display_report
       print "\n   Found #{@total_content_length} contents in directory "
-        .colorize(:white)
+        .colorize(@colors[:report])
 
-      print File.expand_path(@input).to_s.colorize(:blue)
+      print File.expand_path(@input).to_s.colorize(@colors[:dir])
 
       puts  "\n\n\tFolders\t\t\t: #{@count[:folders]}"\
         "\n\tRecognized files\t: #{@count[:recognized_files]}"\
         "\n\tUnrecognized files\t: #{@count[:unrecognized_files]}"
-        .colorize(:white)
+        .colorize(@colors[:report])
     end
 
     def mode_info(stat)
       mode = ''
       stat.mode.to_s(2).rjust(16, '0')[-9..-1].each_char.with_index do |c, i|
         if c == '0'
-          mode += '-'.colorize(:gray)
+          mode += '-'.colorize(@colors[:no_access])
         else
           case (i % 3)
-          when 0 then mode += 'r'.colorize(:yellow)
-          when 1 then mode += 'w'.colorize(:magenta)
-          when 2 then mode += 'x'.colorize(:cyan)
+          when 0 then mode += 'r'.colorize(@colors[:read])
+          when 1 then mode += 'w'.colorize(@colors[:write])
+          when 2 then mode += 'x'.colorize(@colors[:exec])
           end
         end
       end
@@ -187,7 +188,7 @@ module ColorLS
         user = stat.uid
       end
       user = user.to_s.ljust(@userlength, ' ')
-      user.colorize(:green) if user == Etc.getlogin
+      user.colorize(@colors[:user]) if user == Etc.getlogin
     end
 
     def group_info(stat)
@@ -196,25 +197,25 @@ module ColorLS
       rescue ArgumentError
         group = stat.gid
       end
-      group.to_s.ljust(@grouplength, ' ')
+      group.to_s.ljust(@grouplength, ' ').colorize(@colors[:normal])
     end
 
     def size_info(stat)
       size = Filesize.from("#{stat.size} B").pretty.split(' ')
-      "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}"
+      "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}".colorize(@colors[:normal])
     end
 
     def mtime_info(stat)
-      mtime = stat.mtime.asctime
-      mtime = mtime.colorize(:yellow) if Time.now - stat.mtime < 24 * 60 * 60
-      mtime = mtime.colorize(:green)  if Time.now - stat.mtime < 60 * 60
+      mtime = stat.mtime.asctime.colorize(@colors[:no_modifier])
+      mtime = mtime.colorize(@colors[:day_old]) if Time.now - stat.mtime < 24 * 60 * 60
+      mtime = mtime.colorize(@colors[:hour_old]) if Time.now - stat.mtime < 60 * 60
       mtime
     end
 
     def long_info(content)
       return '' unless @long
       unless File.exist?("#{@input}/#{content}")
-        return '[No Info]'.colorize(:red) + ' ' * (39 + @userlength + @grouplength)
+        return '[No Info]'.colorize(@colors[:error]) + ' ' * (39 + @userlength + @grouplength)
       end
       stat = File.stat("#{@input}/#{content}")
       [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat)].join('  ')
@@ -223,14 +224,14 @@ module ColorLS
     def symlink_info(content)
       return '' unless @long && File.lstat("#{@input}/#{content}").symlink?
       if File.exist?("#{@input}/#{content}")
-        " ⇒ #{File.readlink("#{@input}/#{content}")}/".colorize(:cyan)
+        " ⇒ #{File.readlink("#{@input}/#{content}")}/".colorize(@colors[:link])
       else
-        ' ⇒ [Dead link]'.colorize(:red)
+        ' ⇒ [Dead link]'.colorize(@colors[:dead_link])
       end
     end
 
     def slash?(content)
-      Dir.exist?("#{@input}/#{content}") ? '/'.colorize(:blue) : ' '
+      Dir.exist?("#{@input}/#{content}") ? '/'.colorize(@colors[:dir]) : ' '
     end
 
     def fetch_string(content, key, color, increment)
@@ -243,16 +244,6 @@ module ColorLS
         logo.colorize(color),
         "#{content.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
       ].join('  ')
-    end
-
-    def load_from_yaml(filename, aliase=false)
-      filepath = File.join(File.dirname(__FILE__),"../yaml/#{filename}")
-      yaml     = YAML.safe_load(File.read(filepath)).symbolize_keys
-      return yaml unless aliase
-      yaml
-        .to_a
-        .map! { |k, v| [k, v.to_sym] }
-        .to_h
     end
 
     def ls_line(chunk)
@@ -268,28 +259,27 @@ module ColorLS
     def options(path, content)
       if Dir.exist?("#{path}/#{content}")
         key = content.to_sym
-        return %i[folder blue folders] unless @all_folders.include?(key)
+        color = @colors[:dir]
+        return [:folder, color, :folders] unless @all_folders.include?(key)
         key = @folder_aliases[key] unless @folder_keys.include?(key)
-        return [key, :blue, :folders]
+        return [key, color, :folders]
       end
 
-      key = content.downcase.to_sym
-
-      return [key, :green, :recognized_files] if @file_keys.include?(key)
+      color = @colors[:recognized_file]
+      return [content.downcase.to_sym, color, :recognized_files] if @file_keys.include?(key)
 
       key = content.split('.').last.downcase.to_sym
-
-      return %i[file yellow unrecognized_files] unless @all_files.include?(key)
+      return [:file, @colors[:unrecognized_file], :unrecognized_files] unless @all_files.include?(key)
 
       key = @file_aliases[key] unless @file_keys.include?(key)
-      [key, :green, :recognized_files]
+      [key, color, :recognized_files]
     end
 
     def tree_traverse(path, prespace, indent)
       contents = init_contents(path)
       contents.each do |content|
         icon = content == contents.last || Dir.exist?("#{path}/#{content}") ? ' └──' : ' ├──'
-        print tree_branch_preprint(prespace, indent, icon).colorize(:cyan)
+        print tree_branch_preprint(prespace, indent, icon).colorize(@colors[:tree])
         print " #{fetch_string(content, *options(path, content))} \n"
         next unless Dir.exist? "#{path}/#{content}"
         tree_traverse("#{path}/#{content}", prespace + indent, indent)

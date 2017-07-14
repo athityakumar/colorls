@@ -1,0 +1,26 @@
+# Main Colors
+unrecognized_file: yellow
+recognized_file:   green
+dir:               blue
+
+# Link
+dead_link: red
+link:      cyan
+
+# Access Modes
+write:     red
+read:      yellow
+exec:      blue
+no_access: black
+
+# Age
+day_old:     yellow
+hour_old:    green
+no_modifier: black
+
+# Random
+report: black
+user:   green
+tree:   cyan
+empty:  yellow
+normal: black
