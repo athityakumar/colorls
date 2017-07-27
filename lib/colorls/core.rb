@@ -222,7 +222,7 @@ module ColorLS
     end
 
     def symlink_info(path, content)
-      return '' unless @long && File.lstat("#{path}/#{content}").symlink?
+      return '' unless @long && File.symlink?("#{path}/#{content}")
       if File.exist?("#{path}/#{content}")
         " ⇒ #{File.readlink("#{path}/#{content}")}/".colorize(@colors[:link])
       else
