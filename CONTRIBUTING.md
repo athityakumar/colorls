@@ -28,6 +28,9 @@ Please proceed with a Pull Request only after you're assigned. It'd be sad if yo
 3. (Optional) To test whether `colorls` executable is working properly, do 
     ```sh
     rake install
+    ```
+    Then install the gem file in the folder `pkg`. After that to use the new binary,
+    ```sh
     colorls # start using colorls
     ```
 
