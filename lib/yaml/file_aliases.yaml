@@ -44,6 +44,8 @@ rspec:            rb
 rspec_parallel:   rb
 rspec_status:     rb
 ru:               rb
+erb:              rubydoc
+slim:             rubydoc
 bash:             shell
 bash_history:     shell
 bash_profile:     shell
