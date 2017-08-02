@@ -3,7 +3,6 @@ gradle:           android
 ds_store:         apple
 localized:        apple
 mp3:              audio
-scss:             css
 docx:             doc
 gdoc:             doc
 mobi:             ebook
