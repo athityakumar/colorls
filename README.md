@@ -8,7 +8,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](http://makeapullrequest.com)
 [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
 
-A Ruby script that colorizes the `ls` output with color and icons. Here are the screenshots of working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font with the `Solarized Dark` color theme. 
+A Ruby script that colorizes the `ls` output with color and icons. Here are the screenshots of working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font with the `Solarized Dark` color theme.
 
 ![Example #1](readme/usage1.png)
 
@@ -28,15 +28,15 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 [(Back to top)](#table-of-contents)
 
-- Just `lc` : Prints all directories, files and dotfiles in current directory.
+- With `-a` : `lc` prints all directories, files and dotfiles in current directory.
 
   ![Usage #1](readme/usage1.png)
 
-- With paths : `lc path(s)` prints all directories, files and dotfiles in given directory / directories.
+- With paths : `lc path(s) -a` prints all directories, files and dotfiles in given directory / directories.
 
   ![Usage #2](readme/usage2.png)
 
-- With `--report` or `-r` flag : `lc path(s) -r` : Prints all directories, files and dotfiles in directories, along with a brief report about number of files and folders shown.
+- With `--report` or `-r` flag : `lc path(s) -r -a` : Prints all directories, files and dotfiles in directories, along with a brief report about number of files and folders shown.
 
   ![Usage #3](readme/usage3.png)
   ![Usage #4](readme/usage4.png)
