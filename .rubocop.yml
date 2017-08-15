@@ -45,10 +45,10 @@ Metrics/ModuleLength:
   Max: 200
 
 Metrics/ClassLength:
-  Max: 250
+  Max: 263
 
 Metrics/ParameterLists:
-  Max: 10
+  Max: 11
 
 Style/ParallelAssignment:
   Enabled: false
@@ -83,7 +83,7 @@ Metrics/AbcSize:
   Max: 20
 
 Metrics/MethodLength:
-  Max: 15
+  Max: 17
 
 Metrics/CyclomaticComplexity:
   Max: 7

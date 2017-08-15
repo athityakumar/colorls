@@ -313,6 +313,5 @@ the available commands are:\n
 \t*            colorls called recursively for each subsequent directory
 \t| grep       lists the files having the given keyword in the name\n\n"
     end
-
   end
 end
