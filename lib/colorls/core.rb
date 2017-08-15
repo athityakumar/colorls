@@ -24,7 +24,7 @@ module ColorLS
     def ls
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
-      return print "\n   Visit the github repository.\n" if @help
+      return helplog if @help
 
       if @tree
         print "\n"
@@ -293,5 +293,26 @@ module ColorLS
       return prespace_icon if prespace.zero?
       ' │ ' * (prespace/indent) + prespace_icon + '─' * indent
     end
+
+    def helplog
+      print "\nusage:  colorls <command> [-<attributes> (or) --<attributes>] <path> <keyword>\n\n
+the available attributes are:\n
+\t1                    list in a line
+\ta  (or) all          list inclding hidden files in the directory
+\tA  (or) almost-all   list almost all the files
+\td  (or) dirs         list directories only
+\tf  (or) files        list files only
+\tl  (or) long         show list with long format
+\tr  (or) report       detailed report of the files
+\tsd (or) sort-dirs    sorted and grouped list of directiories followed by files
+\tsf (or) sort-files   sorted and grouped list of files followed by directiories
+\tt  (or) tree         shows tree view of the directory
+\th  (or) help         show this page\n\n
+the available commands are:\n
+\tREADME.md    lists the README file irrespective of current path
+\t*            colorls called recursively for each subsequent directory
+\t| grep       lists the files having the given keyword in the name\n\n"
+    end
+
   end
 end
