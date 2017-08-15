@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, long: false, almost_all: false, tree: false, colors: [])
+      one_per_line: false, long: false, almost_all: false, tree: false, help: false, colors: [])
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -12,6 +12,7 @@ module ColorLS
       @one_per_line = one_per_line
       @long         = long
       @tree         = tree
+      @help         = help
       @screen_width = ::TermInfo.screen_size.last
       @colors       = colors
 
@@ -22,6 +23,8 @@ module ColorLS
 
     def ls
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
+
+      return print "\n   Visit the github repository.\n" if @help
 
       if @tree
         print "\n"
