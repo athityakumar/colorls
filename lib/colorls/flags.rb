@@ -72,7 +72,7 @@ module ColorLS
     end
 
     def fetch_sort_opts
-      sort_dirs_first  = flag_given? %w[-sd --sort-dirs]
+      sort_dirs_first  = flag_given? %w[-sd --sort-dirs --group-directories-first]
       sort_files_first = flag_given? %w[-sf --sort-files]
 
       if sort_dirs_first && sort_files_first

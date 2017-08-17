@@ -306,6 +306,7 @@ The available attributes are:\n
 \tr  (or) report       detailed report of the files
 \tsd (or) sort-dirs    sorted and grouped list of directiories followed by files
 \tsf (or) sort-files   sorted and grouped list of files followed by directiories
+     (or) group-directories-first
 \tt  (or) tree         shows tree view of the directory
 \th  (or) help         show this page\n\n
 The available commands are:\n
