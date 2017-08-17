@@ -47,7 +47,8 @@ module ColorLS
       @contents = if is_directory
                     Dir.entries(path)
                   else
-                    [path]
+                    @input = File.dirname(path)
+                    [File.basename(path)]
                   end
 
       filter_hidden_contents if is_directory
