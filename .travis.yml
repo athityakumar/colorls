@@ -19,6 +19,7 @@ script:
   - colorls -f
   - colorls -l
   - colorls -l spec/fixtures/symlinks
+  - ( cd spec/fixtures ; colorls .hidden-file ) | fgrep '.hidden-file'
   - colorls -l README.md
   - colorls -r
   - colorls -sd

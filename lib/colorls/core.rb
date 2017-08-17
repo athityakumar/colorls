@@ -43,13 +43,14 @@ module ColorLS
     private
 
     def init_contents(path)
-      @contents = if Dir.exist?(path)
+      is_directory = Dir.exist?(path)
+      @contents = if is_directory
                     Dir.entries(path)
                   else
                     [path]
                   end
 
-      filter_hidden_contents
+      filter_hidden_contents if is_directory
       filter_contents(path) if @show
       sort_contents(path)   if @sort
 
