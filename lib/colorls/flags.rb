@@ -1,23 +1,25 @@
+require 'optparse'
+require 'colorls/version'
+
 module ColorLS
   class Flags
     def initialize(*args)
       @args = args
-      set_color_opts
-
+      @light_colors = false
       @opts = {
-        show:         fetch_show_opts,
-        sort:         fetch_sort_opts,
-        all:          flag_given?(%w[-a --all]),
-        almost_all:   flag_given?(%w[-A --almost-all]),
-        report:       flag_given?(%w[-r --report]),
-        one_per_line: flag_given?(%w[-1]) || !STDOUT.tty?,
-        long:         flag_given?(%w[-l --long]),
-        tree:         flag_given?(%w[-t --tree]),
-        git_status:   flag_given?(%w[--gs --git-status]),
-        colors: @colors
+        show: false,
+        sort: false,
+        all: false,
+        almost_all: false,
+        report: false,
+        one_per_line: !STDOUT.tty?,
+        long: false,
+        tree: false,
+        git_status: false,
+        colors: []
       }
 
-      @args.keep_if { |arg| !arg.start_with?('-') }
+      parse_options
     end
 
     def process
@@ -32,56 +34,84 @@ module ColorLS
 
     private
 
-    def flag_given?(flags)
-      return true if flags.any? { |flag| @args.include?(flag) }
+    def add_sort_options(options)
+      options.separator ''
+      options.separator 'sorting options:'
+      options.separator ''
+      options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:sort] = :dirs }
+      options.on('--sf', '--sort-files', 'sort files first')                                   { @opts[:sort] = :files }
+    end
 
-      clubbable_flags = flags.reject { |flag| flag.start_with?('--') }
-                             .map { |flag| flag[1..-1] }
+    def add_common_options(options)
+      options.on('-a', '--all', 'do not ignore entries starting with .')  { @opts[:all] = true }
+      options.on('-A', '--almost-all', 'do not list . and ..')            { @opts[:almost_all] = true }
+      options.on('-l', '--long', 'use a long listing format')             { @opts[:long] = true }
+      options.on('-t', '--tree', 'shows tree view of the directory')      { @opts[:tree] = true }
+      options.on('-r', '--report', 'show brief report')                   { @opts[:report] = true }
+      options.on('-1', 'list one file per line')                          { @opts[:one_per_line] = true }
+      options.on('-d', '--dirs', 'show only directories')                 { @opts[:show] = :dirs }
+      options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
+      options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
+    end
 
-      # Some flags should be not be able to be clubbed with other flags
-      @args.select { |arg| !arg.start_with?('--') && arg.start_with?('-') }
-           .any? { |arg| clubbable_flags.any? { |flag| arg.include?(flag) } }
+    def add_general_options(options)
+      options.separator ''
+      options.separator 'general options:'
+
+      options.separator ''
+      options.on('--light', 'use light color scheme') { @light_colors = true }
+      options.on('--dark', 'use dark color scheme') { @light_colors = false }
+    end
+
+    def show_examples
+      puts <<EXAMPLES.gsub(/^  /, '')
+
+  examples:
+
+    * show the given file:
+
+      #{'colorls README.md'.colorize(:green)}
+
+    * show matching files and list matching directories:
+
+      #{'colorls *'.colorize(:green)}
+
+    * filter output by a regular expression:
+
+      #{'colorls | grep PATTERN'.colorize(:green)}
+
+EXAMPLES
+    end
+
+    def parse_options
+      parser = OptionParser.new do |opts|
+        opts.banner = 'Usage:  colorls [OPTION]... [FILE]...'
+        opts.separator ''
+
+        add_common_options(opts)
+        add_sort_options(opts)
+        add_general_options(opts)
+
+        opts.separator ''
+        opts.on_tail('-h', '--help', 'prints this help') do
+          puts parser
+          show_examples
+          exit
+        end
+        opts.on_tail('--version', 'show version') do
+          puts ColorLS::VERSION
+          exit
+        end
+      end
+
+      parser.parse!(@args)
+
+      set_color_opts
     end
 
     def set_color_opts
-      light_colors = flag_given? %w[--light]
-      dark_colors  = flag_given? %w[--dark]
-
-      if light_colors && dark_colors
-        STDERR.puts "\n Restrain from using --light and --dark flags together."
-          .colorize(@colors[:error])
-      end
-
-      color_scheme_file = light_colors ? 'light_colors.yaml' : 'dark_colors.yaml'
-      @colors = ColorLS.load_from_yaml(color_scheme_file, true)
-    end
-
-    def fetch_show_opts
-      show_dirs_only   = flag_given? %w[-d --dirs]
-      show_files_only  = flag_given? %w[-f --files]
-
-      if show_files_only && show_dirs_only
-        STDERR.puts "\n  Restrain from using -d and -f flags together."
-          .colorize(@colors[:error])
-      else
-        return :files if show_files_only
-        return :dirs  if show_dirs_only
-        false
-      end
-    end
-
-    def fetch_sort_opts
-      sort_dirs_first  = flag_given? %w[--sd --sort-dirs --group-directories-first]
-      sort_files_first = flag_given? %w[--sf --sort-files]
-
-      if sort_dirs_first && sort_files_first
-        STDERR.puts "\n  Restrain from using --sd and -sf flags together."
-          .colorize(@colors[:error])
-      else
-        return :files if sort_files_first
-        return :dirs  if sort_dirs_first
-        false
-      end
+      color_scheme_file = @light_colors ? 'light_colors.yaml' : 'dark_colors.yaml'
+      @opts[:colors] = ColorLS.load_from_yaml(color_scheme_file, true)
     end
 
     def incompatible_flags?
