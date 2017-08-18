@@ -92,6 +92,13 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     ```sh
     subl $(gem which colorls)/../yaml/
     ```
+    
+3. For enabling tab completion, enter the following lines to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) file and source it.
+
+    ```sh
+    _colorls_options='-sd -sf -1 -t -r -l -a --tree --all --sort-dirs --sort-files'
+    complete -W "${_colorls_options}" 'colorls'
+    ```
 
 # Updating
 
