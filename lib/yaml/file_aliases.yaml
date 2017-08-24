@@ -3,6 +3,9 @@ gradle:           android
 ds_store:         apple
 localized:        apple
 mp3:              audio
+ogg:              audio
+editorconfig:     conf
+scss:             css
 docx:             doc
 gdoc:             doc
 mobi:             ebook
@@ -10,7 +13,7 @@ eot:              font
 otf:              font
 ttf:              font
 woff:             font
-editorconfig:     git
+woff2:            font
 gitconfig:        git
 gitignore:        git
 gitignore_global: git
@@ -24,6 +27,7 @@ png:              image
 svg:              image
 jar:              java
 properties:       json
+tsx:              jsx
 license:          md
 markdown:         md
 mkd:              md
@@ -55,8 +59,13 @@ sh:               shell
 zsh:              shell
 zsh-theme:        shell
 zshrc:            shell
+stylus:           styl
 cls:              tex
+avi:              video
+mkv:              video
 mp4:              video
+ogv:              video
+webm:             video
 bat:              windows
 exe:              windows
 ini:              windows
