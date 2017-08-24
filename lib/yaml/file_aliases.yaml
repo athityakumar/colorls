@@ -62,8 +62,8 @@ zshrc:            shell
 stylus:           styl
 cls:              tex
 avi:              video
-mp4:              video
 mkv:              video
+mp4:              video
 ogv:              video
 webm:             video
 bat:              windows
