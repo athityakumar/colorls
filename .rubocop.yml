@@ -80,13 +80,16 @@ Style/MultilineBlockChain:
 # Current preferred metrics --------------------------------------------
 # Better values are encouraged, but not required.
 Metrics/AbcSize:
-  Max: 20
+  Max: 30
 
 Metrics/MethodLength:
   Max: 20
 
 Metrics/CyclomaticComplexity:
   Max: 7
+
+Metrics/PerceivedComplexity:
+  Max: 8
 
 # TODO -----------------------------------------------------------------
 

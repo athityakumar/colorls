@@ -219,33 +219,25 @@ module ColorLS
     end
 
     def git_info(path,content)
-      require 'git'
-      while(!File.exist?(".git"))          #check whether the repository is git controlled
-        if(Dir.pwd=="/")
-          return ""
-        end
-        Dir.chdir("..")
+      until File.exist?('.git') # check whether the repository is git controlled
+        return '' if Dir.pwd=='/'
+        Dir.chdir('..')
       end
       instance = Git.open '.'
       a = instance.status.added.keys # Added files
       u = instance.status.untracked.keys # Untracked files
       c = instance.status.changed.keys # Changed files
       p = path
-      p.slice! Dir.pwd+"/"
-      if(p==path)
-        p=""
+      p.slice! Dir.pwd+'/'
+      if p==path
+        p=''
       else
-        p=p+"/"
+        p+='/'
       end
-      if a.any? {|x| x.include? "#{p}#{content}"}
-        return 'A'
-      elsif u.any? {|x| x.include? "#{p}#{content}"}
-        return 'U'
-      elsif c.any? {|x| x.include? "#{p}#{content}"}
-        return 'C'
-      else
-        return '-'
-      end
+      return 'A' if a.any? { |x| x.include? "#{p}#{content}" }
+      return 'U' if u.any? { |x| x.include? "#{p}#{content}" }
+      return 'C' if c.any? { |x| x.include? "#{p}#{content}" }
+      p = '-'
     end
 
     def long_info(path, content)
@@ -254,7 +246,8 @@ module ColorLS
         return '[No Info]'.colorize(@colors[:error]) + ' ' * (39 + @userlength + @grouplength)
       end
       stat = File.stat("#{path}/#{content}")
-      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat),git_info(path,content)].join('  ')
+      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat),
+       git_info(path,content)].join('  ')
     end
 
     def symlink_info(path, content)
