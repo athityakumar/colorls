@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, long: false, almost_all: false, tree: false, help: false, colors: [])
+      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, help: false, colors: [])
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -13,6 +13,7 @@ module ColorLS
       @long         = long
       @tree         = tree
       @help         = help
+      @git_status   = git_status
       @screen_width = ::TermInfo.screen_size.last
       @colors       = colors
 
@@ -217,13 +218,43 @@ module ColorLS
       mtime
     end
 
+    def git_info(path,content)
+      require 'git'
+      while(!File.exist?(".git"))          #check whether the repository is git controlled
+        if(Dir.pwd=="/")
+          return ""
+        end
+        Dir.chdir("..")
+      end
+      instance = Git.open '.'
+      a = instance.status.added.keys # Added files
+      u = instance.status.untracked.keys # Untracked files
+      c = instance.status.changed.keys # Changed files
+      p = path
+      p.slice! Dir.pwd+"/"
+      if(p==path)
+        p=""
+      else
+        p=p+"/"
+      end
+      if a.any? {|x| x.include? "#{p}#{content}"}
+        return 'A'
+      elsif u.any? {|x| x.include? "#{p}#{content}"}
+        return 'U'
+      elsif c.any? {|x| x.include? "#{p}#{content}"}
+        return 'C'
+      else
+        return '-'
+      end
+    end
+
     def long_info(path, content)
       return '' unless @long
       unless File.exist?("#{path}/#{content}")
         return '[No Info]'.colorize(@colors[:error]) + ' ' * (39 + @userlength + @grouplength)
       end
       stat = File.stat("#{path}/#{content}")
-      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat)].join('  ')
+      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat),git_info(path,content)].join('  ')
     end
 
     def symlink_info(path, content)
