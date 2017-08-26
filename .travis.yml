@@ -26,6 +26,7 @@ script:
   - colorls -sf
   - colorls -t
   - colorls -h
+  - colorls -gs
   - colorls spec/fixtures/symlinks
   - colorls README.md
   - colorls *
