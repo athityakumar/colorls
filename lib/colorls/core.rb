@@ -330,8 +330,9 @@ The available attributes are:\n
 \tl  (or) long         show list with long format
 \tr  (or) report       detailed report of the files
 \tsd (or) sort-dirs    sorted and grouped list of directiories followed by files
+\t   (or) group-directories-first
 \tsf (or) sort-files   sorted and grouped list of files followed by directiories
-     (or) group-directories-first
+\tgs (or) git-status   shows the git status of the file [U:Untracked,A:Added,C:Changed]
 \tt  (or) tree         shows tree view of the directory
 \th  (or) help         show this page\n\n
 The available commands are:\n
