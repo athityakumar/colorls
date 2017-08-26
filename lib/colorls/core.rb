@@ -228,7 +228,7 @@ module ColorLS
       u = instance.status.untracked.keys # Untracked files
       c = instance.status.changed.keys # Changed files
       p = path
-      p.slice! Dir.pwd+'/'
+      p.remove(Dir.pwd.to_s+'/'.to_s)
       if p==path
         p=''
       else
