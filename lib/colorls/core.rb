@@ -155,7 +155,7 @@ module ColorLS
     end
 
     def in_line(chunk_size)
-      return false if @max_widths.sum + 8 * chunk_size > @screen_width
+      return false if @max_widths.sum + 12 * chunk_size > @screen_width
       true
     end
 
@@ -229,10 +229,10 @@ module ColorLS
       relative_path = relative_path==path ? '' : relative_path+'/'
 
       status = Git.open('.').status
-      return 'A'.colorize(:green) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
-      return 'U'.colorize(:red) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
-      return 'C'.colorize(:yellow) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
-      '-'
+      return '(A)'.colorize(:green) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
+      return '(U)'.colorize(:red) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
+      return '(C)'.colorize(:yellow) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
+      '(-)'
     end
 
     def long_info(path, content)
@@ -268,10 +268,10 @@ module ColorLS
 
       [
         long_info(path, content),
-        git_info(path,content),
+        "#{git_info(path,content)} ",
         logo.colorize(color),
-        "#{content.colorize(color)}#{slash?(path, content)}#{symlink_info(path, content)}"
-      ].join('  ')
+        "  #{content.colorize(color)}#{slash?(path, content)}#{symlink_info(path, content)}"
+      ].join
     end
 
     def ls_line(chunk)
