@@ -229,9 +229,9 @@ module ColorLS
       relative_path = relative_path==path ? '' : relative_path+'/'
 
       status = Git.open('.').status
-      return 'A' if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
-      return 'U' if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
-      return 'C' if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
+      return 'A'.colorize(:green) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
+      return 'U'.colorize(:red) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
+      return 'C'.colorize(:yellow) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
       '-'
     end
 
