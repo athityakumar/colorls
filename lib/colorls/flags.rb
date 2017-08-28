@@ -14,6 +14,7 @@ module ColorLS
         long: flag_given?(%w[-l --long]),
         tree: flag_given?(%w[-t --tree]),
         help: flag_given?(%w[-h --help]),
+        git_status: flag_given?(%w[-gs --git-status]),
         colors: @colors
       }
 

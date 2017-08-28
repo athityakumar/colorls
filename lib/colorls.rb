@@ -4,6 +4,7 @@ require 'facets'
 require 'terminfo'
 require 'etc'
 require 'filesize'
+require 'git'
 
 require 'colorls/core'
 require 'colorls/flags'

@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, long: false, almost_all: false, tree: false, help: false, colors: [])
+      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, help: false, colors: [])
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -13,6 +13,7 @@ module ColorLS
       @long         = long
       @tree         = tree
       @help         = help
+      @git_status   = git_status
       @screen_width = ::TermInfo.screen_size.last
       @colors       = colors
 
@@ -217,13 +218,34 @@ module ColorLS
       mtime
     end
 
+    def git_info(path, content)
+      return '' unless @git_status
+      until File.exist?('.git') # check whether the repository is git controlled
+        return '' if Dir.pwd=='/'
+        Dir.chdir('..')
+      end
+
+      relative_path = path.remove(Dir.pwd+'/')
+      relative_path = relative_path==path ? '' : relative_path+'/'
+
+      status = Git.open('.').status
+      return 'A'.colorize(:green) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
+      return 'U'.colorize(:red) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
+      return 'C'.colorize(:yellow) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
+      '-'
+    end
+
     def long_info(path, content)
       return '' unless @long
+      @git_status = true
       unless File.exist?("#{path}/#{content}")
         return '[No Info]'.colorize(@colors[:error]) + ' ' * (39 + @userlength + @grouplength)
       end
       stat = File.stat("#{path}/#{content}")
-      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat)].join('  ')
+      a = [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat),
+           git_info(path,content)].join('  ')
+      @git_status = false
+      a
     end
 
     def symlink_info(path, content)
@@ -246,6 +268,7 @@ module ColorLS
 
       [
         long_info(path, content),
+        git_info(path,content),
         logo.colorize(color),
         "#{content.colorize(color)}#{slash?(path, content)}#{symlink_info(path, content)}"
       ].join('  ')
@@ -307,8 +330,9 @@ The available attributes are:\n
 \tl  (or) long         show list with long format
 \tr  (or) report       detailed report of the files
 \tsd (or) sort-dirs    sorted and grouped list of directiories followed by files
+\t   (or) group-directories-first
 \tsf (or) sort-files   sorted and grouped list of files followed by directiories
-     (or) group-directories-first
+\tgs (or) git-status   shows the git status of the file [U:Untracked,A:Added,C:Changed]
 \tt  (or) tree         shows tree view of the directory
 \th  (or) help         show this page\n\n
 The available commands are:\n
