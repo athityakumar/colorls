@@ -89,7 +89,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 2. For changing the icon(s) to other unicode icons of choice (select icons from [here](https://nerdfonts.com/)), change the YAML files in a text editor of your choice (say, `subl`)
 
     ```sh
-    subl $(gem which colorls)/../yaml/
+    subl $(dirname $(gem which colorls))/yaml
     ```
 
 # Updating
