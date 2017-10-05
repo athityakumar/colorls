@@ -18,7 +18,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 - [Usage](#usage)
 - [Installation](#installation)
 - [Recommended configurations](#recommended-configurations)
-- [Custom configuration] (#custom-configurations)
+- [Custom configurations](#custom-configurations)
 - [Updating](#updating)
 - [Uninstallation](#uninstallation)
 - [Contributing](#contributing)
