@@ -301,8 +301,8 @@ module ColorLS
     def tree_traverse(path, prespace, indent)
       contents = init_contents(path)
       contents.each do |content|
-        content == contents.last || Dir.exist?("#{path}/#{content}") ? ' └──' : ' ├──'
-        print tree_branch_preprint(prespace, indent, content).colorize(@colors[:tree])
+        icon = content == contents.last || Dir.exist?("#{path}/#{content}") ? ' └──' : ' ├──'
+        print tree_branch_preprint(prespace, indent, icon).colorize(@colors[:tree])
         print " #{fetch_string(path, content, *options(path, content))} \n"
         next unless Dir.exist? "#{path}/#{content}"
         tree_traverse("#{path}/#{content}", prespace + indent, indent)
