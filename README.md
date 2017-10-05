@@ -18,6 +18,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 - [Usage](#usage)
 - [Installation](#installation)
 - [Recommended configurations](#recommended-configurations)
+- [Custom configurations](#custom-configurations)
 - [Updating](#updating)
 - [Uninstallation](#uninstallation)
 - [Contributing](#contributing)
@@ -91,6 +92,22 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     ```sh
     subl $(dirname $(gem which colorls))/yaml
     ```
+
+# Custom configurations
+
+[(Back to top)](#table-of-contents)
+
+You can overwrite the existing icons and colors mapping by creating yaml files in ~/.config/lscolors.
+
+Each .yaml file inside the lib/colorls/yaml directory of this repo can be overwrited.
+
+Let's say you want to add an icon for swift files, you might create a `files.yaml` inside `~/.config/lscolors` and add the following:
+
+```
+swift: "\uF179"
+```
+
+Which will add the Apple logo to swift files.
 
 # Updating
 
