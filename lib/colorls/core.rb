@@ -37,6 +37,7 @@ module ColorLS
       end
       print "\n"
       display_report if @report
+
       true
     end
 
@@ -154,7 +155,8 @@ module ColorLS
     end
 
     def in_line(chunk_size)
-      !(@max_widths.sum + 12 * chunk_size > @screen_width)
+      return false if @max_widths.sum + 12 * chunk_size > @screen_width
+      true
     end
 
     def display_report
@@ -182,6 +184,7 @@ module ColorLS
           end
         end
       end
+      mode
     end
 
     def user_info(stat)
@@ -212,6 +215,7 @@ module ColorLS
       mtime = stat.mtime.asctime.colorize(@colors[:no_modifier])
       mtime = mtime.colorize(@colors[:day_old]) if Time.now - stat.mtime < 24 * 60 * 60
       mtime = mtime.colorize(@colors[:hour_old]) if Time.now - stat.mtime < 60 * 60
+      mtime
     end
 
     def git_info(path, content)
@@ -238,9 +242,10 @@ module ColorLS
         return '[No Info]'.colorize(@colors[:error]) + ' ' * (39 + @userlength + @grouplength)
       end
       stat = File.stat("#{path}/#{content}")
-      @git_status = false
       a = [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat),
            git_info(path,content)].join('  ')
+      @git_status = false
+      a
     end
 
     def symlink_info(path, content)
