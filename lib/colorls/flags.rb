@@ -23,7 +23,7 @@ module ColorLS
 
     def process
       incompatible = report_incompatible_flags
-      return STDERR.puts "\n   #{incompatible}".colorize(:red) if incompatible
+      STDERR.puts "\n   #{incompatible}".colorize(:red) if incompatible
 
       if @args.empty?
         Core.new(@opts).ls 
