@@ -182,6 +182,7 @@ module ColorLS
           end
         end
       end
+      mode
     end
 
     def user_info(stat)
