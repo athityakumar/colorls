@@ -182,6 +182,7 @@ module ColorLS
           end
         end
       end
+      mode
     end
 
     def user_info(stat)
@@ -212,6 +213,7 @@ module ColorLS
       mtime = stat.mtime.asctime.colorize(@colors[:no_modifier])
       mtime = mtime.colorize(@colors[:day_old]) if Time.now - stat.mtime < 24 * 60 * 60
       mtime.colorize(@colors[:hour_old]) if Time.now - stat.mtime < 60 * 60
+      mtime
     end
 
     def git_info(path, content)
