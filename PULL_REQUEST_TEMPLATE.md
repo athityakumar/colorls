@@ -1,21 +1,15 @@
-<!--- Provide a general summary of your changes in the Title above -->
+### Description
 
-## Description
-<!--- Describe your changes in detail -->
+A brief description of what the PR does. Do include the relevant issue(s) and PR(s) (say, if this PR is a continuation of another PR).
 
-## Motivation and Context
-<!--- Why is this change required? What problem does it solve? -->
-<!--- If it fixes an open issue, please link to the issue here. -->
+### Screenshots
 
-## How Has This Been Tested?
-<!--- Please describe in detail how you tested your changes. -->
-<!--- Include details of your testing environment, tests ran to see how -->
-<!--- your change affects other areas of the code, etc. -->
+Some screenshot(s) to support your changes.
 
-## Screenshots (if appropriate):
+### Type of change
 
-## Types of changes
-<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] New feature
+- [ ] Bug fix for existing feature
+- [ ] Code quality improvement
+- [ ] Addition or Improvement of tests
+- [ ] Addition or Improvement of documentation
