@@ -206,7 +206,10 @@ module ColorLS
 
     def size_info(stat)
       size = Filesize.from("#{stat.size} B").pretty.split(' ')
-      "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}".colorize(@colors[:normal])
+      size = "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}"
+      return size.colorize(@colors[:file_large])  if stat.size >= 512 * 1024 ** 2
+      return size.colorize(@colors[:file_medium]) if stat.size >= 128 * 1024 ** 2
+      size.colorize(@colors[:file_small])
     end
 
     def mtime_info(stat)

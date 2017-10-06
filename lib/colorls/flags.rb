@@ -22,11 +22,9 @@ module ColorLS
     end
 
     def process
-      incompatible = report_incompatible_flags
-      return STDERR.puts "\n   #{incompatible}".colorize(:red) if incompatible
+      return STDERR.puts "\n   #{incompatible_flags?}".colorize(:red) if incompatible_flags?
 
       return Core.new(@opts).ls if @args.empty?
-
       @args.each do |path|
         next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
         Core.new(path, @opts).ls
@@ -51,16 +49,12 @@ module ColorLS
       dark_colors  = flag_given? %w[--dark]
 
       if light_colors && dark_colors
-        @colors = ColorLS.load_from_yaml('dark_colors.yaml', true)
         STDERR.puts "\n Restrain from using --light and --dark flags together."
           .colorize(@colors[:error])
-      elsif light_colors
-        @colors = ColorLS.load_from_yaml('light_colors.yaml', true)
-      else # default colors
-        @colors = ColorLS.load_from_yaml('dark_colors.yaml', true)
       end
 
-      @colors
+      color_scheme_file = light_colors ? 'light_colors.yaml' : 'dark_colors.yaml'
+      @colors = ColorLS.load_from_yaml(color_scheme_file, true)
     end
 
     def fetch_show_opts
@@ -70,7 +64,6 @@ module ColorLS
       if show_files_only && show_dirs_only
         STDERR.puts "\n  Restrain from using -d and -f flags together."
           .colorize(@colors[:error])
-        return nil
       else
         return :files if show_files_only
         return :dirs  if show_dirs_only
@@ -85,7 +78,6 @@ module ColorLS
       if sort_dirs_first && sort_files_first
         STDERR.puts "\n  Restrain from using --sd and -sf flags together."
           .colorize(@colors[:error])
-        return nil
       else
         return :files if sort_files_first
         return :dirs  if sort_dirs_first
@@ -93,7 +85,7 @@ module ColorLS
       end
     end
 
-    def report_incompatible_flags
+    def incompatible_flags?
       return '' if @opts[:show].nil? || @opts[:sort].nil?
 
       if @opts[:tree]
