@@ -25,19 +25,20 @@ module ColorLS
       incompatible = report_incompatible_flags
       return STDERR.puts "\n   #{incompatible}".colorize(:red) if incompatible
 
-      return Core.new(@opts).ls if @args.empty?
-
-      @args.each do |path|
-        next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
-        Core.new(path, @opts).ls
+      if @args.empty?
+        Core.new(@opts).ls 
+      else
+        @args.each do |path|
+          next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
+          Core.new(path, @opts).ls
+        end
       end
     end
 
     private
 
     def flag_given?(flags)
-      flags.each { |flag| return true if @args.include?(flag) }
-      false
+      flags.any? { |flag| @args.include?(flag) }
     end
 
     def set_color_opts
@@ -45,16 +46,16 @@ module ColorLS
       dark_colors  = flag_given? %w[--dark]
 
       if light_colors && dark_colors
-        @colors = ColorLS.load_from_yaml('dark_colors.yaml', true)
+        color_scheme = 'dark_colors.yaml'
         STDERR.puts "\n Restrain from using --light and --dark flags together."
           .colorize(@colors[:error])
       elsif light_colors
-        @colors = ColorLS.load_from_yaml('light_colors.yaml', true)
+        color_scheme = 'light_colors.yaml'
       else # default colors
-        @colors = ColorLS.load_from_yaml('dark_colors.yaml', true)
+        color_scheme = 'dark_colors.yaml'
       end
 
-      @colors
+      @colors = ColorLS.load_from_yaml(color_scheme, true)
     end
 
     def fetch_show_opts
@@ -64,10 +65,11 @@ module ColorLS
       if show_files_only && show_dirs_only
         STDERR.puts "\n  Restrain from using -d and -f flags together."
           .colorize(@colors[:error])
-        return nil
+      elsif show_files_only
+        :files
+      elsif show_dirs_only 
+        :dirs
       else
-        return :files if show_files_only
-        return :dirs  if show_dirs_only
         false
       end
     end
@@ -79,22 +81,25 @@ module ColorLS
       if sort_dirs_first && sort_files_first
         STDERR.puts "\n  Restrain from using -sd and -sf flags together."
           .colorize(@colors[:error])
-        return nil
+      elsif sort_files_first
+        :files 
+      elsif sort_dirs_first
+        :dirs
       else
-        return :files if sort_files_first
-        return :dirs  if sort_dirs_first
         false
       end
     end
 
     def report_incompatible_flags
-      return '' if @opts[:show].nil? || @opts[:sort].nil?
-
-      return 'Restrain from using -t (--tree) and -r (--report) flags together.' if @opts[:tree] && @opts[:report]
-
-      return 'Restrain from using -t (--tree) and -a (--all) flags together.' if @opts[:tree] && @opts[:all]
-
-      nil
+      if @opts[:show].nil? || @opts[:sort].nil? 
+        ''
+      elsif @opts[:tree] && @opts[:report]
+        'Restrain from using -t (--tree) and -r (--report) flags together.'
+      elsif @opts[:tree] && @opts[:all]
+        'Restrain from using -t (--tree) and -a (--all) flags together.'
+      else
+        nil
+      end
     end
   end
 end
