@@ -40,7 +40,7 @@ module ColorLS
                              .map { |arg| arg[1..-1] }
 
       # Some flags should be not be able to be clubbed with other flags
-      @args.reject { |arg| arg.start_with?('--') }
+      @args.select { |arg| !arg.start_with?('--') && arg.start_with?('-') }
            .any? { |arg| clubbable_flags.any? { |flag| arg.include?(flag) } } unless unclubbable
     end
 
