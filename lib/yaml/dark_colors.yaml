@@ -18,6 +18,11 @@ day_old:     yellow
 hour_old:    green
 no_modifier: white
 
+# File Size
+file_large:  red
+file_medium: yellow
+file_small:  green
+
 # Random
 report: white
 user:   green
