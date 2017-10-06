@@ -209,7 +209,7 @@ module ColorLS
       size = size.colorize(@colors[:file_small])
       size = size.colorize(@colors[:file_medium]) if stat.size >= 128 * 1024 ** 2
       size = size.colorize(@colors[:file_large])  if stat.size >= 512 * 1024 ** 2
-      return size
+      size
     end
 
     def mtime_info(stat)
