@@ -22,11 +22,11 @@ script:
   - ( cd spec/fixtures ; colorls .hidden-file ) | fgrep '.hidden-file'
   - colorls -l README.md
   - colorls -r
-  - colorls -sd
-  - colorls -sf
+  - colorls --sd
+  - colorls --sf
   - colorls -t
   - colorls -h
-  - colorls -gs
+  - colorls --gs
   - colorls spec/fixtures/symlinks
   - colorls README.md
   - colorls *

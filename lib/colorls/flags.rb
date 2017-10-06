@@ -5,16 +5,16 @@ module ColorLS
       set_color_opts
 
       @opts = {
-        show: fetch_show_opts,
-        sort: fetch_sort_opts,
-        all: flag_given?(%w[-a --all]),
-        almost_all: flag_given?(%w[-A --almost-all]),
-        report: flag_given?(%w[-r --report]),
+        show:         fetch_show_opts,
+        sort:         fetch_sort_opts,
+        all:          flag_given?(%w[-a --all]),
+        almost_all:   flag_given?(%w[-A --almost-all]),
+        report:       flag_given?(%w[-r --report]),
         one_per_line: flag_given?(%w[-1]) || !STDOUT.tty?,
-        long: flag_given?(%w[-l --long]),
-        tree: flag_given?(%w[-t --tree]),
-        help: flag_given?(%w[-h --help]),
-        git_status: flag_given?(%w[-gs --git-status]),
+        long:         flag_given?(%w[-l --long]),
+        tree:         flag_given?(%w[-t --tree]),
+        help:         flag_given?(%w[-h --help], true),
+        git_status:   flag_given?(%w[--gs --git-status]),
         colors: @colors
       }
 
@@ -35,8 +35,17 @@ module ColorLS
 
     private
 
-    def flag_given?(flags)
+    def flag_given?(flags, unclubbable=false)
       flags.each { |flag| return true if @args.include?(flag) }
+
+      # Some flags should be not be able to be clubbed with other flags
+      unless unclubbable
+        clubbed_args = @args.select { |arg| arg.match(/^-[a-zA-Z]+$/) }.reduce(:+)
+        unless clubbed_args.nil?
+          flags.each { |flag| return true if !flag.start_with?('--') && clubbed_args.include?(flag.delete('-')) }
+        end
+      end
+
       false
     end
 
@@ -73,11 +82,11 @@ module ColorLS
     end
 
     def fetch_sort_opts
-      sort_dirs_first  = flag_given? %w[-sd --sort-dirs --group-directories-first]
-      sort_files_first = flag_given? %w[-sf --sort-files]
+      sort_dirs_first  = flag_given? %w[--sd --sort-dirs --group-directories-first]
+      sort_files_first = flag_given? %w[--sf --sort-files]
 
       if sort_dirs_first && sort_files_first
-        STDERR.puts "\n  Restrain from using -sd and -sf flags together."
+        STDERR.puts "\n  Restrain from using --sd and -sf flags together."
           .colorize(@colors[:error])
         return nil
       else
@@ -90,9 +99,11 @@ module ColorLS
     def report_incompatible_flags
       return '' if @opts[:show].nil? || @opts[:sort].nil?
 
-      return 'Restrain from using -t (--tree) and -r (--report) flags together.' if @opts[:tree] && @opts[:report]
-
-      return 'Restrain from using -t (--tree) and -a (--all) flags together.' if @opts[:tree] && @opts[:all]
+      if @opts[:tree]
+        return 'Restrain from using -t (--tree) and -r (--report) flags together.' if @opts[:report]
+        return 'Restrain from using -t (--tree) and -l (--long) flags together.' if @opts[:long]
+        return 'Restrain from using -t (--tree) and -a (--all) flags together.' if @opts[:all]
+      end
 
       nil
     end
