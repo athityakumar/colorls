@@ -36,17 +36,14 @@ module ColorLS
     private
 
     def flag_given?(flags, unclubbable=false)
-      flags.each { |flag| return true if @args.include?(flag) }
+      return true if flags.any? { |flag| @args.include?(flag) }
+
+      clubbable_flags = flags.reject { |flag| flag.start_with?('--') }
+                             .map { |arg| arg[1..-1] }
 
       # Some flags should be not be able to be clubbed with other flags
-      unless unclubbable
-        clubbed_args = @args.select { |arg| arg.match(/^-[a-zA-Z]+$/) }.reduce(:+)
-        unless clubbed_args.nil?
-          flags.each { |flag| return true if !flag.start_with?('--') && clubbed_args.include?(flag.delete('-')) }
-        end
-      end
-
-      false
+      @args.reject { |arg| arg.start_with?('--') }
+           .any? { |arg| clubbable_flags.any? { |flag| arg.include?(flag) } } unless unclubbable
     end
 
     def set_color_opts
