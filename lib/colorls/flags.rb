@@ -13,7 +13,7 @@ module ColorLS
         one_per_line: flag_given?(%w[-1]) || !STDOUT.tty?,
         long:         flag_given?(%w[-l --long]),
         tree:         flag_given?(%w[-t --tree]),
-        help:         flag_given?(%w[-h --help], true),
+        help:         flag_given?(%w[-h --help]),
         git_status:   flag_given?(%w[--gs --git-status]),
         colors: @colors
       }
@@ -33,7 +33,7 @@ module ColorLS
 
     private
 
-    def flag_given?(flags, unclubbable=false)
+    def flag_given?(flags)
       return true if flags.any? { |flag| @args.include?(flag) }
 
       clubbable_flags = flags.reject { |flag| flag.start_with?('--') }
@@ -41,7 +41,7 @@ module ColorLS
 
       # Some flags should be not be able to be clubbed with other flags
       @args.select { |arg| !arg.start_with?('--') && arg.start_with?('-') }
-           .any? { |arg| clubbable_flags.any? { |flag| arg.include?(flag) } } unless unclubbable
+           .any? { |arg| clubbable_flags.any? { |flag| arg.include?(flag) } }
     end
 
     def set_color_opts

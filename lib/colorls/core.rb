@@ -25,7 +25,7 @@ module ColorLS
     def ls
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
-      return helplog if @help
+      helplog if @help
 
       if @tree
         print "\n"
