@@ -88,10 +88,12 @@ module ColorLS
     def incompatible_flags?
       return '' if @opts[:show].nil? || @opts[:sort].nil?
 
-      if @opts[:tree]
-        return 'Restrain from using -t (--tree) and -r (--report) flags together.' if @opts[:report]
-        return 'Restrain from using -t (--tree) and -l (--long) flags together.' if @opts[:long]
-        return 'Restrain from using -t (--tree) and -a (--all) flags together.' if @opts[:all]
+      [
+        ['-t (--tree)', @opts[:tree], '-r (--report)', @opts[:report]],
+        ['-t (--tree)', @opts[:tree], '-l (--long)',   @opts[:long]],
+        ['-t (--tree)', @opts[:tree], '-a (--all)',    @opts[:all]]
+      ].each do |flag1, hasflag1, flag2, hasflag2|
+        return "Restrain from using #{flag1} and #{flag2} flags together." if hasflag1 && hasflag2
       end
 
       nil
