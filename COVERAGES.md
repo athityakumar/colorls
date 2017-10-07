@@ -1,5 +1,8 @@
 
-This markdown file is intended to document the various mentions of this project:
+# COVERAGES
+
+
+A documentation of all the places on the World Wide Web, where `colorls` has been featured:
 
 
 - [YouTube : File Icons on Linux Terminal](https://m.youtube.com/watch?v=NESi45Q2mHg)
