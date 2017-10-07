@@ -37,7 +37,7 @@ module ColorLS
       return true if flags.any? { |flag| @args.include?(flag) }
 
       clubbable_flags = flags.reject { |flag| flag.start_with?('--') }
-                             .map { |arg| arg[1..-1] }
+                             .map { |flag| flag[1..-1] }
 
       # Some flags should be not be able to be clubbed with other flags
       @args.select { |arg| !arg.start_with?('--') && arg.start_with?('-') }
