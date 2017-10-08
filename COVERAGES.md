@@ -1,9 +1,6 @@
-
 # COVERAGES
 
-
 A documentation of all the places on the World Wide Web, where `colorls` has been featured:
-
 
 - [YouTube : File Icons on Linux Terminal](https://m.youtube.com/watch?v=NESi45Q2mHg)
 - [GitHub : Awesome README](https://github.com/matiassingers/awesome-readme)
@@ -15,5 +12,3 @@ A documentation of all the places on the World Wide Web, where `colorls` has bee
 - [GitHub : nerd-fonts](https://github.com/ryanoasis/nerd-fonts/wiki/Real-World-Mentions-&-Usage-(Sightings))
 - [GitHub : Awesome Ruby](https://github.com/markets/awesome-ruby)
 - [GitHub : Awesome Shell](https://github.com/uhub/awesome-shell)
-
-
