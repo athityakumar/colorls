@@ -4,7 +4,7 @@ A brief description of what the PR does. Do include the relevant issue(s) and PR
 
 ### Screenshots
 
-Some screenshot(s) to support your changes.
+<!-- (Some screenshot(s) to support your changes. -->
 
 ### Type of change
 
