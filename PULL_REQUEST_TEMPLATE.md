@@ -1,10 +1,13 @@
 ### Description
 
-A brief description of what the PR does. Do include the relevant issue(s) and PR(s) (say, if this PR is a continuation of another PR).
+<-- A brief description of what this Pull Request does. Do tag the relevant issue(s) and PR(s) below. -->
+
+- Relevant Issues : 
+- Relevant PRs : 
 
 ### Screenshots
 
-<!-- (Some screenshot(s) to support your changes. -->
+<-- Some screenshot(s) to support your changes. -->
 
 ### Type of change
 
