@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, help: false, colors: [])
+      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [])
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -12,7 +12,6 @@ module ColorLS
       @one_per_line = one_per_line
       @long         = long
       @tree         = tree
-      @help         = help
       @git_status   = git_status
       @screen_width = ::TermInfo.screen_size.last
       @colors       = colors
@@ -24,8 +23,6 @@ module ColorLS
 
     def ls
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
-
-      helplog if @help
 
       if @tree
         print "\n"
@@ -317,28 +314,6 @@ module ColorLS
     def tree_branch_preprint(prespace, indent, prespace_icon)
       return prespace_icon if prespace.zero?
       ' │ ' * (prespace/indent) + prespace_icon + '─' * indent
-    end
-
-    def helplog
-      print "\nUsage:  colorls <command> [-<attributes> (or) --<attributes>] <path> <keyword>\n\n
-The available attributes are:\n
-\t1                    list in a line
-\ta  (or) all          list inclding hidden files in the directory
-\tA  (or) almost-all   list almost all the files
-\td  (or) dirs         list directories only
-\tf  (or) files        list files only
-\tl  (or) long         show list with long format
-\tr  (or) report       detailed report of the files
-\tsd (or) sort-dirs    sorted and grouped list of directiories followed by files
-\t   (or) group-directories-first
-\tsf (or) sort-files   sorted and grouped list of files followed by directiories
-\tgs (or) git-status   shows the git status of the file [U:Untracked,A:Added,C:Changed]
-\tt  (or) tree         shows tree view of the directory
-\th  (or) help         show this page\n\n
-The available commands are:\n
-\tREADME.md    lists the README file irrespective of current path
-\t*            colorls called recursively for each subsequent directory
-\t| grep       lists the files having the given keyword in the name\n\n"
     end
   end
 end
