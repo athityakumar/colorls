@@ -50,6 +50,9 @@ Metrics/ClassLength:
 Metrics/ParameterLists:
   Max: 15
 
+Naming/FileName:
+  Enabled: false
+
 Style/ParallelAssignment:
   Enabled: false
 
@@ -69,9 +72,6 @@ Layout/SpaceAroundOperators:
   Enabled: false
 
 Style/EmptyCaseCondition:
-  Enabled: false
-
-Style/FileName:
   Enabled: false
 
 Style/MultilineBlockChain:
