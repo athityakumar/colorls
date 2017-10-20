@@ -1,3 +1,3 @@
 module ColorLS
-  VERSION = '0.1.7'.freeze
+  VERSION = '1.0.0'.freeze
 end
