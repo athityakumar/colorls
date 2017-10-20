@@ -6,25 +6,36 @@ module ColorLS
     def initialize(*args)
       @args = args
       @light_colors = false
+      @mode = :one_per_line unless STDOUT.tty?
+
       @opts = {
         show: false,
         sort: false,
         all: false,
         almost_all: false,
         report: false,
-        one_per_line: !STDOUT.tty?,
-        long: false,
-        tree: false,
         git_status: false,
         colors: []
       }
 
       parse_options
+
+      # handle mutual exclusive options
+      %i[tree long one_per_line].each do |value|
+        @opts[value] = @mode == value
+      end
+
+      return unless @mode == :tree
+
+      # FIXME: `--all` and `--tree` do not work together, use `--almost-all` instead
+      @opts[:all] = false
+      @opts[:almost_all] = true
+
+      # `--tree` does not support reports
+      @opts[:report] = false if @mode == :tree
     end
 
     def process
-      return STDERR.puts "\n   #{incompatible_flags?}".colorize(:red) if incompatible_flags?
-
       return Core.new(@opts).ls if @args.empty?
       @args.each do |path|
         next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
@@ -45,10 +56,10 @@ module ColorLS
     def add_common_options(options)
       options.on('-a', '--all', 'do not ignore entries starting with .')  { @opts[:all] = true }
       options.on('-A', '--almost-all', 'do not list . and ..')            { @opts[:almost_all] = true }
-      options.on('-l', '--long', 'use a long listing format')             { @opts[:long] = true }
-      options.on('-t', '--tree', 'shows tree view of the directory')      { @opts[:tree] = true }
+      options.on('-l', '--long', 'use a long listing format')             { @mode = :long }
+      options.on('-t', '--tree', 'shows tree view of the directory')      { @mode = :tree }
       options.on('-r', '--report', 'show brief report')                   { @opts[:report] = true }
-      options.on('-1', 'list one file per line')                          { @opts[:one_per_line] = true }
+      options.on('-1', 'list one file per line')                          { @mode = :one_per_line }
       options.on('-d', '--dirs', 'show only directories')                 { @opts[:show] = :dirs }
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
       options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
@@ -112,20 +123,6 @@ EXAMPLES
     def set_color_opts
       color_scheme_file = @light_colors ? 'light_colors.yaml' : 'dark_colors.yaml'
       @opts[:colors] = ColorLS.load_from_yaml(color_scheme_file, true)
-    end
-
-    def incompatible_flags?
-      return '' if @opts[:show].nil? || @opts[:sort].nil?
-
-      [
-        ['-t (--tree)', @opts[:tree], '-r (--report)', @opts[:report]],
-        ['-t (--tree)', @opts[:tree], '-l (--long)',   @opts[:long]],
-        ['-t (--tree)', @opts[:tree], '-a (--all)',    @opts[:all]]
-      ].each do |flag1, hasflag1, flag2, hasflag2|
-        return "Restrain from using #{flag1} and #{flag2} flags together." if hasflag1 && hasflag2
-      end
-
-      nil
     end
   end
 end
