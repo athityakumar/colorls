@@ -28,11 +28,11 @@ module ColorLS
       return unless @mode == :tree
 
       # FIXME: `--all` and `--tree` do not work together, use `--almost-all` instead
+      @opts[:almost_all] = true if @opts[:all]
       @opts[:all] = false
-      @opts[:almost_all] = true
 
       # `--tree` does not support reports
-      @opts[:report] = false if @mode == :tree
+      @opts[:report] = false
     end
 
     def process
@@ -90,6 +90,11 @@ module ColorLS
     * filter output by a regular expression:
 
       #{'colorls | grep PATTERN'.colorize(:green)}
+
+    * several short options can be combined:
+
+      #{'colorls -d -l -a'.colorize(:green)}
+      #{'colorls -dla'.colorize(:green)}
 
 EXAMPLES
     end
