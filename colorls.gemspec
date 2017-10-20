@@ -2,12 +2,24 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'colorls/version'
 
+ColorLS::POST_INSTALL_MESSAGE = %(
+  *******************************************************************
+    Changes introduced in colorls
+
+    Sort by dirs  : -sd flag has been renamed to --sd
+    Sort by files : -sf flag has been renamed to --sf
+    Git status    : -gs flag has been renamed to --gs
+
+    Clubbed flags : `colorls -ald` works
+    Help menu     : `colorls -h` provides all possible flag options
+  *******************************************************************
+).freeze
+
 Gem::Specification.new do |spec|
   spec.name          = 'colorls'
   spec.version       = ColorLS::VERSION
   spec.authors       = ['Athitya Kumar']
   spec.email         = ['athityakumar@gmail.com']
-
   spec.summary       = "A Ruby CLI gem that beautifies the terminal's ls command, with color and font-awesome icons."
   spec.homepage      = 'https://github.com/athityakumar/colorls'
   spec.license       = 'MIT'
@@ -19,18 +31,7 @@ Gem::Specification.new do |spec|
   spec.executables   = 'colorls'
   spec.require_paths = ['lib']
 
-  spec.post_install_message = <<-EOF
-*************************************************************************
-  Changes introduced in colorls-v1.0.0
-
-  Sort by dirs  : -sd flag has been renamed to --sd
-  Sort by files : -sf flag has been renamed to --sf
-  Git status    : -gs flag has been renamed to --gs
-
-  Clubbed flags : `colorls -ald` works
-  Help menu     : `colorls -h` provides all possible flag options
-*************************************************************************
-EOF
+  spec.post_install_message = ColorLS::POST_INSTALL_MESSAGE
 
   spec.add_runtime_dependency 'colorize'
   spec.add_runtime_dependency 'facets'
