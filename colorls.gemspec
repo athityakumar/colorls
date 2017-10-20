@@ -19,6 +19,19 @@ Gem::Specification.new do |spec|
   spec.executables   = 'colorls'
   spec.require_paths = ['lib']
 
+  spec.post_install_message = <<-EOF
+*************************************************************************
+  Changes introduced in colorls-v1.0.0
+
+  Sort by dirs  : -sd flag has been renamed to --sd
+  Sort by files : -sf flag has been renamed to --sf
+  Git status    : -gs flag has been renamed to --gs
+
+  Clubbed flags : `colorls -ald` works
+  Help menu     : `colorls -h` provides all possible flag options
+*************************************************************************
+EOF
+
   spec.add_runtime_dependency 'colorize'
   spec.add_runtime_dependency 'facets'
   spec.add_runtime_dependency 'filesize'
