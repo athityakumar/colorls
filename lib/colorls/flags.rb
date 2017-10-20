@@ -91,6 +91,11 @@ module ColorLS
 
       #{'colorls | grep PATTERN'.colorize(:green)}
 
+    * several short options can be combined:
+
+      #{'colorls -d -l -a'.colorize(:green)}
+      #{'colorls -dla'.colorize(:green)}
+
 EXAMPLES
     end
 
