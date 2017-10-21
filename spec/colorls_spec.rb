@@ -23,7 +23,27 @@ RSpec.describe ColorLS do
     expect { ColorLS::Flags.new(FIXTURES).process }.to_not output(/Found \d+ contents/).to_stdout
   end
 
-  it 'shows a report with --report option' do
-    expect { ColorLS::Flags.new('--report', FIXTURES).process }.to output(/Found \d+ contents/).to_stdout
+  it 'sorts all results alphabetically without --sort-dirs or --sort-files' do
+    expect { ColorLS::Flags.new(FIXTURES).process }.to output(/a-file.+symlinks.+z-file/).to_stdout
+  end
+
+  it 'sorts results alphabetically, directories first with --sort-dirs' do
+    expect { ColorLS::Flags.new('--sort-dirs', FIXTURES).process }.to output(/symlinks.+a-file.+z-file/).to_stdout
+  end
+
+  it 'sorts results alphabetically, files first with --sort-files' do
+    expect { ColorLS::Flags.new('--sort-files', FIXTURES).process }.to output(/a-file.+z-file.+symlinks/).to_stdout
+  end
+
+  it 'displays dirs & files without --dirs or --files' do
+    expect { ColorLS::Flags.new(FIXTURES).process }.to output(/a-file.+symlinks/).to_stdout
+  end
+
+  it 'displays dirs only with --dirs' do
+    expect { ColorLS::Flags.new('--dirs', FIXTURES).process }.to_not output(/a-file/).to_stdout
+  end
+
+  it 'displays files only with --files' do
+    expect { ColorLS::Flags.new('--files', FIXTURES).process }.to_not output(/symlinks/).to_stdout
   end
 end
