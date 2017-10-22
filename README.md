@@ -75,9 +75,14 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     rehash
     ```
 
-4. Start using `colorls` :tada:
+4. Enable tab completion for flags by entering following line to your shell configuration file (`~/.bashrc` or `~/.zshrc`) :
+    ```bash
+    source $(dirname $(gem which colorls))/tab_complete.sh
+    ```
 
-5. Have a look at [Recommended configurations](#recommended-configurations).
+5. Start using `colorls` :tada:
+
+6. Have a look at [Recommended configurations](#recommended-configurations).
 
 # Recommended configurations
 
