@@ -6,6 +6,7 @@
 [![Gem Version](https://badge.fury.io/rb/colorls.svg)](https://badge.fury.io/rb/colorls)
 [![Build Status](https://travis-ci.org/athityakumar/colorls.svg?branch=master)](https://travis-ci.org/athityakumar/colorls)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=shields)](http://makeapullrequest.com)
+[![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
 
 A Ruby script that colorizes the `ls` output with color and icons. Here are the screenshots of working example on an iTerm2 terminal (Mac OS), `oh-my-zsh` with `powerlevel9k` theme and `powerline nerd-font + awesome-config` font with the `Solarized Dark` color theme.
 
@@ -18,7 +19,6 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 - [Usage](#usage)
 - [Installation](#installation)
 - [Recommended configurations](#recommended-configurations)
-- [Custom configurations](#custom-configurations)
 - [Updating](#updating)
 - [Uninstallation](#uninstallation)
 - [Contributing](#contributing)
@@ -75,9 +75,15 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     rehash
     ```
 
-4. Start using `colorls` :tada:
+4. Enable tab completion for flags.
 
-5. Have a look at [Recommended configurations](#recommended-configurations).
+    ```bash
+    source $(dirname $(gem which colorls))/tab_complete.sh
+    ```
+
+5. Start using `colorls` :tada:
+
+6. Have a look at [Recommended configurations](#recommended-configurations).
 
 # Recommended configurations
 
@@ -90,24 +96,8 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 2. For changing the icon(s) to other unicode icons of choice (select icons from [here](https://nerdfonts.com/)), change the YAML files in a text editor of your choice (say, `subl`)
 
     ```sh
-    subl $(dirname $(gem which colorls))/yaml
+    subl $(gem which colorls)/../yaml/
     ```
-
-# Custom configurations
-
-[(Back to top)](#table-of-contents)
-
-You can overwrite the existing icons and colors mapping by creating yaml files in ~/.config/lscolors.
-
-Each .yaml file inside the lib/colorls/yaml directory of this repo can be overwrited.
-
-Let's say you want to add an icon for swift files, you might create a `files.yaml` inside `~/.config/lscolors` and add the following:
-
-```
-swift: "\uF179"
-```
-
-Which will add the Apple logo to swift files.
 
 # Updating
 
