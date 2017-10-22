@@ -48,4 +48,4 @@ Please proceed with a Pull Request only after you're assigned. It'd be sad if yo
 
 6. (Required for new flags) Add command to `.travis.yml` file.
 
-7. (Required for new flags) Add command to `tab_complete.sh` file.
+7. (Required for new flags) Add flags to `tab_complete.sh` file.

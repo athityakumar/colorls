@@ -75,7 +75,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     rehash
     ```
 
-4. Enable tab completion for flags by entering following line to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) :
+4. Enable tab completion for flags by entering following line to your shell configuration file (`~/.bashrc` or `~/.zshrc`) :
     ```bash
     source $(dirname $(gem which colorls))/tab_complete.sh
     ```
@@ -88,7 +88,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 [(Back to top)](#table-of-contents)
 
-1. To add some short command (say, `lc`) with some flag options (say, `-r`)b y default, add this to your shell configuration file (`~/.bashrc` or `~/.zshrc`) :
+1. To add some short command (say, `lc`) with some flag options (say, `-r`)b y default, add this to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) :
     ```sh
     alias lc='colorls -r'
     ```
