@@ -11,6 +11,14 @@ RSpec.describe ColorLS do
     expect { ColorLS::Flags.new('--long', "#{FIXTURES}/.hidden-file").process }.to_not output(/No Info/).to_stdout
   end
 
+  it 'does not list file info without --long' do
+    expect { ColorLS::Flags.new(FIXTURES).process }.to_not output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout
+  end
+
+  it 'lists file info with --long' do
+    expect { ColorLS::Flags.new('--long', FIXTURES).process }.to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout
+  end
+
   it 'does not list hidden files without --all option' do
     expect { ColorLS::Flags.new(FIXTURES).process }.to_not output(/\.hidden-file/).to_stdout
   end
@@ -45,5 +53,33 @@ RSpec.describe ColorLS do
 
   it 'displays files only with --files' do
     expect { ColorLS::Flags.new('--files', FIXTURES).process }.to_not output(/symlinks/).to_stdout
+  end
+
+  it 'displays multiple files per line without -1' do
+    expect { ColorLS::Flags.new(FIXTURES).process }.to_not output(/(.*\n){3}/).to_stdout
+  end
+
+  it 'displays one file per line with -1' do
+    expect { ColorLS::Flags.new('-1', FIXTURES).process }.to output(/(.*\n){3}/).to_stdout
+  end
+
+  it 'does not display hidden files without --almost-all' do
+    expect { ColorLS::Flags.new(FIXTURES).process }.to_not output(/\.hidden-file/).to_stdout
+  end
+
+  it 'displays hidden files with --almost-all' do
+    expect { ColorLS::Flags.new('--almost-all', FIXTURES).process }.to output(/\.hidden-file/).to_stdout
+  end
+
+  it 'does not display ./ or ../ with --almost-all' do
+    expect { ColorLS::Flags.new(FIXTURES).process }.to_not output(%r(\.{1,2}/)).to_stdout
+  end
+
+  it 'does not display file hierarchy without --tree' do
+    expect { ColorLS::Flags.new(FIXTURES).process }.to_not output(/├──/).to_stdout
+  end
+
+  it 'displays file hierarchy with --tree' do
+    expect { ColorLS::Flags.new('--tree', FIXTURES).process }.to output(/├──/).to_stdout
   end
 end
