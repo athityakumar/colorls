@@ -12,6 +12,8 @@ ColorLS::POST_INSTALL_MESSAGE = %(
 
     Clubbed flags : `colorls -ald` works
     Help menu     : `colorls -h` provides all possible flag options
+
+    Tab completion enabled for flags
   *******************************************************************
 ).freeze
 
