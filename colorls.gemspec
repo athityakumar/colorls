@@ -17,6 +17,7 @@ ColorLS::POST_INSTALL_MESSAGE = %(
   *******************************************************************
 ).freeze
 
+# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   spec.name          = 'colorls'
   spec.version       = ColorLS::VERSION
