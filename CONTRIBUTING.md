@@ -25,7 +25,7 @@ Please proceed with a Pull Request only after you're assigned. It'd be sad if yo
     - adding better icons to [YAML files](lib/yaml/)
     - adding more flag options to the ruby gem.
 
-3. (Optional) To test whether `colorls` executable is working properly, do 
+3. (Optional) To test whether `colorls` executable is working properly, do
     ```sh
     rake install
     ```
@@ -47,3 +47,5 @@ Please proceed with a Pull Request only after you're assigned. It'd be sad if yo
     ```
 
 6. (Required for new flags) Add command to `.travis.yml` file.
+
+7. (Required for new flags) Add command to `tab_complete.sh` file.

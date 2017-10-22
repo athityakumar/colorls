@@ -88,7 +88,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 [(Back to top)](#table-of-contents)
 
-1. To add some short command (say, `lc`) with some flag options (say, `-r`)b y default, add this to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) :
+1. To add some short command (say, `lc`) with some flag options (say, `-r`)b y default, add this to your shell configuration file (`~/.bashrc` or `~/.zshrc`) :
     ```sh
     alias lc='colorls -r'
     ```
