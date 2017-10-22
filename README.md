@@ -55,7 +55,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
   ![Usage #9](readme/usage9.png)
 
-- Additional flags: `--almost_all` or `-A`, `--long` or `-l`, `--tree` or `-t`
+- Additional flags: `--almost-all` or `-A`, `--long` or `-l`, `--tree` or `-t`
 
 # Installation
 
