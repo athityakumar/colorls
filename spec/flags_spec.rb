@@ -20,10 +20,13 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.to_not match(/((r|-).*(w|-).*(x|-).*){3}/) } # does not list file info
     it { is_expected.to_not match(/\.hidden-file/) } # does not display hidden files
     it { is_expected.to_not match(/Found \d+ contents/) } # does not show a report
-    it { is_expected.to match(/a-file.+symlinks.+z-file/) } # displays dirs & files alphabetically
     it { is_expected.to_not match(/(.*\n){3}/) } # displays multiple files per line
     it { is_expected.to_not match(%r(\.{1,2}/)) } # does not display ./ or ../
     it { is_expected.to_not match(/├──/) } # does not display file hierarchy
+  end
+
+  xcontext 'with no flags' do
+    it { is_expected.to match(/a-file.+symlinks.+z-file/) } # displays dirs & files alphabetically
   end
 
   context 'with --long flag & file path' do
