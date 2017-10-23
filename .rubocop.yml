@@ -6,6 +6,7 @@ AllCops:
     - 'benchmarks/*'
     - 'profile/*'
     - 'lib/yaml/*'
+    - 'lib/**/*.sh'
   DisplayCopNames: true
   TargetRubyVersion: 2.1
 
@@ -86,7 +87,7 @@ Metrics/MethodLength:
   Max: 20
 
 Metrics/CyclomaticComplexity:
-  Max: 8  
+  Max: 8
 
 Metrics/PerceivedComplexity:
   Max: 8
