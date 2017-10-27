@@ -3,13 +3,14 @@ require 'ffi-locale'
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [])
+      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [], group: nil)
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
       @report       = report
       @sort         = sort
+      @group        = group
       @show         = show
       @one_per_line = one_per_line
       @long         = long
@@ -51,7 +52,8 @@ module ColorLS
 
       filter_hidden_contents if is_directory
       filter_contents(path) if @show
-      sort_contents(path)   if @sort
+      sort_contents         if @sort
+      group_contents(path)  if @group
 
       @total_content_length = @contents.length
 
@@ -97,25 +99,19 @@ module ColorLS
       end
     end
 
-    def sort_contents(path)
-      @contents.sort! { |a, b| cmp_by_dirs(path, a, b) }
+    def sort_contents
+      @contents.sort! { |a, b| FFILocale.strcoll a, b }
     end
 
-    def cmp_by_dirs(path, a, b)
-      return cmp_by_alpha(a, b) if @sort == true
+    def group_contents(path)
+      return unless @group
 
-      is_a_dir = Dir.exist?("#{path}/#{a}")
-      is_b_dir = Dir.exist?("#{path}/#{b}")
+      dirs, files = @contents.partition { |a| Dir.exist?("#{path}/#{a}") }
 
-      return cmp_by_alpha(a, b) unless is_a_dir ^ is_b_dir
-
-      result = is_a_dir ? -1 : 1
-      result *= -1 if @sort == :files
-      result
-    end
-
-    def cmp_by_alpha(a, b)
-      FFILocale.strcoll a, b
+      @contents = case @group
+                  when :dirs then dirs.push(*files)
+                  when :files then files.push(*dirs)
+                  end
     end
 
     def init_icons
