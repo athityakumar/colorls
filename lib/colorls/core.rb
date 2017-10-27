@@ -34,7 +34,6 @@ module ColorLS
         @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
         @contents.each { |chunk| ls_line(chunk) }
       end
-      print "\n"
       display_report if @report
       true
     end
@@ -276,13 +275,13 @@ module ColorLS
     end
 
     def ls_line(chunk)
-      print "\n"
       chunk.each_with_index do |content, i|
         break if content.empty?
 
         print "  #{fetch_string(@input, content, *options(@input, content))}"
         print ' ' * (@max_widths[i] - content.length) unless @one_per_line || @long
       end
+      print "\n"
     end
 
     def options(path, content)
