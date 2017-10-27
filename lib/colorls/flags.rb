@@ -11,6 +11,7 @@ module ColorLS
       @opts = {
         show: false,
         sort: true,
+        reverse: false,
         group: nil,
         all: false,
         almost_all: false,
@@ -61,6 +62,8 @@ module ColorLS
                        when 'time' then :time
                        end
       end
+
+      options.on('--reverse', 'reverse order while sorting') { @opts[:reverse] = true }
     end
 
     def add_common_options(options)
