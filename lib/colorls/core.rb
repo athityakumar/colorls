@@ -1,13 +1,15 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [], group: nil)
+      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [], group: nil,
+      reverse: false)
       @input        = init_input_path(input)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
       @report       = report
       @sort         = sort
+      @reverse      = reverse
       @group        = group
       @show         = show
       @one_per_line = one_per_line
@@ -115,6 +117,7 @@ module ColorLS
       else
         @contents.sort! { |a, b| a.casecmp(b) }
       end
+      @contents.reverse! if @reverse
     end
 
     def group_contents(path)

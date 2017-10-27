@@ -26,6 +26,12 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.to_not match(/├──/) } # does not display file hierarchy
   end
 
+  context 'with --reverse flag' do
+    let(:args) { ['--reverse', FIXTURES] }
+
+    it { is_expected.to match(/z-file.+symlinks.+a-file/) } # displays dirs & files in reverse alphabetical order
+  end
+
   context 'with --long flag & file path' do
     let(:args) { ['--long', "#{FIXTURES}/.hidden-file"] }
 

@@ -11,6 +11,7 @@ module ColorLS
       @opts = {
         show: false,
         sort: true,
+        reverse: false,
         group: nil,
         all: false,
         almost_all: false,
@@ -62,6 +63,8 @@ module ColorLS
                        when 'time' then :time
                        end
       end
+
+      options.on('-r', '--reverse', 'reverse order while sorting') { @opts[:reverse] = true }
     end
 
     def add_common_options(options)
@@ -69,7 +72,7 @@ module ColorLS
       options.on('-A', '--almost-all', 'do not list . and ..')            { @opts[:almost_all] = true }
       options.on('-l', '--long', 'use a long listing format')             { @mode = :long }
       options.on('--tree', 'shows tree view of the directory')            { @mode = :tree }
-      options.on('-r', '--report', 'show brief report')                   { @opts[:report] = true }
+      options.on('--report', 'show brief report')                         { @opts[:report] = true }
       options.on('-1', 'list one file per line')                          { @mode = :one_per_line }
       options.on('-d', '--dirs', 'show only directories')                 { @opts[:show] = :dirs }
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
