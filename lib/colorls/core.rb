@@ -100,7 +100,12 @@ module ColorLS
     end
 
     def sort_contents
-      @contents.sort! { |a, b| FFILocale.strcoll a, b }
+      case @sort
+      when :time
+        @contents.sort_by! { |a| -File.mtime(a).to_f }
+      else
+        @contents.sort! { |a, b| FFILocale.strcoll a, b }
+      end
     end
 
     def group_contents(path)
