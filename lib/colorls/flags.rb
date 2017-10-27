@@ -10,7 +10,7 @@ module ColorLS
 
       @opts = {
         show: false,
-        sort: false,
+        sort: true,
         all: false,
         almost_all: false,
         report: false,

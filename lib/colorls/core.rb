@@ -112,6 +112,8 @@ module ColorLS
     end
 
     def cmp_by_dirs(path, a, b)
+      return cmp_by_alpha(a, b) if @sort == true
+
       is_a_dir = Dir.exist?("#{path}/#{a}")
       is_b_dir = Dir.exist?("#{path}/#{b}")
 
