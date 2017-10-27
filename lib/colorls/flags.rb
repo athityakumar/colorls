@@ -11,6 +11,7 @@ module ColorLS
       @opts = {
         show: false,
         sort: true,
+        group: nil,
         all: false,
         almost_all: false,
         report: false,
@@ -51,8 +52,8 @@ module ColorLS
       options.separator ''
       options.separator 'sorting options:'
       options.separator ''
-      options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:sort] = :dirs }
-      options.on('--sf', '--sort-files', 'sort files first')                                   { @opts[:sort] = :files }
+      options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:group] = :dirs }
+      options.on('--sf', '--sort-files', 'sort files first')                                  { @opts[:group] = :files }
     end
 
     def add_common_options(options)
