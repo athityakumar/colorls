@@ -1,3 +1,5 @@
+require 'ffi-locale'
+
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
@@ -114,7 +116,7 @@ module ColorLS
     end
 
     def cmp_by_alpha(a, b)
-      a.downcase <=> b.downcase
+      FFILocale.strcoll a, b
     end
 
     def init_icons
