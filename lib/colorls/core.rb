@@ -109,7 +109,12 @@ module ColorLS
     end
 
     def sort_contents(path)
-      @contents.sort! { |a, b| a.casecmp(b) }
+      case @sort
+      when :time
+        @contents.sort_by! { |a| -File.mtime(File.join(path, a)).to_f }
+      else
+        @contents.sort! { |a, b| a.casecmp(b) }
+      end
     end
 
     def group_contents(path)
