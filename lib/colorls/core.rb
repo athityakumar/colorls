@@ -1,10 +1,3 @@
-class String
-  def colorize(color)
-    # puts(color)
-    self.color(color.to_sym)
-  end
-end
-
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,

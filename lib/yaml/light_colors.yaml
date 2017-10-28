@@ -18,12 +18,12 @@ day_old:     darkred
 hour_old:    saddlebrown
 no_modifier: black
 
-# File Size red yellow green
+# File Size
 file_large:  darkred
 file_medium: saddlebrown
 file_small:  black
 
-# Random black green cyan yellow black
+# Random
 report: black
 user:   darkblue
 tree:   cyan
