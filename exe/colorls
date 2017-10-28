@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'colorls'
+require 'ffi-locale'
+
+# initialize locale from environment
+FFILocale.setlocale FFILocale.const_get('LC_COLLATE'), ''
+
 ColorLS::Flags.new(*ARGV).process
 true

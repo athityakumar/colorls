@@ -10,7 +10,9 @@ module ColorLS
 
       @opts = {
         show: false,
-        sort: false,
+        sort: true,
+        reverse: false,
+        group: nil,
         all: false,
         almost_all: false,
         report: false,
@@ -37,8 +39,10 @@ module ColorLS
 
     def process
       return Core.new(@opts).ls if @args.empty?
-      @args.each do |path|
+      @args.sort!.each_with_index do |path, i|
         next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
+        puts '' if i > 0
+        puts "#{path}:" if Dir.exist?(path) && @args.size > 1
         Core.new(path, @opts).ls
       end
     end
@@ -49,8 +53,17 @@ module ColorLS
       options.separator ''
       options.separator 'sorting options:'
       options.separator ''
-      options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:sort] = :dirs }
-      options.on('--sf', '--sort-files', 'sort files first')                                   { @opts[:sort] = :files }
+      options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:group] = :dirs }
+      options.on('--sf', '--sort-files', 'sort files first')                                  { @opts[:group] = :files }
+      options.on('-t', 'sort by modification time, newest first')                             { @opts[:sort] = :time }
+      options.on('--sort=WORD', %w[none time], 'sort by WORD instead of name: none, time (-t)') do |word|
+        @opts[:sort] = case word
+                       when 'none' then false
+                       when 'time' then :time
+                       end
+      end
+
+      options.on('--reverse', 'reverse order while sorting') { @opts[:reverse] = true }
     end
 
     def add_common_options(options)

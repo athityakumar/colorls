@@ -1,13 +1,18 @@
+require 'ffi-locale'
+
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [])
+      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [], group: nil,
+      reverse: false)
       @input        = input || Dir.pwd
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
       @report       = report
       @sort         = sort
+      @reverse      = reverse
+      @group        = group
       @show         = show
       @one_per_line = one_per_line
       @long         = long
@@ -32,7 +37,6 @@ module ColorLS
         @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
         @contents.each { |chunk| ls_line(chunk) }
       end
-      print "\n"
       display_report if @report
       true
     end
@@ -50,7 +54,8 @@ module ColorLS
 
       filter_hidden_contents if is_directory
       filter_contents(path) if @show
-      sort_contents(path)   if @sort
+      sort_contents         if @sort
+      group_contents(path)  if @group
 
       @total_content_length = @contents.length
 
@@ -96,23 +101,25 @@ module ColorLS
       end
     end
 
-    def sort_contents(path)
-      @contents.sort! { |a, b| cmp_by_dirs(path, a, b) }
+    def sort_contents
+      case @sort
+      when :time
+        @contents.sort_by! { |a| -File.mtime(a).to_f }
+      else
+        @contents.sort! { |a, b| FFILocale.strcoll a, b }
+      end
+      @contents.reverse! if @reverse
     end
 
-    def cmp_by_dirs(path, a, b)
-      is_a_dir = Dir.exist?("#{path}/#{a}")
-      is_b_dir = Dir.exist?("#{path}/#{b}")
+    def group_contents(path)
+      return unless @group
 
-      return cmp_by_alpha(a, b) unless is_a_dir ^ is_b_dir
+      dirs, files = @contents.partition { |a| Dir.exist?("#{path}/#{a}") }
 
-      result = is_a_dir ? -1 : 1
-      result *= -1 if @sort == :files
-      result
-    end
-
-    def cmp_by_alpha(a, b)
-      a.downcase <=> b.downcase
+      @contents = case @group
+                  when :dirs then dirs.push(*files)
+                  when :files then files.push(*dirs)
+                  end
     end
 
     def init_icons
@@ -272,13 +279,13 @@ module ColorLS
     end
 
     def ls_line(chunk)
-      print "\n"
       chunk.each_with_index do |content, i|
         break if content.empty?
 
         print "  #{fetch_string(@input, content, *options(@input, content))}"
         print ' ' * (@max_widths[i] - content.length) unless @one_per_line || @long
       end
+      print "\n"
     end
 
     def options(path, content)
