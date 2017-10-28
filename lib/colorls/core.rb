@@ -227,9 +227,13 @@ module ColorLS
       relative_path = relative_path==path ? '' : relative_path+'/'
 
       status = Git.open('.').status
-      return '(A)'.colorize(@colors[:added]) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
-      return '(?)'.colorize(@colors[:untracked]) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
-      return '(C)'.colorize(@colors[:tracked]) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
+      git_info_of_file("#{relative_path}#{content}", status)
+    end
+
+    def git_info_of_file(path, status)
+      return '(A)'.colorize(@colors[:added]) if status.added.keys.any? { |a| a.include?(path) }
+      return '(?)'.colorize(@colors[:untracked]) if status.untracked.keys.any? { |u| u.include?(path) }
+      return '(C)'.colorize(@colors[:changed]) if status.changed.keys.any? { |c| c.include?(path) }
       '   '.colorize(@colors[:unchanged])
     end
 

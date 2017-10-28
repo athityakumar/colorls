@@ -34,5 +34,5 @@ normal: black
 # Git
 unchanged: darkgreen
 added:     saddlebrown
-tracked:   saddlebrown
+changed:   saddlebrown
 untracked: darkred

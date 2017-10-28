@@ -34,5 +34,5 @@ normal: darkkhaki
 # Git
 unchanged: forestgreen
 added:     chartreuse    
-tracked:   darkorange
+changed:   darkorange
 untracked: darkred
