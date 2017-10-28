@@ -1,3 +1,10 @@
+class String
+  def colorize(color)
+    # puts color.to_s
+    self.color(color.to_sym)
+  end
+end
+
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
@@ -227,9 +234,9 @@ module ColorLS
       relative_path = relative_path==path ? '' : relative_path+'/'
 
       status = Git.open('.').status
-      return '(A)'.colorize(:green) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
-      return '(U)'.colorize(:red) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
-      return '(C)'.colorize(:yellow) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
+      return '(A)'.colorize(@colors[:added]) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
+      return '(U)'.colorize(@colors[:untracked]) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
+      return '(C)'.colorize(@colors[:tracked]) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
       '(-)'
     end
 
