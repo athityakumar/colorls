@@ -17,7 +17,6 @@ ColorLS::POST_INSTALL_MESSAGE = %(
   *******************************************************************
 ).freeze
 
-# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   spec.name          = 'colorls'
   spec.version       = ColorLS::VERSION
@@ -36,11 +35,10 @@ Gem::Specification.new do |spec|
 
   spec.post_install_message = ColorLS::POST_INSTALL_MESSAGE
 
-  spec.add_runtime_dependency 'colorize'
   spec.add_runtime_dependency 'facets'
   spec.add_runtime_dependency 'filesize'
   spec.add_runtime_dependency 'git'
-  spec.add_runtime_dependency 'ruby-terminfo'
+  spec.add_runtime_dependency 'rainbow'
 
   spec.add_development_dependency 'bundler', '~> 1.15'
   spec.add_development_dependency 'diffy'

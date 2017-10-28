@@ -13,7 +13,7 @@ module ColorLS
       @long         = long
       @tree         = tree
       @git_status   = git_status
-      @screen_width = ::TermInfo.screen_size.last
+      @screen_width = `tput cols`.chomp.to_i
       @colors       = colors
 
       @contents   = init_contents(@input)
@@ -227,21 +227,23 @@ module ColorLS
       relative_path = relative_path==path ? '' : relative_path+'/'
 
       status = Git.open('.').status
-      return '(A)'.colorize(:green) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
-      return '(U)'.colorize(:red) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
-      return '(C)'.colorize(:yellow) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
-      '(-)'
+      git_info_of_file("#{relative_path}#{content}", status)
+    end
+
+    def git_info_of_file(path, status)
+      return '(A)'.colorize(@colors[:added]) if status.added.keys.any? { |a| a.include?(path) }
+      return '(?)'.colorize(@colors[:untracked]) if status.untracked.keys.any? { |u| u.include?(path) }
+      return '(C)'.colorize(@colors[:changed]) if status.changed.keys.any? { |c| c.include?(path) }
+      '   '.colorize(@colors[:unchanged])
     end
 
     def long_info(path, content)
       return '' unless @long
-      @git_status = true
       unless File.exist?("#{path}/#{content}")
-        return '[No Info]'.colorize(@colors[:error]) + ' ' * (39 + @userlength + @grouplength)
+        return '[No Info]'.colorize(@colors[:error]) + ' ' * (38 + @userlength + @grouplength)
       end
       stat = File.stat("#{path}/#{content}")
-      @git_status = false
-      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat),git_info(path,content)]
+      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat)]
         .join('  ')
     end
 
@@ -265,7 +267,7 @@ module ColorLS
 
       [
         long_info(path, content),
-        "#{git_info(path,content)} ",
+        " #{git_info(path,content)} ",
         logo.colorize(color),
         "  #{content.colorize(color)}#{slash?(path, content)}#{symlink_info(path, content)}"
       ].join
