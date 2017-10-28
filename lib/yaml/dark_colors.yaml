@@ -1,31 +1,38 @@
 # Main Colors
-unrecognized_file: yellow
-recognized_file:   green
-dir:               blue
+unrecognized_file: gold
+recognized_file:   lime
+dir:               dodgerblue
 
 # Link
 dead_link: red
 link:      cyan
 
 # Access Modes
-write:     magenta
-read:      yellow
-exec:      cyan
-no_access: grey
+write:     darkkhaki
+read:      limegreen
+exec:      red
+no_access: indianred
 
 # Age
-day_old:     yellow
-hour_old:    green
-no_modifier: white
+day_old:     mediumspringgreen
+hour_old:    lime
+no_modifier: seagreen
 
 # File Size
-file_large:  red
-file_medium: yellow
-file_small:  green
+file_large:  orange
+file_medium: gold
+file_small:  peachpuff
 
 # Random
 report: white
-user:   green
+user:   moccasin
 tree:   cyan
 empty:  yellow
-normal: white
+error:  red
+normal: darkkhaki
+
+# Git
+unchanged: forestgreen
+added:     chartreuse    
+tracked:   darkorange
+untracked: darkred
