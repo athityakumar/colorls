@@ -2,6 +2,10 @@ class String
   def colorize(color)
     self.color(color.to_sym)
   end
+
+  def remove(pattern)
+    self.gsub(pattern, '')
+  end
 end
 
 class Hash
