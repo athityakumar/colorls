@@ -1,6 +1,6 @@
 class String
   def colorize(color)
-    # puts color.to_s
+    # puts(color)
     self.color(color.to_sym)
   end
 end
@@ -237,7 +237,7 @@ module ColorLS
       return '(A)'.colorize(@colors[:added]) if status.added.keys.any? { |a| a.include?("#{relative_path}#{content}") }
       return '(U)'.colorize(@colors[:untracked]) if status.untracked.keys.any? { |u| u.include?("#{relative_path}#{content}") }
       return '(C)'.colorize(@colors[:tracked]) if status.changed.keys.any? { |c| c.include?("#{relative_path}#{content}") }
-      '(-)'
+      '   '.colorize(@colors[:unchanged])
     end
 
     def long_info(path, content)
