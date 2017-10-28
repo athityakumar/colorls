@@ -13,7 +13,7 @@ module ColorLS
       @long         = long
       @tree         = tree
       @git_status   = git_status
-      @screen_width = ::TermInfo.screen_size.last
+      @screen_width = `tput cols`.chomp.to_i
       @colors       = colors
 
       @contents   = init_contents(@input)
