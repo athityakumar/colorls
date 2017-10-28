@@ -145,7 +145,7 @@ module ColorLS
 
     def get_chunk(chunk_size)
       chunk       = @contents.each_slice(chunk_size).to_a
-      chunk.last += [''] * (chunk_size - chunk.last.count)
+      chunk[-1]  += [''] * (chunk_size - chunk.last.count)
       @max_widths = chunk.transpose.map { |c| c.map(&:length).max }
       chunk
     end

@@ -1,5 +1,4 @@
 require 'yaml'
-require 'facets'
 require 'etc'
 require 'filesize'
 require 'git'
