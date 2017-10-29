@@ -41,6 +41,7 @@ module ColorLS
 
     def init_input_path(input)
       return Dir.pwd unless input
+      return input unless Dir.exist?(input)
 
       actual = Dir.pwd
       Dir.chdir(input)
