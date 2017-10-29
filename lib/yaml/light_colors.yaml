@@ -32,7 +32,8 @@ error:  red
 normal: black
 
 # Git
-unchanged: darkgreen
-added:     saddlebrown
-changed:   saddlebrown
-untracked: darkred
+addition:     chartreuse
+modification: darkkhaki
+deletion:     darkred
+untracked:    darkorange
+unchanged:    darkgreen
