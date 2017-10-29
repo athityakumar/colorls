@@ -43,6 +43,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 [(Back to top)](#table-of-contents)
 
 ### Flags
+
 - With `-1` : Lists one entry per line
 
   ![image](https://user-images.githubusercontent.com/17109060/32149062-4f0547ca-bd25-11e7-98b6-587467379704.png)
@@ -91,6 +92,8 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
   ![image](https://user-images.githubusercontent.com/17109060/32149071-6b379de4-bd25-11e7-8764-a0c577e526a1.png)
 
+- With color options : `--light` or `--dark` can be passed as a flag, to choose the appropriate color scheme. By default, the dark color scheme is chosen. In order to tweak any color, read [Custom configurations](#custom-configurations).
+
 ### Combination of flags
 
 - Using `--gs` with `-t` :
@@ -130,16 +133,17 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 5. Start using `colorls` :tada:
 
-6. Have a look at [Recommended configurations](#recommended-configurations).
+6. Have a look at [Recommended configurations](#recommended-configurations) and [Custom configurations](#custom-configurations).
 
 # Recommended configurations
 
 [(Back to top)](#table-of-contents)
 
-1. To add some short command (say, `lc`) with some flag options (say, `-r`)b y default, add this to your shell configuration file (`~/.bashrc`, `~/.zshrc` or `~/.fishrc`) :
+1. To add some short command (say, `lc`) with some flag options (say, `-l`, `-A`, `--sd`) by default, add this to your shell configuration file (`~/.bashrc`, `~/.zshrc`, etc.) :
     ```sh
-    alias lc='colorls -r'
+    alias lc='colorls -lA --sd'
     ```
+
 2. For changing the icon(s) to other unicode icons of choice (select icons from [here](https://nerdfonts.com/)), change the YAML files in a text editor of your choice (say, `subl`)
 
     ```sh
@@ -150,17 +154,36 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 [(Back to top)](#table-of-contents)
 
-You can overwrite the existing icons and colors mapping by creating yaml files in ~/.config/lscolors.
+You can overwrite the existing icons and colors mapping by copying the yaml files from `$(dirname $(gem which colorls))/yaml` into `~/.config/colorls`, and changing them.
 
-Each .yaml file inside the lib/colorls/yaml directory of this repo can be overwrited.
+- To overwrite color mapping :
 
-Let's say you want to add an icon for swift files, you might create a `files.yaml` inside `~/.config/lscolors` and add the following:
+  Please have a look at the [list of supported color names](https://github.com/sickill/rainbow#color-list). Let's say that you're using the dark color scheme and would like to change the color of untracked file (`??`) in the `--git-status` flag to yellow. Copy the defaut `dark_colors.yaml` and change it.
 
-```
-swift: "\uF179"
-```
+  ```sh
+  cp $(dirname $(gem which colorls))/yaml/dark_colors.yaml ~/.config/colorls/dark_colors.yaml`
+  ```
 
-Which will add the Apple logo to swift files.
+  In the `~/.config/colorls/dark_colors.yaml` file, change the color set for `untracked` from `darkorange` to `yellow`, and save the change.
+
+  ```
+  untracked: yellow
+  ```
+
+- To overwrite icon mapping :
+
+  Please have a look at the [list of supported icons](https://nerdfonts.com/). Let's say you want to add an icon for swift files. Copy the feault `files.yaml` and change it.
+
+  ```sh
+  cp $(dirname $(gem which colorls))/yaml/files.yaml ~/.config/colorls/files.yaml`
+  ```
+
+  In the `~/.config/colorls/files.yaml` file, add a new icon / change an existing icon, and save the change.
+
+
+  ```
+  swift: "\uF179"
+  ```
 
 # Updating
 
