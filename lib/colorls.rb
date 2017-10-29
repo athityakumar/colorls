@@ -1,7 +1,6 @@
 require 'yaml'
 require 'etc'
 require 'filesize'
-require 'git'
 require 'rainbow/ext/string'
 
 require 'colorls/core'
