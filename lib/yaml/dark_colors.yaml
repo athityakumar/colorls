@@ -32,7 +32,8 @@ error:  red
 normal: darkkhaki
 
 # Git
-unchanged: forestgreen
-added:     chartreuse    
-changed:   darkorange
-untracked: darkred
+addition:     chartreuse
+modification: darkkhaki
+deletion:     darkred
+untracked:    darkorange
+unchanged:    forestgreen

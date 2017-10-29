@@ -6,6 +6,10 @@ class String
   def remove(pattern)
     gsub(pattern, '')
   end
+
+  def uniq
+    split('').uniq.join
+  end
 end
 
 class Hash

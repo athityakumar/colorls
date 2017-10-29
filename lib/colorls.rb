@@ -1,10 +1,10 @@
 require 'yaml'
 require 'etc'
 require 'filesize'
-require 'git'
 require 'rainbow/ext/string'
 
 require 'colorls/core'
 require 'colorls/flags'
 require 'colorls/load_from_yaml'
 require 'colorls/monkeys'
+require 'colorls/git'
