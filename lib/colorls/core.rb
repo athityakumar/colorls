@@ -2,7 +2,7 @@ module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
       one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [])
-      @input        = input || Dir.pwd
+      @input        = init_input_path(input)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -12,7 +12,7 @@ module ColorLS
       @one_per_line = one_per_line
       @long         = long
       @tree         = tree
-      @git_status   = git_status
+      process_git_status_details(git_status)
       @screen_width = `tput cols`.chomp.to_i
       @colors       = colors
 
@@ -38,6 +38,16 @@ module ColorLS
     end
 
     private
+
+    def init_input_path(input)
+      return Dir.pwd unless input
+
+      actual = Dir.pwd
+      Dir.chdir(input)
+      input = Dir.pwd
+      Dir.chdir(actual)
+      input
+    end
 
     def init_contents(path)
       is_directory = Dir.exist?(path)
@@ -216,25 +226,49 @@ module ColorLS
       mtime.colorize(@colors[:no_modifier])
     end
 
-    def git_info(path, content)
-      return '' unless @git_status
+    def process_git_status_details(git_status)
+      return false unless git_status
+
+      actual_path = Dir.pwd
+      Dir.chdir(@input)
       until File.exist?('.git') # check whether the repository is git controlled
-        return '' if Dir.pwd=='/'
+        return false if Dir.pwd=='/'
         Dir.chdir('..')
       end
 
-      relative_path = path.remove(Dir.pwd+'/')
-      relative_path = relative_path==path ? '' : relative_path+'/'
+      @git_root_path = Dir.pwd
+      Dir.chdir(actual_path)
 
-      status = Git.open('.').status
-      git_info_of_file("#{relative_path}#{content}", status)
+      @git_status = Git.status(@git_root_path)
     end
 
-    def git_info_of_file(path, status)
-      return '(A)'.colorize(@colors[:added]) if status.added.keys.any? { |a| a.include?(path) }
-      return '(?)'.colorize(@colors[:untracked]) if status.untracked.keys.any? { |u| u.include?(path) }
-      return '(C)'.colorize(@colors[:changed]) if status.changed.keys.any? { |c| c.include?(path) }
-      '   '.colorize(@colors[:unchanged])
+    def git_info(path, content)
+      return '' unless @git_status
+
+      # puts "\n\n"
+
+      Dir.chdir(@git_root_path)
+      relative_path = path.remove(@git_root_path+'/')
+      relative_path = relative_path==path ? '' : relative_path+'/'
+      content_path  = "#{relative_path}#{content}"
+      content_type  = Dir.exist?("#{@git_root_path}/#{content_path}") ? :dir : :file
+ 
+      if content_type == :file then git_file_info(content_path)
+      else git_dir_info(content_path)
+      end
+      # puts "\n\n"
+    end
+
+    def git_file_info(path)
+      return '  ✓ '.colorize(@colors[:unchanged]) unless @git_status[path]
+      Git.colored_status_symbols(@git_status[path], @colors)
+    end
+
+    def git_dir_info(path)
+      modes = @git_status.select { |file, mode| file.start_with?(path) }.values
+
+      return '  ✓ '.colorize(@colors[:unchanged]) if modes.empty?
+      Git.colored_status_symbols(modes.join.uniq, @colors)
     end
 
     def long_info(path, content)

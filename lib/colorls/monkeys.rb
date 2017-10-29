@@ -4,22 +4,26 @@ class String
   end
 
   def remove(pattern)
-    self.gsub(pattern, '')
+    gsub(pattern, '')
+  end
+
+  def uniq
+    split('').uniq.join
   end
 end
 
 class Hash
   def symbolize_keys
-    keys.each do |key|
-      new_key = (key.to_sym rescue key.to_s.to_sym)
-      self[new_key] = delete(key)
+    new_hash = {}
+    each_key do |key|
+      new_hash[key.to_sym] = delete(key)
     end
-    self
+    new_hash
   end
 end
 
 class Array
   def sum
-    self.inject(:+)
+    inject(:+)
   end
 end
