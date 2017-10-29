@@ -252,7 +252,7 @@ module ColorLS
       relative_path = relative_path==path ? '' : relative_path+'/'
       content_path  = "#{relative_path}#{content}"
       content_type  = Dir.exist?("#{@git_root_path}/#{content_path}") ? :dir : :file
- 
+
       if content_type == :file then git_file_info(content_path)
       else git_dir_info(content_path)
       end
@@ -265,7 +265,7 @@ module ColorLS
     end
 
     def git_dir_info(path)
-      modes = @git_status.select { |file, mode| file.start_with?(path) }.values
+      modes = @git_status.select { |file, _mode| file.start_with?(path) }.values
 
       return '  ✓ '.colorize(@colors[:unchanged]) if modes.empty?
       Git.colored_status_symbols(modes.join.uniq, @colors)

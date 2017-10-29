@@ -6,12 +6,12 @@ module ColorLS
 
       @git_status = {}
 
-      `git status --short`.split("\n").map { |x| x.split(" ") }.each do |mode, file|
+      `git status --short`.split("\n").map { |x| x.split(' ') }.each do |mode, file|
         @git_status[file] = mode
       end
 
       Dir.chdir(actual)
-      return(@git_status)
+      @git_status
     end
 
     def self.colored_status_symbols(modes, colors)
