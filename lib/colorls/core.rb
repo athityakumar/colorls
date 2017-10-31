@@ -54,10 +54,10 @@ module ColorLS
 
       filter_hidden_contents if is_directory
       filter_contents(path) if @show
-      sort_contents         if @sort
+      sort_contents(path)   if @sort
       group_contents(path)  if @group
 
-      @total_content_length = @contents.length
+      @total_content_length = @contents.count
 
       return @contents unless @long
       init_user_lengths(path)
@@ -101,10 +101,12 @@ module ColorLS
       end
     end
 
-    def sort_contents
+    def sort_contents(path)
       case @sort
       when :time
-        @contents.sort_by! { |a| -File.mtime(a).to_f }
+        @contents.sort_by! { |a| -File.mtime(File.join(path,a)).to_f }
+      when :size
+        @contents.sort_by! { |a| File.size(File.join(path,a)) }
       else
         @contents.sort! { |a, b| FFILocale.strcoll a, b }
       end
