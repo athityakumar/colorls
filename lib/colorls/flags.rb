@@ -51,6 +51,7 @@ module ColorLS
       options.separator ''
       options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:sort] = :dirs }
       options.on('--sf', '--sort-files', 'sort files first')                                   { @opts[:sort] = :files }
+      options.on('--st', '--sort-time', 'sort by modification time')                           { @opts[:sort] = :time }
     end
 
     def add_common_options(options)

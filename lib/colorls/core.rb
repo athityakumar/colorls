@@ -115,15 +115,19 @@ module ColorLS
       is_a_dir = Dir.exist?("#{path}/#{a}")
       is_b_dir = Dir.exist?("#{path}/#{b}")
 
-      return cmp_by_alpha(a, b) unless is_a_dir ^ is_b_dir
+      return cmp_by_alpha(a, b, path) unless is_a_dir ^ is_b_dir
 
       result = is_a_dir ? -1 : 1
       result *= -1 if @sort == :files
       result
     end
 
-    def cmp_by_alpha(a, b)
-      a.downcase <=> b.downcase
+    def cmp_by_alpha(a, b, path)
+      if @sort == :time
+        File.mtime("#{path}/#{b}") <=> File.mtime("#{path}/#{a}")
+      else
+        a.downcase <=> b.downcase
+      end
     end
 
     def init_icons
