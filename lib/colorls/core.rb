@@ -66,7 +66,7 @@ module ColorLS
       sort_contents(path)   if @sort
       group_contents(path)  if @group
 
-      @total_content_length = @contents.length
+      @total_content_length = @contents.count
 
       return @contents unless @long
       init_user_lengths(path)
@@ -114,6 +114,8 @@ module ColorLS
       case @sort
       when :time
         @contents.sort_by! { |a| -File.mtime(File.join(path, a)).to_f }
+      when :size
+        @contents.sort_by! { |a| -File.size(File.join(path, a)) }
       else
         @contents.sort! { |a, b| a.casecmp(b) }
       end

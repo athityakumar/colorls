@@ -57,10 +57,16 @@ module ColorLS
       options.on('--sf', '--sort-files', 'sort files first')                                  { @opts[:group] = :files }
       options.on('-t', 'sort by modification time, newest first')                             { @opts[:sort] = :time }
       options.on('-U', 'do not sort; list entries in directory order')                        { @opts[:sort] = false }
-      options.on('--sort=WORD', %w[none time], 'sort by WORD instead of name: none, time (-t)') do |word|
+      options.on('-S', 'sort by file size, largest first')                                    { @opts[:sort] = :size }
+      options.on(
+        '--sort=WORD',
+        %w[none time size],
+        'sort by WORD instead of name: none, size (-S), time (-t)'
+      ) do |word|
         @opts[:sort] = case word
                        when 'none' then false
                        when 'time' then :time
+                       when 'size' then :size
                        end
       end
 
