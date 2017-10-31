@@ -24,6 +24,7 @@ script:
   - colorls -r
   - colorls --sd
   - colorls --sf
+  - colorls --st
   - colorls -t
   - colorls -h
   - colorls --gs

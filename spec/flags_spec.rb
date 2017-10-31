@@ -1,7 +1,12 @@
 require 'spec_helper'
+require 'fileutils'
 
 RSpec.describe ColorLS::Flags do
   FIXTURES = 'spec/fixtures'.freeze
+
+  FileUtils.touch FIXTURES + '/a-file',   mtime: Time.now - 30
+  FileUtils.touch FIXTURES + '/z-file',   mtime: Time.now - 20
+  FileUtils.touch FIXTURES + '/symlinks', mtime: Time.now - 10
 
   subject { capture_stdout { ColorLS::Flags.new(*args).process } }
 
@@ -57,6 +62,12 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--sort-files', FIXTURES] }
 
     it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results alphabetically, files first
+  end
+
+  context 'with --sort-time flag' do
+    let(:args) { ['--sort-time', FIXTURES] }
+
+    it { is_expected.to match(/symlinks.+z-file.+a-file/) } # sorts results by date, newest modified first
   end
 
   context 'with --dirs flag' do
