@@ -5,6 +5,6 @@ require 'rainbow/ext/string'
 
 require 'colorls/core'
 require 'colorls/flags'
-require 'colorls/load_from_yaml'
+require 'colorls/yaml'
 require 'colorls/monkeys'
 require 'colorls/git'

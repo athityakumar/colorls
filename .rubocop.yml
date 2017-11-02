@@ -12,14 +12,6 @@ AllCops:
 
 # Preferred codebase style ---------------------------------------------
 
-RSpec/DescribeClass:
-  Exclude:
-    - 'spec/yaml_spec.rb'
-
-RSpec/FilePath:
-  Exclude:
-    - 'spec/flags_spec.rb'
-
 Layout/ExtraSpacing:
   AllowForAlignment: true
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Yaml files' do
+RSpec.describe ColorLS::Yaml do
   ::FILENAMES = {
     file_aliases:   :value,
     folder_aliases: :value,
