@@ -6,13 +6,13 @@ module ColorLS
     def initialize(*args)
       @args = args
       @light_colors = false
-      @mode = :one_per_line unless STDOUT.tty?
 
       @opts = {
         show: false,
         sort: true,
         reverse: false,
         group: nil,
+        mode: STDOUT.tty? || :one_per_line,
         all: false,
         almost_all: false,
         report: false,
@@ -22,12 +22,7 @@ module ColorLS
 
       parse_options
 
-      # handle mutual exclusive options
-      %i[tree long one_per_line].each do |value|
-        @opts[value] = @mode == value
-      end
-
-      return unless @mode == :tree
+      return unless @opts[:mode] == :tree
 
       # FIXME: `--all` and `--tree` do not work together, use `--almost-all` instead
       @opts[:almost_all] = true if @opts[:all]
@@ -76,10 +71,10 @@ module ColorLS
     def add_common_options(options)
       options.on('-a', '--all', 'do not ignore entries starting with .')  { @opts[:all] = true }
       options.on('-A', '--almost-all', 'do not list . and ..')            { @opts[:almost_all] = true }
-      options.on('-l', '--long', 'use a long listing format')             { @mode = :long }
-      options.on('--tree', 'shows tree view of the directory')            { @mode = :tree }
+      options.on('-l', '--long', 'use a long listing format')             { @opts[:mode] = :long }
+      options.on('--tree', 'shows tree view of the directory')            { @opts[:mode] = :tree }
       options.on('--report', 'show brief report')                         { @opts[:report] = true }
-      options.on('-1', 'list one file per line')                          { @mode = :one_per_line }
+      options.on('-1', 'list one file per line')                          { @opts[:mode] = :one_per_line }
       options.on('-d', '--dirs', 'show only directories')                 { @opts[:show] = :dirs }
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
       options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }

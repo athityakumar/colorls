@@ -1,7 +1,7 @@
 module ColorLS
   class Core
     def initialize(input=nil, all: false, report: false, sort: false, show: false,
-      one_per_line: false, git_status: false,long: false, almost_all: false, tree: false, colors: [], group: nil,
+      mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
       reverse: false)
       @input        = init_input_path(input)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
@@ -12,9 +12,9 @@ module ColorLS
       @reverse      = reverse
       @group        = group
       @show         = show
-      @one_per_line = one_per_line
-      @long         = long
-      @tree         = tree
+      @one_per_line = mode == :one_per_line
+      @long         = mode == :long
+      @tree         = mode == :tree
       process_git_status_details(git_status)
       @screen_width = `tput cols`.chomp.to_i
       @colors       = colors
