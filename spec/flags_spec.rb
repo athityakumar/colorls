@@ -56,6 +56,23 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results alphabetically, files first
   end
 
+  context 'with --sort=time' do
+    entries = Dir.entries(FIXTURES).grep(/^[^.]/).shuffle.freeze
+    mtime = Time.new(2017, 11, 7, 2, 2, 2).freeze
+
+    files = entries.each_with_index do |e, i|
+      t = mtime + i
+      File.utime(t, t, File.join(FIXTURES, e))
+      Regexp.quote(e)
+    end
+
+    expected = Regexp.new files.reverse.join('.+'), Regexp::MULTILINE
+
+    let(:args) { ['--sort=time', FIXTURES] }
+
+    it { is_expected.to match(expected) }
+  end
+
   context 'with --dirs flag' do
     let(:args) { ['--dirs', FIXTURES] }
 
