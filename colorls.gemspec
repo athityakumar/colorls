@@ -14,6 +14,10 @@ ColorLS::POST_INSTALL_MESSAGE = %(
     Help menu     : `colorls -h` provides all possible flag options
 
     Tab completion enabled for flags
+
+    -t flag : Previously short for --tree, has been re-allocated to sort results by time
+    -r flag : Previously short for --report, has been re-allocated to reverse sort results
+
   *******************************************************************
 ).freeze
 

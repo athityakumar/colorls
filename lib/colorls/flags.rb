@@ -6,11 +6,13 @@ module ColorLS
     def initialize(*args)
       @args = args
       @light_colors = false
-      @mode = :one_per_line unless STDOUT.tty?
 
       @opts = {
         show: false,
-        sort: false,
+        sort: true,
+        reverse: false,
+        group: nil,
+        mode: STDOUT.tty? || :one_per_line,
         all: false,
         almost_all: false,
         report: false,
@@ -20,12 +22,7 @@ module ColorLS
 
       parse_options
 
-      # handle mutual exclusive options
-      %i[tree long one_per_line].each do |value|
-        @opts[value] = @mode == value
-      end
-
-      return unless @mode == :tree
+      return unless @opts[:mode] == :tree
 
       # FIXME: `--all` and `--tree` do not work together, use `--almost-all` instead
       @opts[:almost_all] = true if @opts[:all]
@@ -37,8 +34,10 @@ module ColorLS
 
     def process
       return Core.new(@opts).ls if @args.empty?
-      @args.each do |path|
+      @args.sort!.each_with_index do |path, i|
         next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
+        puts '' if i > 0
+        puts "#{path}:" if Dir.exist?(path) && @args.size > 1
         Core.new(path, @opts).ls
       end
     end
@@ -49,17 +48,33 @@ module ColorLS
       options.separator ''
       options.separator 'sorting options:'
       options.separator ''
-      options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:sort] = :dirs }
-      options.on('--sf', '--sort-files', 'sort files first')                                   { @opts[:sort] = :files }
+      options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:group] = :dirs }
+      options.on('--sf', '--sort-files', 'sort files first')                                  { @opts[:group] = :files }
+      options.on('-t', 'sort by modification time, newest first')                             { @opts[:sort] = :time }
+      options.on('-U', 'do not sort; list entries in directory order')                        { @opts[:sort] = false }
+      options.on('-S', 'sort by file size, largest first')                                    { @opts[:sort] = :size }
+      options.on(
+        '--sort=WORD',
+        %w[none time size],
+        'sort by WORD instead of name: none, size (-S), time (-t)'
+      ) do |word|
+        @opts[:sort] = case word
+                       when 'none' then false
+                       when 'time' then :time
+                       when 'size' then :size
+                       end
+      end
+
+      options.on('-r', '--reverse', 'reverse order while sorting') { @opts[:reverse] = true }
     end
 
     def add_common_options(options)
       options.on('-a', '--all', 'do not ignore entries starting with .')  { @opts[:all] = true }
       options.on('-A', '--almost-all', 'do not list . and ..')            { @opts[:almost_all] = true }
-      options.on('-l', '--long', 'use a long listing format')             { @mode = :long }
-      options.on('-t', '--tree', 'shows tree view of the directory')      { @mode = :tree }
-      options.on('-r', '--report', 'show brief report')                   { @opts[:report] = true }
-      options.on('-1', 'list one file per line')                          { @mode = :one_per_line }
+      options.on('-l', '--long', 'use a long listing format')             { @opts[:mode] = :long }
+      options.on('--tree', 'shows tree view of the directory')            { @opts[:mode] = :tree }
+      options.on('--report', 'show brief report')                         { @opts[:report] = true }
+      options.on('-1', 'list one file per line')                          { @opts[:mode] = :one_per_line }
       options.on('-d', '--dirs', 'show only directories')                 { @opts[:show] = :dirs }
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
       options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }

@@ -20,13 +20,16 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.to_not match(/((r|-).*(w|-).*(x|-).*){3}/) } # does not list file info
     it { is_expected.to_not match(/\.hidden-file/) } # does not display hidden files
     it { is_expected.to_not match(/Found \d+ contents/) } # does not show a report
+    it { is_expected.to match(/a-file.+symlinks.+z-file/) } # displays dirs & files alphabetically
     it { is_expected.to_not match(/(.*\n){3}/) } # displays multiple files per line
     it { is_expected.to_not match(%r(\.{1,2}/)) } # does not display ./ or ../
     it { is_expected.to_not match(/├──/) } # does not display file hierarchy
   end
 
-  xcontext 'with no flags' do
-    it { is_expected.to match(/a-file.+symlinks.+z-file/) } # displays dirs & files alphabetically
+  context 'with --reverse flag' do
+    let(:args) { ['--reverse', FIXTURES] }
+
+    it { is_expected.to match(/z-file.+symlinks.+a-file/) } # displays dirs & files in reverse alphabetical order
   end
 
   context 'with --long flag & file path' do
@@ -57,6 +60,29 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--sort-files', FIXTURES] }
 
     it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results alphabetically, files first
+  end
+
+  context 'with --sort=time' do
+    entries = Dir.entries(FIXTURES).grep(/^[^.]/).shuffle.freeze
+    mtime = Time.new(2017, 11, 7, 2, 2, 2).freeze
+
+    files = entries.each_with_index do |e, i|
+      t = mtime + i
+      File.utime(t, t, File.join(FIXTURES, e))
+      Regexp.quote(e)
+    end
+
+    expected = Regexp.new files.reverse.join('.+'), Regexp::MULTILINE
+
+    let(:args) { ['--sort=time', FIXTURES] }
+
+    it { is_expected.to match(expected) }
+  end
+
+  context 'with --sort=size flag' do
+    let(:args) { ['--sort=size', FIXTURES] }
+
+    it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results by size
   end
 
   context 'with --dirs flag' do

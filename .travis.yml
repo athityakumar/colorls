@@ -25,6 +25,11 @@ script:
   - colorls --sd
   - colorls --sf
   - colorls -t
+  - colorls --sort=time
+  - colorls -U
+  - colorls --sort=none
+  - colorls -S
+  - colorls --sort=size
   - colorls -h
   - colorls --gs
   - colorls spec/fixtures/symlinks
