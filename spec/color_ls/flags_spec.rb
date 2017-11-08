@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe ColorLS::Flags do
   FIXTURES = 'spec/fixtures'.freeze
 
-  subject { capture_stdout { ColorLS::Flags.new(*args).process } }
+  subject { capture_stdout { described_class.new(*args).process } }
 
   def capture_stdout
     old = $stdout
@@ -17,13 +17,13 @@ RSpec.describe ColorLS::Flags do
   context 'with no flags' do
     let(:args) { [FIXTURES] }
 
-    it { is_expected.to_not match(/((r|-).*(w|-).*(x|-).*){3}/) } # does not list file info
-    it { is_expected.to_not match(/\.hidden-file/) } # does not display hidden files
-    it { is_expected.to_not match(/Found \d+ contents/) } # does not show a report
+    it { is_expected.not_to match(/((r|-).*(w|-).*(x|-).*){3}/) } # does not list file info
+    it { is_expected.not_to match(/\.hidden-file/) } # does not display hidden files
+    it { is_expected.not_to match(/Found \d+ contents/) } # does not show a report
     it { is_expected.to match(/a-file.+symlinks.+z-file/) } # displays dirs & files alphabetically
-    it { is_expected.to_not match(/(.*\n){3}/) } # displays multiple files per line
-    it { is_expected.to_not match(%r(\.{1,2}/)) } # does not display ./ or ../
-    it { is_expected.to_not match(/├──/) } # does not display file hierarchy
+    it { is_expected.not_to match(/(.*\n){3}/) } # displays multiple files per line
+    it { is_expected.not_to match(%r(\.{1,2}/)) } # does not display ./ or ../
+    it { is_expected.not_to match(/├──/) } # does not display file hierarchy
   end
 
   context 'with --reverse flag' do
@@ -35,7 +35,7 @@ RSpec.describe ColorLS::Flags do
   context 'with --long flag & file path' do
     let(:args) { ['--long', "#{FIXTURES}/.hidden-file"] }
 
-    it { is_expected.to_not match(/No Info/) } # lists info of a hidden file
+    it { is_expected.not_to match(/No Info/) } # lists info of a hidden file
   end
 
   context 'with --long flag' do
@@ -88,13 +88,13 @@ RSpec.describe ColorLS::Flags do
   context 'with --dirs flag' do
     let(:args) { ['--dirs', FIXTURES] }
 
-    it { is_expected.to_not match(/a-file/) } # displays dirs only
+    it { is_expected.not_to match(/a-file/) } # displays dirs only
   end
 
   context 'with --files flag' do
     let(:args) { ['--files', FIXTURES] }
 
-    it { is_expected.to_not match(/symlinks/) } # displays files only
+    it { is_expected.not_to match(/symlinks/) } # displays files only
   end
 
   context 'with -1 flag' do

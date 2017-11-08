@@ -134,10 +134,10 @@ module ColorLS
     end
 
     def init_icons
-      @files          = ColorLS.load_from_yaml('files.yaml')
-      @file_aliases   = ColorLS.load_from_yaml('file_aliases.yaml', true)
-      @folders        = ColorLS.load_from_yaml('folders.yaml')
-      @folder_aliases = ColorLS.load_from_yaml('folder_aliases.yaml', true)
+      @files          = ColorLS::Yaml.new('files.yaml').load
+      @file_aliases   = ColorLS::Yaml.new('file_aliases.yaml').load(aliase: true)
+      @folders        = ColorLS::Yaml.new('folders.yaml').load
+      @folder_aliases = ColorLS::Yaml.new('folder_aliases.yaml').load(aliase: true)
 
       @file_keys          = @files.keys
       @file_aliase_keys   = @file_aliases.keys
