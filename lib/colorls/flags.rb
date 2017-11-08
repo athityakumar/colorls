@@ -142,7 +142,7 @@ EXAMPLES
 
     def set_color_opts
       color_scheme_file = @light_colors ? 'light_colors.yaml' : 'dark_colors.yaml'
-      @opts[:colors] = ColorLS::Yaml.load_from_yaml(color_scheme_file, true)
+      @opts[:colors] = ColorLS::Yaml.new(color_scheme_file).load(aliase: true)
     end
   end
 end
