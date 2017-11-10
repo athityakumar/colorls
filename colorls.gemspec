@@ -41,6 +41,7 @@ Gem::Specification.new do |spec|
   spec.post_install_message = ColorLS::POST_INSTALL_MESSAGE
 
   spec.add_runtime_dependency 'filesize'
+  spec.add_runtime_dependency 'manpages'
   spec.add_runtime_dependency 'rainbow'
 
   spec.add_development_dependency 'bundler', '~> 1.15'
