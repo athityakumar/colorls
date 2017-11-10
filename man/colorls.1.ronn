@@ -1,0 +1,41 @@
+colorls(1) -- list directory contents with colors and icons 
+===========================================================
+
+## SYNOPSIS
+
+`colorls` [OPTION]... [FILE]...<br>
+
+## DESCRIPTION
+
+List information about the given FILEs. Uses different colors and icons for known file types.
+
+By default, the output is sorted alphabetically.
+
+Mandatory arguments to long options are mandatory for short options too.
+
+## OPTIONS
+
+{{ OPTIONS }}
+
+## EXAMPLES
+
+  * show the given file:
+
+    `colorls README.md`
+
+  * show matching files and list matching directories:
+
+    `colorls *`
+
+  * filter output by a regular expression:
+
+    `colorls | grep PATTERN`
+
+  * several short options can be combined:
+
+    `colorls -d -l -a`<br>
+    `colorls -dla`
+
+## AUTHOR
+
+Written by Athitya Kumar.

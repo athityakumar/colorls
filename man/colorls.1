@@ -1,0 +1,135 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "COLORLS" "1" "November 2017" "colorls 1.0.9" "colorls Manual"
+.
+.SH "NAME"
+\fBcolorls\fR \- list directory contents with colors and icons
+.
+.SH "SYNOPSIS"
+\fBcolorls\fR [OPTION]\.\.\. [FILE]\.\.\.
+.
+.br
+.
+.SH "DESCRIPTION"
+List information about the given FILEs\. Uses different colors and icons for known file types\.
+.
+.P
+By default, the output is sorted alphabetically\.
+.
+.P
+Mandatory arguments to long options are mandatory for short options too\.
+.
+.SH "OPTIONS"
+.
+.TP
+\fB\-a\fR, \fB\-\-all\fR
+do not ignore entries starting with \.
+.
+.TP
+\fB\-A\fR, \fB\-\-almost\-all\fR
+do not list \. and \.\.
+.
+.TP
+\fB\-l\fR, \fB\-\-long\fR
+use a long listing format
+.
+.TP
+\fB\-\-tree\fR
+shows tree view of the directory
+.
+.TP
+\fB\-\-report\fR
+show brief report
+.
+.TP
+\fB\-1\fR
+list one file per line
+.
+.TP
+\fB\-d\fR, \fB\-\-dirs\fR
+show only directories
+.
+.TP
+\fB\-f\fR, \fB\-\-files\fR
+show only files
+.
+.TP
+\fB\-\-gs\fR, \fB\-\-git\-status\fR
+show git status for each file
+.
+.TP
+\fB\-\-sd\fR, \fB\-\-sort\-dirs\fR, \fB\-\-group\-directories\-first\fR
+sort directories first
+.
+.TP
+\fB\-\-sf\fR, \fB\-\-sort\-files\fR
+sort files first
+.
+.TP
+\fB\-t\fR
+sort by modification time, newest first
+.
+.TP
+\fB\-U\fR
+do not sort; list entries in directory order
+.
+.TP
+\fB\-S\fR
+sort by file size, largest first
+.
+.TP
+\fB\-\-sort\fR
+sort by WORD instead of name: none, size (\-S), time (\-t)
+.
+.TP
+\fB\-r\fR, \fB\-\-reverse\fR
+reverse order while sorting
+.
+.TP
+\fB\-\-light\fR
+use light color scheme
+.
+.TP
+\fB\-\-dark\fR
+use dark color scheme
+.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+prints this help
+.
+.TP
+\fB\-\-version\fR
+show version
+.
+.SH "EXAMPLES"
+.
+.TP
+show the given file:
+.
+.IP
+\fBcolorls README\.md\fR
+.
+.TP
+show matching files and list matching directories:
+.
+.IP
+\fBcolorls *\fR
+.
+.TP
+filter output by a regular expression:
+.
+.IP
+\fBcolorls | grep PATTERN\fR
+.
+.TP
+several short options can be combined:
+.
+.IP
+\fBcolorls \-d \-l \-a\fR
+.
+.br
+\fBcolorls \-dla\fR
+.
+.SH "AUTHOR"
+Written by Athitya Kumar\.
