@@ -1,0 +1,38 @@
+#compdef colorls
+
+typeset -A opt_args
+local context state line
+
+_arguments -s -S \
+  "-a[do not ignore entries starting with .]" \
+  "--all[do not ignore entries starting with .]" \
+  "-A[do not list . and ..]" \
+  "--almost-all[do not list . and ..]" \
+  "-l[use a long listing format]" \
+  "--long[use a long listing format]" \
+  "--tree[shows tree view of the directory]" \
+  "--report[show brief report]" \
+  "-1[list one file per line]" \
+  "-d[show only directories]" \
+  "--dirs[show only directories]" \
+  "-f[show only files]" \
+  "--files[show only files]" \
+  "--gs[show git status for each file]" \
+  "--git-status[show git status for each file]" \
+  "--sd[sort directories first]" \
+  "--sort-dirs[sort directories first]" \
+  "--group-directories-first[sort directories first]" \
+  "--sf[sort files first]" \
+  "--sort-files[sort files first]" \
+  "-t[sort by modification time, newest first]" \
+  "-U[do not sort; list entries in directory order]" \
+  "-S[sort by file size, largest first]" \
+  "--sort[sort by WORD instead of name: none, size (-S), time (-t)]" \
+  "-r[reverse order while sorting]" \
+  "--reverse[reverse order while sorting]" \
+  "--light[use light color scheme]" \
+  "--dark[use dark color scheme]" \
+  "-h[prints this help]" \
+  "--help[prints this help]" \
+  "--version[show version]" \
+  '*:file:_files' && return 0
