@@ -42,6 +42,8 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 [(Back to top)](#table-of-contents)
 
+Man pages have been added. Checkout `man colorls`.
+
 ### Flags
 
 - With `-1` : Lists one entry per line
