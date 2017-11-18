@@ -18,9 +18,12 @@ ColorLS::POST_INSTALL_MESSAGE = %(
     -t flag : Previously short for --tree, has been re-allocated to sort results by time
     -r flag : Previously short for --report, has been re-allocated to reverse sort results
 
+    Man pages have been added. Checkout `man colorls`.
+
   *******************************************************************
 ).freeze
 
+# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   spec.name          = 'colorls'
   spec.version       = ColorLS::VERSION
@@ -31,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
+    f.match(%r{^(test|spec|features|man)/})
   end
   spec.bindir        = 'exe'
   spec.executables   = 'colorls'
@@ -40,11 +43,13 @@ Gem::Specification.new do |spec|
   spec.post_install_message = ColorLS::POST_INSTALL_MESSAGE
 
   spec.add_runtime_dependency 'filesize'
+  spec.add_runtime_dependency 'manpages'
   spec.add_runtime_dependency 'rainbow'
-  spec.add_runtime_dependency 'rake'
 
   spec.add_development_dependency 'bundler', '~> 1.15'
   spec.add_development_dependency 'diffy'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'ronn'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rspec-its'
   spec.add_development_dependency 'rubocop'

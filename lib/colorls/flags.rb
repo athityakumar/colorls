@@ -1,5 +1,6 @@
 require 'optparse'
 require 'colorls/version'
+require 'ostruct'
 
 module ColorLS
   class Flags
@@ -40,6 +41,21 @@ module ColorLS
         puts "#{path}:" if Dir.exist?(path) && @args.size > 1
         Core.new(path, @opts).ls
       end
+    end
+
+    def options
+      list = @parser.top.list + @parser.base.list
+
+      result = list.collect do |o|
+        next unless o.respond_to? 'desc'
+
+        flags = o.short + o.long
+        next if flags.empty?
+
+        OpenStruct.new(flags: flags, desc: o.desc)
+      end
+
+      result.compact
     end
 
     private
@@ -115,7 +131,7 @@ EXAMPLES
     end
 
     def parse_options
-      parser = OptionParser.new do |opts|
+      @parser = OptionParser.new do |opts|
         opts.banner = 'Usage:  colorls [OPTION]... [FILE]...'
         opts.separator ''
 
@@ -125,7 +141,7 @@ EXAMPLES
 
         opts.separator ''
         opts.on_tail('-h', '--help', 'prints this help') do
-          puts parser
+          puts @parser
           show_examples
           exit
         end
@@ -135,7 +151,7 @@ EXAMPLES
         end
       end
 
-      parser.parse!(@args)
+      @parser.parse!(@args)
 
       set_color_opts
     end
