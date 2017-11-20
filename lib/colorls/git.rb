@@ -10,6 +10,10 @@ module ColorLS
         @git_status[file] = mode
       end
 
+      `git ls-files --others -i --exclude-standard`.split("\n").each do |file|
+        @git_status[file] = ' '
+      end
+
       Dir.chdir(actual)
       @git_status
     end
