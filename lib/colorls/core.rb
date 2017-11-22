@@ -274,9 +274,9 @@ module ColorLS
 
     Dir.class_eval do
       def self.deep_entries(path)
-        (self.entries(path) - ['.', '..']).map do |entry|
+        (Dir.entries(path) - ['.', '..']).map do |entry|
           if Dir.exist?("#{path}/#{entry}")
-            self.deep_entries("#{path}/#{entry}")
+            Dir.deep_entries("#{path}/#{entry}")
           else
             entry
           end
@@ -286,11 +286,10 @@ module ColorLS
 
     def git_dir_info(path)
       ignored = @git_status.select { |file, mode| file.start_with?(path) && mode==' ' }.keys
-      present = Dir.deep_entries(path).map { |p| "#{path}/#{p}"}
+      present = Dir.deep_entries(path).map { |p| "#{path}/#{p}" }
       return '    ' if (present-ignored).empty?
 
-      modes = (present-ignored).map { |file| @git_status[file] }.select { |mode| !mode.nil? }
-      # modes = @git_status.select { |file, _mode| file.start_with?(path) }.values
+      modes = (present-ignored).map { |file| @git_status[file] }-[nil]
       return '  ✓ '.colorize(@colors[:unchanged]) if modes.empty?
       Git.colored_status_symbols(modes.join.uniq, @colors)
     end
