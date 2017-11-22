@@ -37,4 +37,9 @@ OPTION
   IO.write('man/colorls.1', doc.convert('roff'))
 end
 
+desc 'Build the Zsh completion file'
+file 'zsh/_colorls' => ['lib/colorls/flags.rb'] do
+  ruby "exe/colorls '--*-completion-zsh=colorls' > zsh/_colorls"
+end
+
 task default: %w[spec rubocop]
