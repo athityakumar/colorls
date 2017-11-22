@@ -273,7 +273,7 @@ module ColorLS
     end
 
     def git_dir_info(path)
-      modes = @git_status.select { |file, _mode| file.start_with?(path) }.values
+      modes = @git_status.select { |file, mode| file.start_with?(path) && mode!=' ' }.values
 
       return '  ✓ '.colorize(@colors[:unchanged]) if modes.empty?
       Git.colored_status_symbols(modes.join.uniq, @colors)
