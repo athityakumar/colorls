@@ -2,6 +2,7 @@ require 'yaml'
 require 'etc'
 require 'filesize'
 require 'rainbow/ext/string'
+require 'clocale'
 
 require 'colorls/core'
 require 'colorls/flags'
