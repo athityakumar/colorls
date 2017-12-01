@@ -17,7 +17,7 @@ file 'man/colorls.1' => ['man/colorls.1.ronn', 'lib/colorls/flags.rb'] do
 
   flags = ColorLS::Flags.new
   attributes = {
-    date: Time.now,
+    date: Date.iso8601(`git log -1 --pretty=format:%aI -- man/colorls.1`),
     manual: 'colorls Manual',
     organization: "colorls #{ColorLS::VERSION}"
   }

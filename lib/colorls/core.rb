@@ -117,7 +117,7 @@ module ColorLS
       when :size
         @contents.sort_by! { |a| -File.size(File.join(path, a)) }
       else
-        @contents.sort! { |a, b| a.casecmp(b) }
+        @contents.sort_by! { |a| CLocale.strxfrm(a) }
       end
       @contents.reverse! if @reverse
     end
