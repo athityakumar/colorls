@@ -1,6 +1,7 @@
 require 'yaml'
 require 'etc'
 require 'filesize'
+require 'io/console'
 require 'rainbow/ext/string'
 require 'clocale'
 

@@ -16,7 +16,10 @@ module ColorLS
       @long         = mode == :long
       @tree         = mode == :tree
       process_git_status_details(git_status)
-      @screen_width = `tput cols`.chomp.to_i
+
+      @screen_width = IO.console.winsize[1]
+      @screen_width = 80 if @screen_width.zero?
+
       @colors       = colors
 
       @contents   = init_contents(@input)
