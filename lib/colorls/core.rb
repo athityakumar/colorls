@@ -69,7 +69,7 @@ module ColorLS
       sort_contents(path)   if @sort
       group_contents(path)  if @group
 
-      @total_content_length = @contents.count
+      @total_content_length = @contents.length
 
       return @contents unless @long
       init_user_lengths(path)
@@ -154,7 +154,7 @@ module ColorLS
     def chunkify
       return @contents.zip if @one_per_line || @long
 
-      chunk_size = @contents.count
+      chunk_size = @contents.size
 
       until in_line(chunk_size) || chunk_size <= 1
         chunk_size -= 1
@@ -166,7 +166,7 @@ module ColorLS
 
     def get_chunk(chunk_size)
       chunk       = @contents.each_slice(chunk_size).to_a
-      chunk[-1]  += [''] * (chunk_size - chunk.last.count)
+      chunk[-1]  += [''] * (chunk_size - chunk.last.size)
       @max_widths = chunk.transpose.map { |c| c.map(&:length).max }
       chunk
     end
