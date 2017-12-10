@@ -1,9 +1,9 @@
 module ColorLS
   class Core
-    def initialize(input=nil, all: false, report: false, sort: false, show: false,
+    def initialize(input, all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
       reverse: false)
-      @input        = init_input_path(input)
+      @input        = File.absolute_path(input)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -43,17 +43,6 @@ module ColorLS
     end
 
     private
-
-    def init_input_path(input)
-      return Dir.pwd unless input
-      return input unless Dir.exist?(input)
-
-      actual = Dir.pwd
-      Dir.chdir(input)
-      input = Dir.pwd
-      Dir.chdir(actual)
-      input
-    end
 
     def init_contents(path)
       is_directory = Dir.exist?(path)
