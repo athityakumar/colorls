@@ -201,8 +201,9 @@ module ColorLS
 
     def mtime_info(file_mtime)
       mtime = file_mtime.asctime
-      return mtime.colorize(@colors[:hour_old]) if Time.now - file_mtime < 60 * 60
-      return mtime.colorize(@colors[:day_old])  if Time.now - file_mtime < 24 * 60 * 60
+      now = Time.now
+      return mtime.colorize(@colors[:hour_old]) if now - file_mtime < 60 * 60
+      return mtime.colorize(@colors[:day_old])  if now - file_mtime < 24 * 60 * 60
       mtime.colorize(@colors[:no_modifier])
     end
 
