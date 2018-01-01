@@ -35,7 +35,6 @@ module ColorLS
         tree_traverse(@input, 0, 2)
       else
         @contents = chunkify
-        @max_widths = @contents.transpose.map { |c| c.map { |i| i.name.length }.max }
         @contents.each { |chunk| ls_line(chunk) }
       end
       display_report if @report
@@ -133,25 +132,24 @@ module ColorLS
       return @contents.zip if @one_per_line || @long
 
       chunk_size = @contents.size
+      max_widths = @max_widths
 
-      until in_line(chunk_size) || chunk_size <= 1
+      until in_line(chunk_size, max_widths) || chunk_size <= 1
         chunk_size -= 1
-        chunk       = get_chunk(chunk_size)
+        max_widths      = @max_widths.each_slice(chunk_size).to_a
+        max_widths[-1] += [0] * (chunk_size - max_widths.last.size)
+        max_widths      = max_widths.transpose.map(&:max)
       end
-
-      chunk || [@contents]
+      @max_widths = max_widths
+      @contents = get_chunk(chunk_size)
     end
 
     def get_chunk(chunk_size)
-      chunk           = @contents.each_slice(chunk_size).to_a
-      max_widths      = chunk.map { |c| c.map { |i| i.name.length } }
-      max_widths[-1] += [0] * (chunk_size - chunk.last.size)
-      @max_widths = max_widths.transpose.map(&:max)
-      chunk
+      @contents.each_slice(chunk_size).to_a
     end
 
-    def in_line(chunk_size)
-      (@max_widths.sum + 12 * chunk_size <= @screen_width)
+    def in_line(chunk_size, max_widths)
+      (max_widths.sum + 12 * chunk_size <= @screen_width)
     end
 
     def display_report
