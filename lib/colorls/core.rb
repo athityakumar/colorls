@@ -220,14 +220,14 @@ module ColorLS
 
       # puts "\n\n"
 
-      Dir.chdir(@git_root_path)
       relative_path = path.remove(@git_root_path+'/')
       relative_path = relative_path==path ? '' : relative_path+'/'
       content_path  = "#{relative_path}#{content}"
-      content_type  = Dir.exist?("#{@git_root_path}/#{content_path}") ? :dir : :file
 
-      if content_type == :file then git_file_info(content_path)
-      else git_dir_info(content_path)
+      if content.directory?
+        git_dir_info(content_path)
+      else
+        git_file_info(content_path)
       end
       # puts "\n\n"
     end
