@@ -208,17 +208,11 @@ module ColorLS
     def process_git_status_details(git_status)
       return false unless git_status
 
-      actual_path = Dir.pwd
-      Dir.chdir(@input)
-      until File.exist?('.git') # check whether the repository is git controlled
-        return false if Dir.pwd=='/'
-        Dir.chdir('..')
-      end
+      @git_root_path = IO.popen(['git', '-C', @input, 'rev-parse', '--show-toplevel'], err: :close, &:gets)
 
-      @git_root_path = Dir.pwd
-      Dir.chdir(actual_path)
+      return false unless $CHILD_STATUS.success?
 
-      @git_status = Git.status(@git_root_path)
+      @git_status = Git.status(@git_root_path.chomp!)
     end
 
     def git_info(path, content)

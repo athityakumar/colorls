@@ -1,5 +1,6 @@
 require 'yaml'
 require 'etc'
+require 'English'
 require 'filesize'
 require 'io/console'
 require 'rainbow/ext/string'
