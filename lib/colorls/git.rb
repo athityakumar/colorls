@@ -1,20 +1,15 @@
 module ColorLS
   class Git < Core
     def self.status(repo_path)
-      actual = Dir.pwd
-      Dir.chdir(repo_path)
-
       @git_status = {}
 
-      `git status --short`.split("\n").map { |x| x.split(' ') }.each do |mode, file|
-        @git_status[file] = mode
+      IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-uall', '--ignored']) do |output|
+        output.read.split("\x0").map { |x| x.split(' ', 2) }.each do |mode, file|
+          @git_status[file] = mode
+        end
       end
+      warn "git status failed in #{repo_path}" unless $CHILD_STATUS.success?
 
-      `git ls-files --others -i --exclude-standard`.split("\n").each do |file|
-        @git_status[file] = ' '
-      end
-
-      Dir.chdir(actual)
       @git_status
     end
 
@@ -32,6 +27,7 @@ module ColorLS
         .gsub('A', 'A'.colorize(colors[:addition]))
         .gsub('M', 'M'.colorize(colors[:modification]))
         .gsub('D', 'D'.colorize(colors[:deletion]))
+        .tr('!', ' ')
     end
   end
 end

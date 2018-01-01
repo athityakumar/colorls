@@ -250,7 +250,7 @@ module ColorLS
     end
 
     def git_dir_info(path)
-      ignored = @git_status.select { |file, mode| file.start_with?(path) && mode==' ' }.keys
+      ignored = @git_status.select { |file, mode| file.start_with?(path) && mode=='!!' }.keys
       present = Dir.deep_entries(path).map { |p| "#{path}/#{p}" }
       return '    ' if (present-ignored).empty?
 
