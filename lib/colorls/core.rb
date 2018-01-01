@@ -22,7 +22,7 @@ module ColorLS
 
       @colors       = colors
 
-      @contents   = init_contents(@input)
+      @contents   = init_contents(input)
       @max_widths = @contents.map { |c| c.name.length }
       init_icons
     end
