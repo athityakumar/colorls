@@ -23,7 +23,7 @@ module ColorLS
       @colors       = colors
 
       @contents   = init_contents(@input)
-      @max_widths = @contents.map(&:length)
+      @max_widths = @contents.map { |c| c.name.length }
       init_icons
     end
 
@@ -35,7 +35,7 @@ module ColorLS
         tree_traverse(@input, 0, 2)
       else
         @contents = chunkify
-        @max_widths = @contents.transpose.map { |c| c.map(&:length).max }
+        @max_widths = @contents.transpose.map { |c| c.map { |i| i.name.length }.max }
         @contents.each { |chunk| ls_line(chunk) }
       end
       display_report if @report
@@ -45,24 +45,26 @@ module ColorLS
     private
 
     def init_contents(path)
-      is_directory = Dir.exist?(path)
-      @contents = if is_directory
-                    Dir.entries(path)
-                  else
-                    @input = File.dirname(path)
-                    [File.basename(path)]
-                  end
+      info = FileInfo.new(path)
 
-      filter_hidden_contents if is_directory
-      filter_contents(path) if @show
-      sort_contents(path)   if @sort
-      group_contents(path)  if @group
+      if info.directory?
+        @contents = Dir.entries(path)
 
+        filter_hidden_contents
+
+        @contents.map! { |e| FileInfo.info(File.join(path, e)) }
+
+        filter_contents if @show
+        sort_contents   if @sort
+        group_contents  if @group
+      else
+        @contents = [info]
+      end
       @total_content_length = @contents.length
 
       return @contents unless @long
-      init_user_lengths(path)
-      init_group_lengths(path)
+      init_user_lengths
+      init_group_lengths
       @contents
     end
 
@@ -71,53 +73,40 @@ module ColorLS
       @contents.keep_if { |x| !x.start_with? '.' } unless @all || @almost_all
     end
 
-    def init_user_lengths(path)
+    def init_user_lengths
       @userlength = @contents.map do |c|
-        next 0 unless File.exist?("#{path}/#{c}")
-        begin
-          user = Etc.getpwuid(File.stat("#{path}/#{c}").uid).name
-        rescue ArgumentError
-          user = File.stat("#{path}/#{c}").uid
-        end
-        user.to_s.length
+        c.owner.length
       end.max
     end
 
-    def init_group_lengths(path)
+    def init_group_lengths
       @grouplength = @contents.map do |c|
-        next 0 unless File.exist?("#{path}/#{c}")
-        begin
-          group = Etc.getgrgid(File.stat("#{path}/#{c}").gid).name
-        rescue ArgumentError
-          group = File.stat("#{path}/#{c}").gid
-        end
-        group.to_s.length
+        c.group.length
       end.max
     end
 
-    def filter_contents(path)
+    def filter_contents
       @contents.keep_if do |x|
-        next Dir.exist?("#{path}/#{x}") if @show == :dirs
-        !Dir.exist?("#{path}/#{x}")
+        x.directory? == (@show == :dirs)
       end
     end
 
-    def sort_contents(path)
+    def sort_contents
       case @sort
       when :time
-        @contents.sort_by! { |a| -File.mtime(File.join(path, a)).to_f }
+        @contents.sort_by! { |a| -a.mtime.to_f }
       when :size
-        @contents.sort_by! { |a| -File.size(File.join(path, a)) }
+        @contents.sort_by! { |a| -a.size }
       else
-        @contents.sort_by! { |a| CLocale.strxfrm(a) }
+        @contents.sort_by! { |a| CLocale.strxfrm(a.name) }
       end
       @contents.reverse! if @reverse
     end
 
-    def group_contents(path)
+    def group_contents
       return unless @group
 
-      dirs, files = @contents.partition { |a| Dir.exist?("#{path}/#{a}") }
+      dirs, files = @contents.partition(&:directory?)
 
       @contents = case @group
                   when :dirs then dirs.push(*files)
@@ -154,9 +143,10 @@ module ColorLS
     end
 
     def get_chunk(chunk_size)
-      chunk       = @contents.each_slice(chunk_size).to_a
-      chunk[-1]  += [''] * (chunk_size - chunk.last.size)
-      @max_widths = chunk.transpose.map { |c| c.map(&:length).max }
+      chunk           = @contents.each_slice(chunk_size).to_a
+      max_widths      = chunk.map { |c| c.map { |i| i.name.length } }
+      max_widths[-1] += [0] * (chunk_size - chunk.last.size)
+      @max_widths = max_widths.transpose.map(&:max)
       chunk
     end
 
@@ -192,37 +182,27 @@ module ColorLS
       mode
     end
 
-    def user_info(stat)
-      begin
-        user = Etc.getpwuid(stat.uid).name
-      rescue ArgumentError
-        user = stat.uid
-      end
+    def user_info(user)
       user = user.to_s.ljust(@userlength, ' ')
       user.colorize(@colors[:user]) if user == Etc.getlogin
     end
 
-    def group_info(stat)
-      begin
-        group = Etc.getgrgid(stat.gid).name
-      rescue ArgumentError
-        group = stat.gid
-      end
+    def group_info(group)
       group.to_s.ljust(@grouplength, ' ').colorize(@colors[:normal])
     end
 
-    def size_info(stat)
-      size = Filesize.from("#{stat.size} B").pretty.split(' ')
+    def size_info(filesize)
+      size = Filesize.from("#{filesize} B").pretty.split(' ')
       size = "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}"
-      return size.colorize(@colors[:file_large])  if stat.size >= 512 * 1024 ** 2
-      return size.colorize(@colors[:file_medium]) if stat.size >= 128 * 1024 ** 2
+      return size.colorize(@colors[:file_large])  if filesize >= 512 * 1024 ** 2
+      return size.colorize(@colors[:file_medium]) if filesize >= 128 * 1024 ** 2
       size.colorize(@colors[:file_small])
     end
 
-    def mtime_info(stat)
-      mtime = stat.mtime.asctime
-      return mtime.colorize(@colors[:hour_old]) if Time.now - stat.mtime < 60 * 60
-      return mtime.colorize(@colors[:day_old])  if Time.now - stat.mtime < 24 * 60 * 60
+    def mtime_info(file_mtime)
+      mtime = file_mtime.asctime
+      return mtime.colorize(@colors[:hour_old]) if Time.now - file_mtime < 60 * 60
+      return mtime.colorize(@colors[:day_old])  if Time.now - file_mtime < 24 * 60 * 60
       mtime.colorize(@colors[:no_modifier])
     end
 
@@ -286,27 +266,24 @@ module ColorLS
       Git.colored_status_symbols(modes.join.uniq, @colors)
     end
 
-    def long_info(path, content)
+    def long_info(content)
       return '' unless @long
-      unless File.exist?("#{path}/#{content}")
-        return '[No Info]'.colorize(@colors[:error]) + ' ' * (38 + @userlength + @grouplength)
-      end
-      stat = File.stat("#{path}/#{content}")
-      [mode_info(stat), user_info(stat), group_info(stat), size_info(stat), mtime_info(stat)]
-        .join('  ')
+      [mode_info(content.stats), user_info(content.owner), group_info(content.group),
+       size_info(content.size), mtime_info(content.mtime)].join('  ')
     end
 
-    def symlink_info(path, content)
-      return '' unless @long && File.symlink?("#{path}/#{content}")
-      if File.exist?("#{path}/#{content}")
-        " ⇒ #{File.readlink("#{path}/#{content}")}/".colorize(@colors[:link])
+    def symlink_info(content)
+      return '' unless @long && content.symlink?
+      link_info = " ⇒ #{content.link_target}"
+      if content.dead?
+        "#{link_info} [Dead link]".colorize(@colors[:dead_link])
       else
-        ' ⇒ [Dead link]'.colorize(@colors[:dead_link])
+        link_info.colorize(@colors[:link])
       end
     end
 
-    def slash?(path, content)
-      Dir.exist?("#{path}/#{content}") ? '/'.colorize(@colors[:dir]) : ' '
+    def slash?(content)
+      content.directory? ? '/'.colorize(@colors[:dir]) : ' '
     end
 
     def fetch_string(path, content, key, color, increment)
@@ -315,26 +292,26 @@ module ColorLS
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
 
       [
-        long_info(path, content),
+        long_info(content),
         " #{git_info(path,content)} ",
         logo.colorize(color),
-        "  #{content.colorize(color)}#{slash?(path, content)}#{symlink_info(path, content)}"
+        "  #{content.name.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
       ].join
     end
 
     def ls_line(chunk)
       chunk.each_with_index do |content, i|
-        break if content.empty?
+        break if content.name.empty?
 
-        print "  #{fetch_string(@input, content, *options(@input, content))}"
-        print ' ' * (@max_widths[i] - content.length) unless @one_per_line || @long
+        print "  #{fetch_string(@input, content, *options(content))}"
+        print ' ' * (@max_widths[i] - content.name.length) unless @one_per_line || @long
       end
       print "\n"
     end
 
-    def options(path, content)
-      if Dir.exist?("#{path}/#{content}")
-        key = content.to_sym
+    def options(content)
+      if content.directory?
+        key = content.name.to_sym
         color = @colors[:dir]
         return [:folder, color, :folders] unless @all_folders.include?(key)
         key = @folder_aliases[key] unless @folder_keys.include?(key)
@@ -344,7 +321,7 @@ module ColorLS
       color = @colors[:recognized_file]
       return [content.downcase.to_sym, color, :recognized_files] if @file_keys.include?(key)
 
-      key = content.split('.').last.downcase.to_sym
+      key = content.name.split('.').last.downcase.to_sym
       return [:file, @colors[:unrecognized_file], :unrecognized_files] unless @all_files.include?(key)
 
       key = @file_aliases[key] unless @file_keys.include?(key)
@@ -354,10 +331,10 @@ module ColorLS
     def tree_traverse(path, prespace, indent)
       contents = init_contents(path)
       contents.each do |content|
-        icon = content == contents.last || Dir.exist?("#{path}/#{content}") ? ' └──' : ' ├──'
+        icon = content == contents.last || content.directory? ? ' └──' : ' ├──'
         print tree_branch_preprint(prespace, indent, icon).colorize(@colors[:tree])
-        print " #{fetch_string(path, content, *options(path, content))} \n"
-        next unless Dir.exist? "#{path}/#{content}"
+        print " #{fetch_string(path, content, *options(content))} \n"
+        next unless content.directory?
         tree_traverse("#{path}/#{content}", prespace + indent, indent)
       end
     end
