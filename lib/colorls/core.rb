@@ -182,9 +182,9 @@ module ColorLS
       mode
     end
 
-    def user_info(user)
-      user = user.to_s.ljust(@userlength, ' ')
-      user.colorize(@colors[:user]) if user == Etc.getlogin
+    def user_info(content)
+      user = content.owner.ljust(@userlength, ' ')
+      user.colorize(@colors[:user]) if content.owned?
     end
 
     def group_info(group)
@@ -268,7 +268,7 @@ module ColorLS
 
     def long_info(content)
       return '' unless @long
-      [mode_info(content.stats), user_info(content.owner), group_info(content.group),
+      [mode_info(content.stats), user_info(content), group_info(content.group),
        size_info(content.size), mtime_info(content.mtime)].join('  ')
     end
 

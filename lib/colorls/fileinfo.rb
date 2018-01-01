@@ -29,6 +29,10 @@ module ColorLS
       @stats.uid.to_s
     end
 
+    def owned?
+      @stats.owned?
+    end
+
     def group
       return @@groups[@stats.gid] if @@groups.key? @stats.gid
       @@groups[@stats.gid] = Etc.getgrgid(@stats.gid).name
