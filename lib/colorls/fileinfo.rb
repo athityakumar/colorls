@@ -6,10 +6,11 @@ module ColorLS
     attr_reader :stats
     attr_reader :name
 
-    def initialize(path)
+    def initialize(path, link_info=true)
       @name = File.basename(path)
       @stats = File.lstat(path)
-      return unless @stats.symlink?
+
+      return unless link_info && @stats.symlink?
       @dead = !File.exist?(path)
       @target = File.readlink(path)
     end
@@ -56,6 +57,7 @@ module ColorLS
       @stats.symlink?
     end
 
+    # target of a symlink (only available for symlinks)
     def link_target
       @target
     end

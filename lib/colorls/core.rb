@@ -44,14 +44,14 @@ module ColorLS
     private
 
     def init_contents(path)
-      info = FileInfo.new(path)
+      info = FileInfo.new(path, link_info = @long)
 
       if info.directory?
         @contents = Dir.entries(path)
 
         filter_hidden_contents
 
-        @contents.map! { |e| FileInfo.info(File.join(path, e)) }
+        @contents.map! { |e| FileInfo.new(File.join(path, e), link_info = @long) }
 
         filter_contents if @show
         sort_contents   if @sort
