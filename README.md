@@ -175,7 +175,7 @@ You can overwrite the existing icons and colors mapping by copying the yaml file
 
 - To overwrite icon mapping :
 
-  Please have a look at the [list of supported icons](https://nerdfonts.com/). Let's say you want to add an icon for swift files. Copy the feault `files.yaml` and change it.
+  Please have a look at the [list of supported icons](https://nerdfonts.com/). Let's say you want to add an icon for swift files. Copy the default `files.yaml` and change it.
 
   ```sh
   cp $(dirname $(gem which colorls))/yaml/files.yaml ~/.config/colorls/files.yaml`
