@@ -114,4 +114,16 @@ RSpec.describe ColorLS::Flags do
 
     it { is_expected.to match(/├──/) } # displays file hierarchy
   end
+
+  context 'symlinked directory' do
+    let(:args) { [File.join(FIXTURES, 'symlinks', 'Supportlink')] }
+
+    it { is_expected.to match(/Supportlink/) }
+  end
+
+  context 'symlinked directory with trailing separator' do
+    let(:args) { [File.join(FIXTURES, 'symlinks', 'Supportlink', File::SEPARATOR)] }
+
+    it { is_expected.to match(/yaml_sort_checker.rb/) }
+  end
 end

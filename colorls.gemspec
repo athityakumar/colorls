@@ -57,4 +57,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'rubocop-rspec'
   spec.add_development_dependency 'rubygems-tasks'
+  spec.add_development_dependency 'simplecov'
 end
+# rubocop:enable Metrics/BlockLength
