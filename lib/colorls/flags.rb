@@ -59,7 +59,8 @@ module ColorLS
         flags = o.short + o.long
         next if flags.empty?
 
-        OpenStruct.new(flags: flags, desc: o.desc)
+        args = o.pattern.keys if Hash === o.pattern
+        OpenStruct.new(flags: flags, desc: o.desc, args: args)
       end
 
       result.compact

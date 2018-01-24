@@ -42,4 +42,24 @@ file 'zsh/_colorls' => ['lib/colorls/flags.rb'] do
   ruby "exe/colorls '--*-completion-zsh=colorls' > zsh/_colorls"
 end
 
+desc 'Build Fish completion file'
+file 'colorls.fish' => ['lib/colorls/flags.rb'] do
+  require 'colorls'
+  require 'shellwords'
+
+  flags = ColorLS::Flags.new
+  flags.options.each do |o|
+    short_and_long = o.flags.collect do |option|
+      case option
+      when /^--/ then "-l #{option[2..-1]}"
+      else "-s #{option[1..-1]}"
+      end
+    end.join(' ')
+
+    fixed_args = " -x -a #{Shellwords.escape o.args.join(' ')}" unless o.args.nil?
+
+    puts "complete -c colorls #{short_and_long} -d #{Shellwords.escape o.desc.first}#{fixed_args}"
+  end
+end
+
 task default: %w[spec rubocop]
