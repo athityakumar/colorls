@@ -35,6 +35,7 @@ rdoc:             md
 readme:           md
 gslides:          ppt
 pptx:             ppt
+ipynb:            py
 pyc:              py
 rdata:            r
 rds:              r
