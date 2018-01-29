@@ -4,6 +4,9 @@ ds_store:         apple
 localized:        apple
 mp3:              audio
 ogg:              audio
+m4a:              audio
+wav:              audio
+flac:             audio
 editorconfig:     conf
 scss:             css
 docx:             doc
@@ -25,6 +28,9 @@ jpeg:             image
 jpg:              image
 png:              image
 svg:              image
+webp:             image
+tiff:             image
+pxm:              image
 jar:              java
 properties:       json
 tsx:              jsx
@@ -66,6 +72,8 @@ mkv:              video
 mp4:              video
 ogv:              video
 webm:             video
+mov:              video
+flv:              video
 bat:              windows
 exe:              windows
 ini:              windows
