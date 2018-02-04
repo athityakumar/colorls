@@ -3,7 +3,7 @@ module ColorLS
     def self.status(repo_path)
       @git_status = {}
 
-      IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-uall', '--ignored']) do |output|
+      IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored']) do |output|
         output.read.split("\x0").map { |x| x.split(' ', 2) }.each do |mode, file|
           @git_status[file] = mode
         end

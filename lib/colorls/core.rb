@@ -218,45 +218,35 @@ module ColorLS
     def git_info(path, content)
       return '' unless @git_status
 
-      # puts "\n\n"
+      real_path = File.realdirpath(content.name, path)
 
-      relative_path = path.remove(@git_root_path+'/')
-      relative_path = relative_path==path ? '' : relative_path+'/'
-      content_path  = "#{relative_path}#{content}"
+      return '    ' unless real_path.start_with? path
+
+      relative_path = real_path.remove(Regexp.new('^' + Regexp.escape(@git_root_path) + '/?'))
 
       if content.directory?
-        git_dir_info(content_path)
+        git_dir_info(relative_path)
       else
-        git_file_info(content_path)
+        git_file_info(relative_path)
       end
       # puts "\n\n"
     end
 
     def git_file_info(path)
       return '  ✓ '.colorize(@colors[:unchanged]) unless @git_status[path]
-      Git.colored_status_symbols(@git_status[path], @colors)
-    end
-
-    Dir.class_eval do
-      def self.deep_entries(path)
-        (Dir.entries(path) - ['.', '..']).map do |entry|
-          if Dir.exist?("#{path}/#{entry}")
-            Dir.deep_entries("#{path}/#{entry}")
-          else
-            entry
-          end
-        end.flatten
-      end
+      Git.colored_status_symbols(@git_status[path].uniq, @colors)
     end
 
     def git_dir_info(path)
-      ignored = @git_status.select { |file, mode| file.start_with?(path) && mode=='!!' }.keys
-      present = Dir.deep_entries(path).map { |p| "#{path}/#{p}" }
-      return '    ' if (present-ignored).empty?
+      direct_status = @git_status.fetch("#{path}/", nil)
 
-      modes = (present-ignored).map { |file| @git_status[file] }-[nil]
+      return Git.colored_status_symbols(direct_status.uniq, @colors) unless direct_status.nil?
+
+      modes = @git_status.select { |file, mode| file.start_with?(path) && mode != '!!' }
+
       return '  ✓ '.colorize(@colors[:unchanged]) if modes.empty?
-      Git.colored_status_symbols(modes.join.uniq, @colors)
+
+      Git.colored_status_symbols(modes.values.join.uniq, @colors)
     end
 
     def long_info(content)
