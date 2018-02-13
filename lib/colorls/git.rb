@@ -14,13 +14,7 @@ module ColorLS
     end
 
     def self.colored_status_symbols(modes, colors)
-      modes =
-        case modes.length
-        when 1 then "  #{modes} "
-        when 2 then " #{modes} "
-        when 3 then "#{modes} "
-        when 4 then modes
-        end
+      modes = modes.rjust(3).ljust(4)
 
       modes
         .gsub('?', '?'.colorize(colors[:untracked]))
