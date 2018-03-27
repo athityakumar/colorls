@@ -4,8 +4,13 @@ module ColorLS
       @git_status = {}
 
       IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored']) do |output|
-        output.read.split("\x0").map { |x| x.split(' ', 2) }.each do |mode, file|
+        while (status_line = output.gets "\x0")
+          mode, file = status_line.chomp("\x0").split(' ', 2)
+
           @git_status[file] = mode
+
+          # skip the next \x0 separated original path for renames, issue #185
+          output.gets("\x0") if mode.start_with? 'R'
         end
       end
       warn "git status failed in #{repo_path}" unless $CHILD_STATUS.success?
