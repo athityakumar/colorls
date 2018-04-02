@@ -13,6 +13,7 @@ end
 desc 'Build the manual'
 file 'man/colorls.1' => ['man/colorls.1.ronn', 'lib/colorls/flags.rb'] do
   require 'colorls'
+  require 'date'
   require 'ronn'
 
   flags = ColorLS::Flags.new
