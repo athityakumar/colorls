@@ -181,8 +181,7 @@ module ColorLS
     end
 
     def user_info(content)
-      user = content.owner.ljust(@userlength, ' ')
-      user.colorize(@colors[:user]) if content.owned?
+      content.owner.ljust(@userlength, ' ').colorize(@colors[:user])
     end
 
     def group_info(group)
