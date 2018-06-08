@@ -11,6 +11,7 @@ editorconfig:     conf
 scss:             css
 docx:             doc
 gdoc:             doc
+dockerfile:       docker
 mobi:             ebook
 eot:              font
 otf:              font
