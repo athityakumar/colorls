@@ -44,6 +44,33 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.to match(/((r|-).*(w|-).*(x|-).*){3}/) } # lists file info
   end
 
+  context 'with --long flag and special bits' do
+    let(:args) { ['--long', "#{FIXTURES}/a.txt"] }
+
+    it 'shows special permission bits' do
+      fileInfo = instance_double(
+        'FileInfo',
+        :group => "sys",
+        :mtime => Time.now,
+        :directory? => false,
+        :owner => "user",
+        :name => "a.txt",
+        :size => 128,
+        :symlink? => false,
+        :stats => OpenStruct.new(
+          mode: 0o444, # read for user, owner, other
+          setuid?: true,
+          setgid?: true,
+          sticky?: true
+        )
+      )
+
+      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", true) { fileInfo }
+
+      is_expected.to match(/r-Sr-Sr-T  \s+  user  \s+  sys  .*  a.txt/mx)
+    end
+  end
+
   context 'with --all flag' do
     let(:args) { ['--all', FIXTURES] }
 

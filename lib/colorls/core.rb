@@ -20,7 +20,7 @@ module ColorLS
       @screen_width = IO.console.winsize[1]
       @screen_width = 80 if @screen_width.zero?
 
-      @colors       = colors
+      init_colors colors
 
       @contents   = init_contents(input)
       @max_widths = @contents.map { |c| c.name.length }
@@ -42,6 +42,19 @@ module ColorLS
     end
 
     private
+
+    def init_colors(colors)
+      @colors  = colors
+      @modes = Hash.new do |hash, key|
+        color = case key
+                when 'r' then :read
+                when 'w' then :write
+                when '-' then :no_access
+                when 'x', 's', 'S', 't', 'T' then :exec
+                end
+        hash[key] = key.colorize(@colors[color]).freeze
+      end
+    end
 
     def init_contents(path)
       info = FileInfo.new(path, link_info = @long)
@@ -171,20 +184,24 @@ module ColorLS
         .colorize(@colors[:report])
     end
 
+    def format_mode(rwx, special, char)
+      m_r = (rwx & 4).zero? ? '-' : 'r'
+      m_w = (rwx & 2).zero? ? '-' : 'w'
+      m_x = if special
+              (rwx & 1).zero? ? char.upcase : char
+            else
+              (rwx & 1).zero? ? '-' : 'x'
+            end
+
+      @modes[m_r] + @modes[m_w] + @modes[m_x]
+    end
+
     def mode_info(stat)
-      mode = ''
-      stat.mode.to_s(2).rjust(16, '0')[-9..-1].each_char.with_index do |c, i|
-        if c == '0'
-          mode += '-'.colorize(@colors[:no_access])
-        else
-          case (i % 3)
-          when 0 then mode += 'r'.colorize(@colors[:read])
-          when 1 then mode += 'w'.colorize(@colors[:write])
-          when 2 then mode += 'x'.colorize(@colors[:exec])
-          end
-        end
-      end
-      mode
+      m = stat.mode
+
+      format_mode(m >> 6, stat.setuid?, 's') +
+        format_mode(m >> 3, stat.setgid?, 's') +
+        format_mode(m, stat.sticky?, 't')
     end
 
     def user_info(content)
