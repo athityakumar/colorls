@@ -28,7 +28,7 @@ _arguments -s -S \
   "-U[do not sort; list entries in directory order]" \
   "-S[sort by file size, largest first]" \
   "-X[sort by file extension]" \
-  "--sort[sort by WORD instead of name: none, size (-S), time (-t)]" \
+  "--sort[sort by WORD instead of name: none, size (-S), time (-t), extension (-X)]" \
   "-r[reverse order while sorting]" \
   "--reverse[reverse order while sorting]" \
   "--light[use light color scheme]" \
