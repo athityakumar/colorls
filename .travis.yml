@@ -14,7 +14,9 @@ rvm:
 script:
   - bundle exec rubocop
   - bundle exec rspec
-  - rake install
+  - bundle exec rake install
+  - bundle binstubs colorls
+  - PATH=$PWD/bin:$PATH
   - colorls
   - colorls -1
   - colorls -a
