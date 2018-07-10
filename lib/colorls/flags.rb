@@ -72,11 +72,11 @@ module ColorLS
       options.separator 'sorting options:'
       options.separator ''
       options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:group] = :dirs }
-      options.on('--sf', '--sort-files', 'sort files first')                                  { @opts[:group] = :files }
-      options.on('-t', 'sort by modification time, newest first')                             { @opts[:sort] = :time }
-      options.on('-U', 'do not sort; list entries in directory order')                        { @opts[:sort] = false }
-      options.on('-S', 'sort by file size, largest first')                                    { @opts[:sort] = :size }
-      options.on('-X', 'sort by file extension')                                              { @opts[:sort] = :extension }
+      options.on('--sf', '--sort-files', 'sort files first')                               { @opts[:group] = :files }
+      options.on('-t', 'sort by modification time, newest first')                          { @opts[:sort] = :time }
+      options.on('-U', 'do not sort; list entries in directory order')                     { @opts[:sort] = false }
+      options.on('-S', 'sort by file size, largest first')                                 { @opts[:sort] = :size }
+      options.on('-X', 'sort by file extension')                                           { @opts[:sort] = :extension }
       options.on(
         '--sort=WORD',
         %w[none time size extension],
