@@ -92,6 +92,13 @@ module ColorLS
 
     def sort_contents
       case @sort
+      when :extension
+        @contents.sort_by! do |f|
+          name = f.name
+          ext = File.extname(name)
+          name = name.chomp(ext) unless ext.empty?
+          [ext, name].map { |s| CLocale.strxfrm(s) }
+        end
       when :time
         @contents.sort_by! { |a| -a.mtime.to_f }
       when :size

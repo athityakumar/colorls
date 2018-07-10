@@ -85,6 +85,12 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results by size
   end
 
+  context 'with --sort=extension flag' do
+    let(:args) { ['--sort=extension', FIXTURES] }
+
+    it { is_expected.to match(/a-file.+symlinks.+z-file.+a.md.+a.txt.+z.txt/) } # sorts results by extension
+  end
+
   context 'with --dirs flag' do
     let(:args) { ['--dirs', FIXTURES] }
 
