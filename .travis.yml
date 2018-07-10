@@ -43,6 +43,3 @@ script:
   - colorls --color=never
   - colorls --color=always
 
-install:
-  - gem install bundler
-  - bundle install
