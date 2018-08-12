@@ -20,7 +20,7 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.not_to match(/((r|-).*(w|-).*(x|-).*){3}/) } # does not list file info
     it { is_expected.not_to match(/\.hidden-file/) } # does not display hidden files
     it { is_expected.not_to match(/Found \d+ contents/) } # does not show a report
-    it { is_expected.to match(/a-file.+symlinks.+z-file/) } # displays dirs & files alphabetically
+    it { is_expected.to match(/a-file.+symlinks.+z-file/m) } # displays dirs & files alphabetically
     it { is_expected.not_to match(/(.*\n){3}/) } # displays multiple files per line
     it { is_expected.not_to match(%r(\.{1,2}/)) } # does not display ./ or ../
     it { is_expected.not_to match(/├──/) } # does not display file hierarchy
@@ -29,7 +29,7 @@ RSpec.describe ColorLS::Flags do
   context 'with --reverse flag' do
     let(:args) { ['--reverse', FIXTURES] }
 
-    it { is_expected.to match(/z-file.+symlinks.+a-file/) } # displays dirs & files in reverse alphabetical order
+    it { is_expected.to match(/z-file.+symlinks.+a-file/m) } # displays dirs & files in reverse alphabetical order
   end
 
   context 'with --long flag & file path' do
@@ -53,13 +53,13 @@ RSpec.describe ColorLS::Flags do
   context 'with --sort-dirs flag' do
     let(:args) { ['--sort-dirs', FIXTURES] }
 
-    it { is_expected.to match(/symlinks.+a-file.+z-file/) } # sorts results alphabetically, directories first
+    it { is_expected.to match(/symlinks.+a-file.+z-file/m) } # sorts results alphabetically, directories first
   end
 
   context 'with --sort-files flag' do
     let(:args) { ['--sort-files', FIXTURES] }
 
-    it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results alphabetically, files first
+    it { is_expected.to match(/a-file.+z-file.+symlinks/m) } # sorts results alphabetically, files first
   end
 
   context 'with --sort=time' do
@@ -83,6 +83,12 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--sort=size', FIXTURES] }
 
     it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results by size
+  end
+
+  context 'with --sort=extension flag' do
+    let(:args) { ['--sort=extension', FIXTURES] }
+
+    it { is_expected.to match(/a-file.+symlinks.+z-file.+a.md.+a.txt.+z.txt/m) } # sorts results by extension
   end
 
   context 'with --dirs flag' do
