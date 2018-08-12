@@ -43,20 +43,20 @@ Gem::Specification.new do |spec|
 
   spec.post_install_message = ColorLS::POST_INSTALL_MESSAGE
 
-  spec.add_runtime_dependency 'clocale'
-  spec.add_runtime_dependency 'filesize'
-  spec.add_runtime_dependency 'manpages'
-  spec.add_runtime_dependency 'rainbow'
+  spec.add_runtime_dependency 'clocale', '~> 0'
+  spec.add_runtime_dependency 'filesize', '~> 0'
+  spec.add_runtime_dependency 'manpages', '~> 0'
+  spec.add_runtime_dependency 'rainbow', '~> 2.2'
 
   spec.add_development_dependency 'bundler', '~> 1.15'
-  spec.add_development_dependency 'diffy'
-  spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'ronn'
-  spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'rspec-its'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'rubocop-rspec'
-  spec.add_development_dependency 'rubygems-tasks'
-  spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'diffy', '~> 3'
+  spec.add_development_dependency 'rake', '~> 12'
+  spec.add_development_dependency 'ronn', '~> 0'
+  spec.add_development_dependency 'rspec', '~> 3.7'
+  spec.add_development_dependency 'rspec-its', '~> 1.2'
+  spec.add_development_dependency 'rubocop', '~> 0.57.2'
+  spec.add_development_dependency 'rubocop-rspec', '~> 1.27'
+  spec.add_development_dependency 'rubygems-tasks', '~> 0'
+  spec.add_development_dependency 'simplecov', '~> 0.16.1'
 end
 # rubocop:enable Metrics/BlockLength
