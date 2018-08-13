@@ -2,7 +2,7 @@ lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'colorls/version'
 
-ColorLS::POST_INSTALL_MESSAGE = %(
+POST_INSTALL_MESSAGE = %(
   *******************************************************************
     Changes introduced in colorls
 
@@ -41,7 +41,7 @@ Gem::Specification.new do |spec|
   spec.executables   = 'colorls'
   spec.require_paths = ['lib']
 
-  spec.post_install_message = ColorLS::POST_INSTALL_MESSAGE
+  spec.post_install_message = POST_INSTALL_MESSAGE
 
   spec.add_runtime_dependency 'clocale', '~> 0'
   spec.add_runtime_dependency 'filesize', '~> 0'
