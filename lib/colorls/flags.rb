@@ -113,6 +113,15 @@ module ColorLS
       options.on('--hyperlink') { @opts[:hyperlink] = true }
     end
 
+    def add_help_option(opts)
+      opts.separator ''
+      opts.on_tail('-h', '--help', 'prints this help') do
+        puts @parser
+        show_examples
+        exit
+      end
+    end
+
     def show_examples
       puts <<EXAMPLES.gsub(/^  /, '')
 
@@ -146,13 +155,8 @@ EXAMPLES
         add_common_options(opts)
         add_sort_options(opts)
         add_general_options(opts)
+        add_help_option(opts)
 
-        opts.separator ''
-        opts.on_tail('-h', '--help', 'prints this help') do
-          puts @parser
-          show_examples
-          exit
-        end
         opts.on_tail('--version', 'show version') do
           puts ColorLS::VERSION
           exit
@@ -162,6 +166,9 @@ EXAMPLES
       @parser.parse!(@args)
 
       set_color_opts
+    rescue OptionParser::ParseError => e
+      warn "colorls: #{e}\nSee 'colorls --help'."
+      exit 2
     end
 
     def set_color_opts

@@ -167,4 +167,16 @@ RSpec.describe ColorLS::Flags do
 
     it { is_expected.to match(/yaml_sort_checker.rb/) }
   end
+
+  context 'when passing invalid flags' do
+    let(:args) { ['--snafu'] }
+
+    it 'should issue a warning, hint about `--help` and exit' do
+      allow(::Kernel).to receive(:warn) do |message|
+        expect(message).to match "--snafu"
+      end
+
+      expect { subject }.to raise_error(SystemExit).and output(/--help/).to_stderr
+    end
+  end
 end
