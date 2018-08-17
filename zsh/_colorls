@@ -33,6 +33,7 @@ _arguments -s -S \
   "--reverse[reverse order while sorting]" \
   "--light[use light color scheme]" \
   "--dark[use dark color scheme]" \
+  "--hyperlink[]" \
   "-h[prints this help]" \
   "--help[prints this help]" \
   "--version[show version]" \

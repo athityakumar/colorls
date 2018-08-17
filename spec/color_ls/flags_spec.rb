@@ -148,6 +148,14 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.to match(/├──/) } # displays file hierarchy
   end
 
+  context 'with --hyperlink flag' do
+    let(:args) { ['--hyperlink', FIXTURES] }
+
+    href = "file://#{File.absolute_path(FIXTURES)}/a.txt"
+
+    it { is_expected.to match(href) }
+  end
+
   context 'symlinked directory' do
     let(:args) { [File.join(FIXTURES, 'symlinks', 'Supportlink')] }
 
