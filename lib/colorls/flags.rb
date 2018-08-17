@@ -110,6 +110,7 @@ module ColorLS
       options.separator ''
       options.on('--light', 'use light color scheme') { @light_colors = true }
       options.on('--dark', 'use dark color scheme') { @light_colors = false }
+      options.on('--hyperlink') { @opts[:hyperlink] = true }
     end
 
     def show_examples

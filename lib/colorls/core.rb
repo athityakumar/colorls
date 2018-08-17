@@ -2,11 +2,12 @@ module ColorLS
   class Core
     def initialize(input, all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false)
+      reverse: false, hyperlink: false)
       @input        = File.absolute_path(input)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
+      @hyperlink    = hyperlink
       @report       = report
       @sort         = sort
       @reverse      = reverse
@@ -296,12 +297,14 @@ module ColorLS
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
+      name = content.name
+      name = make_link(path, name) if @hyperlink
 
       [
         long_info(content),
         " #{git_info(path,content)} ",
         logo.colorize(color),
-        "  #{content.name.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
+        "  #{name.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
       ].join
     end
 
@@ -348,6 +351,11 @@ module ColorLS
     def tree_branch_preprint(prespace, indent, prespace_icon)
       return prespace_icon if prespace.zero?
       ' │ ' * (prespace/indent) + prespace_icon + '─' * indent
+    end
+
+    def make_link(path, name)
+      href = "file://#{path}/#{name}"
+      "\033]8;;#{href}\007#{name}\033]8;;\007"
     end
   end
 end

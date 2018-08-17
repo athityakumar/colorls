@@ -25,6 +25,7 @@ script:
   - colorls -r
   - colorls --sd
   - colorls --sf
+  - colorls --hyperlink
   - colorls -t
   - colorls --sort=time
   - colorls -U
