@@ -120,9 +120,11 @@ Man pages have been added. Checkout `man colorls`.
 
     To just get the font on which colorls depends, install it with:
     
-    `cd ~/.fonts
-    wget https://github.com/enricobacis/.dotfiles/blob/master/osx-fonts/Library/Fonts/Knack%20Regular%20Nerd%20Font%20Complete.ttf
-    fc-cache -f`
+    ```
+    cd ~/.fonts
+    wget https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf
+    fc-cache -f
+    ```
 
     *Note for `iTerm2` users - Please enable the Nerd Font at iTerm2 > Preferences > Profiles > Text > Non-ASCII font > Hack Regular Nerd Font Complete.*
 
