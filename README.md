@@ -118,6 +118,12 @@ Man pages have been added. Checkout `man colorls`.
 1. Install Ruby (preferably, version > 2.1)
 2. Install the patched fonts of powerline nerd-font and/or font-awesome. Have a look at the [Nerd Font README](https://github.com/ryanoasis/nerd-fonts/blob/master/readme.md) for more installation instructions.
 
+    To just get the font on which colorls depends, install it with:
+    
+    `cd ~/.fonts
+    wget https://github.com/enricobacis/.dotfiles/blob/master/osx-fonts/Library/Fonts/Knack%20Regular%20Nerd%20Font%20Complete.ttf
+    fc-cache -f`
+
     *Note for `iTerm2` users - Please enable the Nerd Font at iTerm2 > Preferences > Profiles > Text > Non-ASCII font > Hack Regular Nerd Font Complete.*
 
 3. Install the [colorls](https://rubygems.org/gems/colorls/) ruby gem with `gem install colorls`
