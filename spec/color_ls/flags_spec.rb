@@ -71,6 +71,22 @@ RSpec.describe ColorLS::Flags do
     end
   end
 
+  context 'with --long flag on windows' do
+    let(:args) { ['--long', "#{FIXTURES}/a.txt"] }
+
+    before {
+      ColorLS::FileInfo.class_variable_set :@@users, {}
+      ColorLS::FileInfo.class_variable_set :@@groups, {}
+    }
+
+    it 'returns no user / group info' do
+      expect(::Etc).to receive(:getpwuid).and_return(nil)
+      expect(::Etc).to receive(:getgrgid).and_return(nil)
+
+      is_expected.to match(/\s+  \d+  \s+  \d+  .*  a.txt/mx)
+    end
+  end
+
   context 'with --all flag' do
     let(:args) { ['--all', FIXTURES] }
 
@@ -107,9 +123,9 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'with --sort=size flag' do
-    let(:args) { ['--sort=size', FIXTURES] }
+    let(:args) { ['--sort=size', '--group-directories-first', FIXTURES] }
 
-    it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results by size
+    it { is_expected.to match(/symlinks.+a-file.+z-file/) } # sorts results by size
   end
 
   context 'with --sort=extension flag' do
