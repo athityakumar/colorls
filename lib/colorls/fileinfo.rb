@@ -25,7 +25,8 @@ module ColorLS
 
     def owner
       return @@users[@stats.uid] if @@users.key? @stats.uid
-      @@users[@stats.uid] = Etc.getpwuid(@stats.uid).name
+      user = Etc.getpwuid(@stats.uid)
+      @@users[@stats.uid] = user.nil? ? @stats.uid.to_s : user.name
     rescue ArgumentError
       @stats.uid.to_s
     end
@@ -36,7 +37,8 @@ module ColorLS
 
     def group
       return @@groups[@stats.gid] if @@groups.key? @stats.gid
-      @@groups[@stats.gid] = Etc.getgrgid(@stats.gid).name
+      group = Etc.getgrgid(@stats.gid)
+      @@groups[@stats.gid] = group.nil? ? @stats.gid.to_s : group.name
     rescue ArgumentError
       @stats.gid.to_s
     end
