@@ -123,9 +123,9 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'with --sort=size flag' do
-    let(:args) { ['--sort=size', FIXTURES] }
+    let(:args) { ['--sort=size', '--group-directories-first', FIXTURES] }
 
-    it { is_expected.to match(/a-file.+z-file.+symlinks/) } # sorts results by size
+    it { is_expected.to match(/symlinks.+a-file.+z-file/) } # sorts results by size
   end
 
   context 'with --sort=extension flag' do
