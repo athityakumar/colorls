@@ -106,8 +106,15 @@ module ColorLS
     def add_general_options(options)
       options.separator ''
       options.separator 'general options:'
-
       options.separator ''
+
+      options.on(
+        '--color=[WHEN]', %w[always auto never],
+        'colorize the output: auto, always (default if omitted), never'
+      ) do |word|
+        # let Rainbow decide in "auto" mode
+        Rainbow.enabled = (word != 'never') unless word == 'auto'
+      end
       options.on('--light', 'use light color scheme') { @light_colors = true }
       options.on('--dark', 'use dark color scheme') { @light_colors = false }
       options.on('--hyperlink') { @opts[:hyperlink] = true }

@@ -31,6 +31,7 @@ _arguments -s -S \
   "--sort[sort by WORD instead of name: none, size (-S), time (-t), extension (-X)]" \
   "-r[reverse order while sorting]" \
   "--reverse[reverse order while sorting]" \
+  "--color[colorize the output: auto, always (default if omitted), never]" \
   "--light[use light color scheme]" \
   "--dark[use dark color scheme]" \
   "--hyperlink[]" \
