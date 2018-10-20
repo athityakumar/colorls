@@ -8,17 +8,19 @@ _arguments -s -S \
   "--all[do not ignore entries starting with .]" \
   "-A[do not list . and ..]" \
   "--almost-all[do not list . and ..]" \
-  "-l[use a long listing format]" \
-  "--long[use a long listing format]" \
-  "--tree[shows tree view of the directory]" \
-  "--report[show brief report]" \
-  "-1[list one file per line]" \
   "-d[show only directories]" \
   "--dirs[show only directories]" \
   "-f[show only files]" \
   "--files[show only files]" \
   "--gs[show git status for each file]" \
   "--git-status[show git status for each file]" \
+  "--report[show brief report]" \
+  "--format[use format: accross (-x), horizontal (-x), long (-l), single-column (-1)]" \
+  "-1[list one file per line]" \
+  "-l[use a long listing format]" \
+  "--long[use a long listing format]" \
+  "--tree[shows tree view of the directory]" \
+  "-x[list entries by lines instead of by columns]" \
   "--sd[sort directories first]" \
   "--sort-dirs[sort directories first]" \
   "--group-directories-first[sort directories first]" \

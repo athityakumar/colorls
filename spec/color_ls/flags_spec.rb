@@ -32,6 +32,15 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.to match(/z-file.+symlinks.+a-file/m) } # displays dirs & files in reverse alphabetical order
   end
 
+  context 'with --format flag' do
+    let(:args) { ['--format=single-column', FIXTURES] }
+
+    it { is_expected.to match(/.*a-file.*\n # on the first line
+                               (?m:.*)      # more lines...
+                               .*z-file.*\n # on the last line
+                              /x) }
+  end
+
   context 'with --long flag & file path' do
     let(:args) { ['--long', "#{FIXTURES}/.hidden-file"] }
 
