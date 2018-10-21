@@ -139,11 +139,6 @@ module ColorLS
       @file_aliases   = ColorLS::Yaml.new('file_aliases.yaml').load(aliase: true)
       @folders        = ColorLS::Yaml.new('folders.yaml').load
       @folder_aliases = ColorLS::Yaml.new('folder_aliases.yaml').load(aliase: true)
-
-      @file_keys          = @files.keys
-      @file_aliase_keys   = @file_aliases.keys
-      @folder_keys        = @folders.keys
-      @folder_aliase_keys = @folder_aliases.keys
     end
 
     def chunkify
@@ -321,7 +316,7 @@ module ColorLS
                   when file.blockdev? then :blockdev
                   when file.socket? then :socket
                   else
-                    @file_keys.include?(key) ? :recognized_file : :unrecognized_file
+                    @files.key?(key) ? :recognized_file : :unrecognized_file
                   end
       @colors[color_key]
     end
@@ -329,16 +324,16 @@ module ColorLS
     def options(content)
       if content.directory?
         key = content.name.to_sym
-        key = @folder_aliases[key] unless @folder_keys.include?(key)
+        key = @folder_aliases[key] unless @folders.key? key
         key = :folder if key.nil?
         color = @colors[:dir]
         group = :folders
       else
         key = content.name.split('.').last.downcase.to_sym
-        key = @file_aliases[key] unless @file_keys.include?(key)
+        key = @file_aliases[key] unless @files.key? key
         key = :file if key.nil?
         color = file_color(content, key)
-        group = @file_keys.include?(key) ? :recognized_files : :unrecognized_files
+        group = @files.key?(key) ? :recognized_files : :unrecognized_files
       end
 
       [key, color, group]
