@@ -157,16 +157,20 @@ module ColorLS
 
       until in_line(chunk_size, max_widths) || chunk_size <= 1
         chunk_size -= 1
-        max_widths      = @max_widths.each_slice(chunk_size).to_a
-        max_widths[-1] += [0] * (chunk_size - max_widths.last.size)
-        max_widths      = max_widths.transpose.map(&:max)
+        max_width_cols  = @max_widths.each_slice((@contents.size.to_f/chunk_size).ceil).to_a
+        max_widths      = max_width_cols[0].zip(*max_width_cols[1..-1]).map(&:compact)
+        (1...max_widths.size).each do |i|
+          max_widths[i] += [0] * (max_widths.first.size - max_widths[i].size)
+        end
+        max_widths = max_widths.transpose.map(&:max)
       end
       @max_widths = max_widths
-      @contents = get_chunk(chunk_size)
+      @contents = get_chunk(@max_widths.size)
     end
 
     def get_chunk(chunk_size)
-      @contents.each_slice(chunk_size).to_a
+      columns = @contents.each_slice((@contents.size.to_f/chunk_size).ceil).to_a
+      columns[0].zip(*columns[1..-1])
     end
 
     def in_line(chunk_size, max_widths)
@@ -310,7 +314,7 @@ module ColorLS
 
     def ls_line(chunk)
       chunk.each_with_index do |content, i|
-        break if content.name.empty?
+        break if content.nil? || content.name.empty?
 
         print "  #{fetch_string(@input, content, *options(content))}"
         print ' ' * (@max_widths[i] - content.name.length) unless @one_per_line || @long
