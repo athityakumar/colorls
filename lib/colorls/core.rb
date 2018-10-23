@@ -321,10 +321,14 @@ module ColorLS
     end
 
     def dir_color(content)
-      if @colors[:dir_suffixes] && content.name['_']
-        suffix = content.name.split(/[_]/).last.to_sym
-        @colors[:dir_suffixes][suffix]
-      end || @colors[:dir]
+      return @colors[:dir] unless @colors[:dir_suffixes]
+      name = content.name
+
+      suffix = @colors[:dir_suffixes].find do |suffix|
+        name.end_with? suffix[0].to_s
+      end
+
+      suffix ? @colors[:dir_suffixes][suffix.first] : @colors[:dir]
     end
 
     def options(content)
