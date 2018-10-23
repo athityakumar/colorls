@@ -324,11 +324,11 @@ module ColorLS
       return @colors[:dir] unless @colors[:dir_suffixes]
       name = content.name
 
-      suffix = @colors[:dir_suffixes].find do |suffix|
+      suffix_arr = @colors[:dir_suffixes].find do |suffix|
         name.end_with? suffix[0].to_s
       end
 
-      suffix ? @colors[:dir_suffixes][suffix.first] : @colors[:dir]
+      suffix_arr ? @colors[:dir_suffixes][suffix_arr.first] : @colors[:dir]
     end
 
     def options(content)
