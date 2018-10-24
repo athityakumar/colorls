@@ -102,11 +102,12 @@ module ColorLS
 
     def add_format_options(options)
       options.on(
-        '--format=WORD', %w[accross horizontal long single-column],
-        'use format: accross (-x), horizontal (-x), long (-l), single-column (-1)'
+        '--format=WORD', %w[across horizontal long single-column],
+        'use format: across (-x), horizontal (-x), long (-l), single-column (-1), vertical (-C)'
       ) do |word|
         case word
-        when 'accross', 'horizontal' then @opts[:mode] = true
+        when 'across', 'horizontal' then @opts[:mode] = :horizontal
+        when 'vertical' then @opts[:mode] = true
         when 'long' then @opts[:mode] = :long
         when 'single-column' then @opts[:mode] = :one_per_line
         end
@@ -114,7 +115,8 @@ module ColorLS
       options.on('-1', 'list one file per line')                          { @opts[:mode] = :one_per_line }
       options.on('-l', '--long', 'use a long listing format')             { @opts[:mode] = :long }
       options.on('--tree', 'shows tree view of the directory')            { @opts[:mode] = :tree }
-      options.on('-x', 'list entries by lines instead of by columns')     { @opts[:mode] = true }
+      options.on('-x', 'list entries by lines instead of by columns')     { @opts[:mode] = :horizontal }
+      options.on('-C', 'list entries by columns instead of by lines')     { @opts[:mode] = true }
     end
 
     def add_general_options(options)

@@ -16,6 +16,7 @@ module ColorLS
       @one_per_line = mode == :one_per_line
       @long         = mode == :long
       @tree         = mode == :tree
+      @horizontal   = mode == :horizontal
       process_git_status_details(git_status)
 
       @screen_width = IO.console.winsize[1]
@@ -151,6 +152,7 @@ module ColorLS
 
     def chunkify
       return @contents.zip if @one_per_line || @long
+      return chunkify_horizontal if @horizontal
 
       chunk_size = @contents.size
       max_widths = @max_widths
@@ -171,6 +173,24 @@ module ColorLS
     def get_chunk(chunk_size)
       columns = @contents.each_slice((@contents.size.to_f/chunk_size).ceil).to_a
       columns[0].zip(*columns[1..-1])
+    end
+
+    def chunkify_horizontal
+      chunk_size = @contents.size
+      max_widths = @max_widths
+
+      until in_line(chunk_size, max_widths) || chunk_size <= 1
+        chunk_size -= 1
+        max_widths      = @max_widths.each_slice(chunk_size).to_a
+        max_widths[-1] += [0] * (chunk_size - max_widths.last.size)
+        max_widths      = max_widths.transpose.map(&:max)
+      end
+      @max_widths = max_widths
+      @contents = get_chunk_horizontal(chunk_size)
+    end
+
+    def get_chunk_horizontal(chunk_size)
+      @contents.each_slice(chunk_size).to_a
     end
 
     def in_line(chunk_size, max_widths)
