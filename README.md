@@ -188,6 +188,11 @@ You can overwrite the existing icons and colors mapping by copying the yaml file
   swift: "\uF179"
   ```
 
+- User contributed alias configurations :
+
+  - [@rjhilgefort](https://gist.github.com/rjhilgefort/51ea47dd91bcd90cd6d9b3b199188c16)
+
+
 # Updating
 
 [(Back to top)](#table-of-contents)

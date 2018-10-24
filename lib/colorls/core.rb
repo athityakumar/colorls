@@ -219,7 +219,7 @@ module ColorLS
 
     def size_info(filesize)
       size = Filesize.from("#{filesize} B").pretty.split(' ')
-      size = "#{size[0][0..-4].rjust(3,' ')} #{size[1].ljust(3,' ')}"
+      size = "#{size[0][0..-4].rjust(4,' ')} #{size[1].ljust(3,' ')}"
       return size.colorize(@colors[:file_large])  if filesize >= 512 * 1024 ** 2
       return size.colorize(@colors[:file_medium]) if filesize >= 128 * 1024 ** 2
       size.colorize(@colors[:file_small])
