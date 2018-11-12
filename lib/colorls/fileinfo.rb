@@ -1,5 +1,7 @@
 module ColorLS
   class FileInfo
+    extend Forwardable
+
     @@users  = {}              # rubocop:disable Style/ClassVars
     @@groups = {}              # rubocop:disable Style/ClassVars
 
@@ -31,32 +33,12 @@ module ColorLS
       @stats.uid.to_s
     end
 
-    def owned?
-      @stats.owned?
-    end
-
     def group
       return @@groups[@stats.gid] if @@groups.key? @stats.gid
       group = Etc.getgrgid(@stats.gid)
       @@groups[@stats.gid] = group.nil? ? @stats.gid.to_s : group.name
     rescue ArgumentError
       @stats.gid.to_s
-    end
-
-    def mtime
-      @stats.mtime
-    end
-
-    def size
-      @stats.size
-    end
-
-    def directory?
-      @stats.directory?
-    end
-
-    def symlink?
-      @stats.symlink?
     end
 
     # target of a symlink (only available for symlinks)
@@ -67,5 +49,7 @@ module ColorLS
     def to_s
       name
     end
+
+    def_delegators :@stats, :directory?, :socket?, :chardev?, :symlink?, :blockdev?, :mtime, :size, :owned?
   end
 end

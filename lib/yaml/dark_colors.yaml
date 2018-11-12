@@ -7,6 +7,11 @@ dir:               dodgerblue
 dead_link: red
 link:      cyan
 
+# special files
+socket:    green
+blockdev:  green
+chardev:   green
+
 # Access Modes
 write:     darkkhaki
 read:      limegreen

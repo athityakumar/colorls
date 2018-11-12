@@ -65,6 +65,9 @@ RSpec.describe ColorLS::Flags do
         :owner => "user",
         :name => "a.txt",
         :size => 128,
+        :blockdev? => false,
+        :chardev? => false,
+        :socket? => false,
         :symlink? => false,
         :stats => OpenStruct.new(
           mode: 0o444, # read for user, owner, other

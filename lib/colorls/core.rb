@@ -139,14 +139,6 @@ module ColorLS
       @file_aliases   = ColorLS::Yaml.new('file_aliases.yaml').load(aliase: true)
       @folders        = ColorLS::Yaml.new('folders.yaml').load
       @folder_aliases = ColorLS::Yaml.new('folder_aliases.yaml').load(aliase: true)
-
-      @file_keys          = @files.keys
-      @file_aliase_keys   = @file_aliases.keys
-      @folder_keys        = @folders.keys
-      @folder_aliase_keys = @folder_aliases.keys
-
-      @all_files   = @file_keys + @file_aliase_keys
-      @all_folders = @folder_keys + @folder_aliase_keys
     end
 
     def chunkify
@@ -318,23 +310,33 @@ module ColorLS
       print "\n"
     end
 
+    def file_color(file, key)
+      color_key = case
+                  when file.chardev? then :chardev
+                  when file.blockdev? then :blockdev
+                  when file.socket? then :socket
+                  else
+                    @files.key?(key) ? :recognized_file : :unrecognized_file
+                  end
+      @colors[color_key]
+    end
+
     def options(content)
       if content.directory?
         key = content.name.to_sym
+        key = @folder_aliases[key] unless @folders.key? key
+        key = :folder if key.nil?
         color = @colors[:dir]
-        return [:folder, color, :folders] unless @all_folders.include?(key)
-        key = @folder_aliases[key] unless @folder_keys.include?(key)
-        return [key, color, :folders]
+        group = :folders
+      else
+        key = content.name.split('.').last.downcase.to_sym
+        key = @file_aliases[key] unless @files.key? key
+        key = :file if key.nil?
+        color = file_color(content, key)
+        group = @files.key?(key) ? :recognized_files : :unrecognized_files
       end
 
-      color = @colors[:recognized_file]
-      return [content.downcase.to_sym, color, :recognized_files] if @file_keys.include?(key)
-
-      key = content.name.split('.').last.downcase.to_sym
-      return [:file, @colors[:unrecognized_file], :unrecognized_files] unless @all_files.include?(key)
-
-      key = @file_aliases[key] unless @file_keys.include?(key)
-      [key, color, :recognized_files]
+      [key, color, group]
     end
 
     def tree_traverse(path, prespace, indent)
