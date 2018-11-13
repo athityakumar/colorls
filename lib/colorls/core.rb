@@ -293,13 +293,16 @@ module ColorLS
     end
 
     def ls_line(chunk)
+      padding = 0
+      line = +''
       chunk.each_with_index do |content, i|
         break if content.name.empty?
 
-        print "  #{fetch_string(@input, content, *options(content))}"
-        print ' ' * (@max_widths[i] - content.name.length) unless @one_per_line || @long
+        line << ' ' * padding
+        line << '  ' << fetch_string(@input, content, *options(content))
+        padding = @max_widths[i] - content.name.length
       end
-      print "\n"
+      print line << "\n"
     end
 
     def file_color(file, key)
