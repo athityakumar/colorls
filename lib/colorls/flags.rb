@@ -106,11 +106,11 @@ module ColorLS
 
     def add_format_options(options)
       options.on(
-        '--format=WORD', %w[accross horizontal long single-column],
-        'use format: accross (-x), horizontal (-x), long (-l), single-column (-1)'
+        '--format=WORD', %w[across horizontal long single-column],
+        'use format: across (-x), horizontal (-x), long (-l), single-column (-1)'
       ) do |word|
         case word
-        when 'accross', 'horizontal' then @opts[:mode] = true
+        when 'across', 'horizontal' then @opts[:mode] = true
         when 'long' then @opts[:mode] = :long
         when 'single-column' then @opts[:mode] = :one_per_line
         end
