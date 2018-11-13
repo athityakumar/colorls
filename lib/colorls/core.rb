@@ -280,23 +280,16 @@ module ColorLS
       end
     end
 
-    def slash?(content)
-      content.directory? ? '/'.colorize(@colors[:dir]) : ' '
-    end
-
     def fetch_string(path, content, key, color, increment)
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
       name = content.name
       name = make_link(path, name) if @hyperlink
+      name += content.directory? ? '/' : ' '
+      entry = logo + '  ' + name
 
-      [
-        long_info(content),
-        " #{git_info(content)} ",
-        logo.colorize(color),
-        "  #{name.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
-      ].join
+      "#{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end
 
     def ls_line(chunk)
