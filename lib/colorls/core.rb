@@ -18,6 +18,7 @@ module ColorLS
       @one_per_line = mode == :one_per_line
       @long         = mode == :long
       @tree         = {mode: mode == :tree, depth: tree_depth}
+      @horizontal   = mode == :horizontal
       process_git_status_details(git_status)
 
       @screen_width = IO.console.winsize[1]
@@ -36,10 +37,12 @@ module ColorLS
                when @tree[:mode] then
                  print "\n"
                  return tree_traverse(@input, 0, 1, 2)
+               when @horizontal then
+                 HorizontalLayout.new(@contents, item_widths, @screen_width)
                when @one_per_line || @long then
                  SingleColumnLayout.new(@contents)
                else
-                 HorizontalLayout.new(@contents, item_widths, @screen_width)
+                 VerticalLayout.new(@contents, item_widths, @screen_width)
                end
 
       layout.each_line do |line, widths|

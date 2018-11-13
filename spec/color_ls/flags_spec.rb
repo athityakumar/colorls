@@ -31,7 +31,7 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'with --reverse flag' do
-    let(:args) { ['--reverse', FIXTURES] }
+    let(:args) { ['--reverse', '-x', FIXTURES] }
 
     it('displays dirs & files in reverse alphabetical order') { expect { subject }.to output(/z-file.+symlinks.+a-file/m).to_stdout }
   end
@@ -138,13 +138,13 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'with --sort-dirs flag' do
-    let(:args) { ['--sort-dirs', FIXTURES] }
+    let(:args) { ['--sort-dirs', '-1', FIXTURES] }
 
     it('sorts results alphabetically, directories first') { expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout }
   end
 
   context 'with --sort-files flag' do
-    let(:args) { ['--sort-files', FIXTURES] }
+    let(:args) { ['--sort-files', '-1', FIXTURES] }
 
     it('sorts results alphabetically, files first') { expect { subject }.to output(/a-file.+z-file.+symlinks/m).to_stdout }
   end
@@ -161,18 +161,18 @@ RSpec.describe ColorLS::Flags do
 
     expected = Regexp.new files.reverse.join('.+'), Regexp::MULTILINE
 
-    let(:args) { ['--sort=time', FIXTURES] }
+    let(:args) { ['--sort=time', '-x', FIXTURES] }
 
     it { expect { subject }.to output(expected).to_stdout }
   end
 
   context 'with --sort=size flag' do
-    let(:args) { ['--sort=size', '--group-directories-first', FIXTURES] }
+    let(:args) { ['--sort=size', '--group-directories-first', '-1', FIXTURES] }
 
     it 'sorts results by size' do
       expect(::STDOUT).to receive(:tty?).and_return(true)
 
-      expect { subject }.to output(/symlinks.+a-file.+z-file/).to_stdout
+      expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout
     end
   end
 
@@ -207,7 +207,7 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'with --sort=extension flag' do
-    let(:args) { ['--sort=extension', FIXTURES] }
+    let(:args) { ['--sort=extension', '-1', FIXTURES] }
 
     it('sorts results by extension') { expect { subject }.to output(/a-file.+symlinks.+z-file.+a.md.+a.txt.+z.txt/m).to_stdout }
   end
@@ -266,13 +266,13 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'symlinked directory' do
-    let(:args) { [File.join(FIXTURES, 'symlinks', 'Supportlink')] }
+    let(:args) { ['-x', File.join(FIXTURES, 'symlinks', 'Supportlink')] }
 
     it { expect { subject }.to output(/Supportlink/).to_stdout }
   end
 
   context 'symlinked directory with trailing separator' do
-    let(:args) { [File.join(FIXTURES, 'symlinks', 'Supportlink', File::SEPARATOR)] }
+    let(:args) { ['-x', File.join(FIXTURES, 'symlinks', 'Supportlink', File::SEPARATOR)] }
 
     it { expect { subject }.to output(/yaml_sort_checker.rb/).to_stdout }
   end

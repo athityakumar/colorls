@@ -73,4 +73,19 @@ module ColorLS
       @contents.each_slice(chunk_size)
     end
   end
+
+  class VerticalLayout < Layout
+    private
+
+    def column_widths(mid)
+      chunk_size = (@max_widths.size.to_f / mid).ceil
+      [chunk_size, @max_widths.each_slice(chunk_size).map(&:max).to_a]
+    end
+
+    def get_chunks(chunk_size)
+      columns = @contents.each_slice(chunk_size).to_a
+      columns.last[chunk_size - 1] = nil if columns.last.size < chunk_size
+      columns.transpose
+    end
+  end
 end

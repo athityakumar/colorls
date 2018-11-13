@@ -15,12 +15,13 @@ _arguments -s -S \
   "--gs[show git status for each file]" \
   "--git-status[show git status for each file]" \
   "--report[show brief report]" \
-  "--format[use format: across (-x), horizontal (-x), long (-l), single-column (-1)]" \
+  "--format[use format: across (-x), horizontal (-x), long (-l), single-column (-1), vertical (-C)]" \
   "-1[list one file per line]" \
   "-l[use a long listing format]" \
   "--long[use a long listing format]" \
-  "-x[list entries by lines instead of by columns]" \
   "--tree[shows tree view of the directory]" \
+  "-x[list entries by lines instead of by columns]" \
+  "-C[list entries by columns instead of by lines]" \
   "--sd[sort directories first]" \
   "--sort-dirs[sort directories first]" \
   "--group-directories-first[sort directories first]" \
