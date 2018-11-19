@@ -334,25 +334,32 @@ module ColorLS
       @colors[color_key]
     end
 
-    def options(content)
-      if content.directory?
-        group = :folders
-        color = dir_color(content)
-        key =
-          if @folders.include?(key) && @folder_keys.include?(key)
-            @folder_aliases[key]
-          else
-            :folder
-          end
-      else
-        key = content.name.split('.').last.downcase.to_sym
-        key = @file_aliases[key] unless @files.key? key
-        key = :file if key.nil?
-        color = file_color(content, key)
-        group = @files.key?(key) ? :recognized_files : :unrecognized_files
-      end
+    def dir_options(content)
+      group = :folders
+      color = dir_color(content)
+      key =
+        if @folders.include?(key) && @folder_keys.include?(key)
+          @folder_aliases[key]
+        else
+          :folder
+        end
 
       [key, color, group]
+    end
+
+    def file_options(content)
+      key = content.name.split('.').last.downcase.to_sym
+      key = @file_aliases[key] unless @files.key? key
+      key = :file if key.nil?
+      color = file_color(content, key)
+      group = @files.key?(key) ? :recognized_files : :unrecognized_files
+
+      [key, color, group]
+    end
+
+    def options(content)
+      return dir_options(content) if content.directory?
+      file_options(content)
     end
 
     def tree_traverse(path, prespace, indent)
