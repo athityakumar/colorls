@@ -339,7 +339,7 @@ module ColorLS
         group = :folders
         color = dir_color(content)
         key =
-          if @all_folders.include?(key) && @folder_keys.include?(key)
+          if @folders.include?(key) && @folder_keys.include?(key)
             @folder_aliases[key]
           else
             :folder
