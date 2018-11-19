@@ -1,17 +1,22 @@
 language:
   ruby
 
+cache:
+  bundler
+
 rvm:
   - '2.1'
   - '2.2'
-  - '2.3.0'
-  - '2.4.0'
-  - '2.5.0'
+  - '2.3'
+  - '2.4'
+  - '2.5'
 
 script:
   - bundle exec rubocop
   - bundle exec rspec
-  - rake install
+  - bundle exec rake install
+  - bundle binstubs colorls
+  - PATH=$PWD/bin:$PATH
   - colorls
   - colorls -1
   - colorls -a
@@ -38,7 +43,8 @@ script:
   - colorls README.md
   - colorls *
   - colorls | grep /
+  - colorls --color
+  - colorls --color=auto
+  - colorls --color=never
+  - colorls --color=always
 
-install:
-  - gem install bundler
-  - bundle install
