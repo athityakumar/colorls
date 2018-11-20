@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module ColorLS
   class FileInfo
     extend Forwardable
