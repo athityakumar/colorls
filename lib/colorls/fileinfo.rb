@@ -15,6 +15,7 @@ module ColorLS
       @stats = File.lstat(path)
 
       return unless link_info && @stats.symlink?
+
       @dead = !File.exist?(path)
       @target = File.readlink(path)
     end
@@ -29,6 +30,7 @@ module ColorLS
 
     def owner
       return @@users[@stats.uid] if @@users.key? @stats.uid
+
       user = Etc.getpwuid(@stats.uid)
       @@users[@stats.uid] = user.nil? ? @stats.uid.to_s : user.name
     rescue ArgumentError
@@ -37,6 +39,7 @@ module ColorLS
 
     def group
       return @@groups[@stats.gid] if @@groups.key? @stats.gid
+
       group = Etc.getgrgid(@stats.gid)
       @@groups[@stats.gid] = group.nil? ? @stats.gid.to_s : group.name
     rescue ArgumentError

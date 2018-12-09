@@ -13,6 +13,7 @@ module ColorLS
       end
 
       return yaml unless aliase
+
       yaml.to_a.map! { |k, v| [k, v.to_sym] }.to_h
     end
 
