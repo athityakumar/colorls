@@ -3,7 +3,9 @@ require 'rubygems/tasks'
 Gem::Tasks.new
 
 require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_opts = "--warnings"
+end
 
 require 'rubocop/rake_task'
 RuboCop::RakeTask.new do |task|
