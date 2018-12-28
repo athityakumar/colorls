@@ -21,7 +21,13 @@ RSpec.describe ColorLS::Flags do
     it { is_expected.not_to match(/\.hidden-file/) } # does not display hidden files
     it { is_expected.not_to match(/Found \d+ contents/) } # does not show a report
     it { is_expected.to match(/a-file.+symlinks.+z-file/m) } # displays dirs & files alphabetically
-    it { is_expected.not_to match(/(.*\n){3}/) } # displays multiple files per line
+
+    it 'displays multiple files per line' do
+      expect(::STDOUT).to receive(:tty?).and_return(true)
+
+      is_expected.not_to match(/(.*\n){3}/)
+    end
+
     it { is_expected.not_to match(%r(\.{1,2}/)) } # does not display ./ or ../
     it { is_expected.not_to match(/├──/) } # does not display file hierarchy
   end
@@ -137,7 +143,11 @@ RSpec.describe ColorLS::Flags do
   context 'with --sort=size flag' do
     let(:args) { ['--sort=size', '--group-directories-first', FIXTURES] }
 
-    it { is_expected.to match(/symlinks.+a-file.+z-file/) } # sorts results by size
+    it 'sorts results by size' do
+      expect(::STDOUT).to receive(:tty?).and_return(true)
+
+      is_expected.to match(/symlinks.+a-file.+z-file/)
+    end
   end
 
   context 'with --sort=extension flag' do
