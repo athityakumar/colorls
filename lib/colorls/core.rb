@@ -76,6 +76,7 @@ module ColorLS
       @total_content_length = @contents.length
 
       return @contents unless @long
+
       init_user_lengths
       init_group_lengths
       @contents
@@ -210,6 +211,7 @@ module ColorLS
       size = "#{size[0][0..-4].rjust(4,' ')} #{size[1].ljust(3,' ')}"
       return size.colorize(@colors[:file_large])  if filesize >= 512 * 1024 ** 2
       return size.colorize(@colors[:file_medium]) if filesize >= 128 * 1024 ** 2
+
       size.colorize(@colors[:file_small])
     end
 
@@ -218,6 +220,7 @@ module ColorLS
       now = Time.now
       return mtime.colorize(@colors[:hour_old]) if now - file_mtime < 60 * 60
       return mtime.colorize(@colors[:day_old])  if now - file_mtime < 24 * 60 * 60
+
       mtime.colorize(@colors[:no_modifier])
     end
 
@@ -250,6 +253,7 @@ module ColorLS
 
     def git_file_info(path)
       return '  ✓ '.colorize(@colors[:unchanged]) unless @git_status[path]
+
       Git.colored_status_symbols(@git_status[path].uniq, @colors)
     end
 
@@ -267,12 +271,14 @@ module ColorLS
 
     def long_info(content)
       return '' unless @long
+
       [mode_info(content.stats), user_info(content), group_info(content.group),
        size_info(content.size), mtime_info(content.mtime)].join('  ')
     end
 
     def symlink_info(content)
       return '' unless @long && content.symlink?
+
       link_info = " ⇒ #{content.link_target}"
       if content.dead?
         "#{link_info} [Dead link]".colorize(@colors[:dead_link])
@@ -346,12 +352,14 @@ module ColorLS
         print tree_branch_preprint(prespace, indent, icon).colorize(@colors[:tree])
         print " #{fetch_string(path, content, *options(content))} \n"
         next unless content.directory?
+
         tree_traverse("#{path}/#{content}", prespace + indent, indent)
       end
     end
 
     def tree_branch_preprint(prespace, indent, prespace_icon)
       return prespace_icon if prespace.zero?
+
       ' │ ' * (prespace/indent) + prespace_icon + '─' * indent
     end
 
