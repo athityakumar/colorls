@@ -225,7 +225,9 @@ module ColorLS
     end
 
     def process_git_status_details(git_status)
-      return false unless git_status
+      @git_status = nil
+
+      return unless git_status
 
       @git_root_path = IO.popen(['git', '-C', @input, 'rev-parse', '--show-toplevel'], err: :close, &:gets)
 

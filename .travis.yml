@@ -1,3 +1,7 @@
+conditions: v1
+
+if: branch = master OR tag IS present
+
 language:
   ruby
 
@@ -9,10 +13,11 @@ rvm:
   - '2.3'
   - '2.4'
   - '2.5'
+  - '2.6'
 
 script:
   - bundle exec rubocop
-  - bundle exec rspec
+  - bundle exec rake spec
   - bundle exec rake install
   - bundle binstubs colorls
   - PATH=$PWD/bin:$PATH
