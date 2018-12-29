@@ -26,6 +26,7 @@ module ColorLS
       end
 
       return yaml unless aliase
+
       deep_transform_key_vals_in_object(yaml.to_a, &:to_sym).to_h
     end
 
