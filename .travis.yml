@@ -1,3 +1,7 @@
+conditions: v1
+
+if: branch = master OR tag IS present
+
 language:
   ruby
 
