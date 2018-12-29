@@ -23,7 +23,5 @@ class Hash
 end
 
 class Array
-  def sum
-    inject(:+)
-  end
+  define_method(:sum) { inject(:+) } unless instance_methods.include? :sum
 end
