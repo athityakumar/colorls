@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'optparse'
 require 'colorls/version'
 require 'ostruct'
@@ -42,7 +44,7 @@ module ColorLS
         begin
           next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
 
-          puts '' if i > 0
+          puts '' if i.positive?
           puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
           Core.new(path, @opts).ls
         rescue SystemCallError => e

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ColorLS
   module Git
     def self.status(repo_path)

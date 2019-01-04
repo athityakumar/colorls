@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ColorLS
   class Core
     def initialize(input, all: false, report: false, sort: false, show: false,
