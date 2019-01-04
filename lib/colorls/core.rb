@@ -4,7 +4,7 @@ module ColorLS
   class Core
     def initialize(input, all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false)
+      reverse: false, hyperlink: false, tree_depth: 3)
       @input        = File.absolute_path(input)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -17,7 +17,7 @@ module ColorLS
       @show         = show
       @one_per_line = mode == :one_per_line
       @long         = mode == :long
-      @tree         = mode == :tree
+      @tree         = {mode: mode == :tree, depth: tree_depth}
       process_git_status_details(git_status)
 
       @screen_width = IO.console.winsize[1]
@@ -33,9 +33,9 @@ module ColorLS
     def ls
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
-      if @tree
+      if @tree[:mode]
         print "\n"
-        tree_traverse(@input, 0, 2)
+        tree_traverse(@input, 0, 1, 2)
       else
         @contents = chunkify
         @contents.each { |chunk| ls_line(chunk) }
@@ -349,7 +349,7 @@ module ColorLS
       [key, color, group]
     end
 
-    def tree_traverse(path, prespace, indent)
+    def tree_traverse(path, prespace, depth, indent)
       contents = init_contents(path)
       contents.each do |content|
         icon = content == contents.last || content.directory? ? ' └──' : ' ├──'
@@ -357,7 +357,8 @@ module ColorLS
         print " #{fetch_string(path, content, *options(content))} \n"
         next unless content.directory?
 
-        tree_traverse("#{path}/#{content}", prespace + indent, indent)
+        depth += 1
+        tree_traverse("#{path}/#{content}", prespace + indent, depth, indent) unless depth > @tree[:depth]
       end
     end
 

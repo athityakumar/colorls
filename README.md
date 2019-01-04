@@ -26,10 +26,11 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     - `-h`   (or) `--help`
     - `-l`   (or) `--long`
     - `-r`   (or) `--report`
-    - `-t`   (or) `--tree`
+    - `--tree`
     - `--gs` (or) `--git-status`
     - `--sd` (or) `--sort-dirs` or `--group-directories-first`
     - `--sf` (or) `--sort-files`
+    - `-t`
   - [Combination of flags](#combination-of-flags)
 - [Installation](#installation)
 - [Recommended configurations](#recommended-configurations)
@@ -79,7 +80,7 @@ Man pages have been added. Checkout `man colorls`.
 
   ![image](https://user-images.githubusercontent.com/17109060/32149082-96a83fec-bd25-11e7-9081-7f77e4c90e90.png)
 
-- With `-t` (or) `--tree` : Shows tree view of the directory
+- With `--tree` : Shows tree view of the directory
 
   ![image](https://user-images.githubusercontent.com/17109060/32149051-32e596e4-bd25-11e7-93a9-5e50c8d2bb19.png)
 
@@ -94,6 +95,8 @@ Man pages have been added. Checkout `man colorls`.
 - With `--sf` (or) `--sort-files` : Shows files first, followed by directories
 
   ![image](https://user-images.githubusercontent.com/17109060/32149071-6b379de4-bd25-11e7-8764-a0c577e526a1.png)
+
+- With `-t` : Sort by modification time, newest first (NEED TO ADD IMAGE)
 
 - With color options : `--light` or `--dark` can be passed as a flag, to choose the appropriate color scheme. By default, the dark color scheme is chosen. In order to tweak any color, read [Custom configurations](#custom-configurations).
 

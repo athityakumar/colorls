@@ -20,7 +20,8 @@ module ColorLS
         almost_all: false,
         report: false,
         git_status: false,
-        colors: []
+        colors: [],
+        tree_depth: 3
       }
 
       parse_options
@@ -116,8 +117,11 @@ module ColorLS
       end
       options.on('-1', 'list one file per line')                          { @opts[:mode] = :one_per_line }
       options.on('-l', '--long', 'use a long listing format')             { @opts[:mode] = :long }
-      options.on('--tree', 'shows tree view of the directory')            { @opts[:mode] = :tree }
       options.on('-x', 'list entries by lines instead of by columns')     { @opts[:mode] = true }
+      options.on('--tree=[DEPTH]', Integer, 'shows tree view of the directory (default depth 3)') do |depth|
+        @opts[:tree_depth] = depth || 3
+        @opts[:mode] = :tree
+      end
     end
 
     def add_general_options(options)
