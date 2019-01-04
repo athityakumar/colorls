@@ -26,7 +26,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     - `-h`   (or) `--help`
     - `-l`   (or) `--long`
     - `-r`   (or) `--report`
-    - `--tree`
+    - `--tree` (or) `--tree=[DEPTH]`
     - `--gs` (or) `--git-status`
     - `--sd` (or) `--sort-dirs` or `--group-directories-first`
     - `--sf` (or) `--sort-files`
@@ -80,7 +80,7 @@ Man pages have been added. Checkout `man colorls`.
 
   ![image](https://user-images.githubusercontent.com/17109060/32149082-96a83fec-bd25-11e7-9081-7f77e4c90e90.png)
 
-- With `--tree` : Shows tree view of the directory
+- With `--tree` (or) `--tree=[DEPTH]` : Shows tree view of the directory with the specified depth (default 3)
 
   ![image](https://user-images.githubusercontent.com/17109060/32149051-32e596e4-bd25-11e7-93a9-5e50c8d2bb19.png)
 
