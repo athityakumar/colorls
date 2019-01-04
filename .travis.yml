@@ -15,6 +15,11 @@ rvm:
   - '2.5'
   - '2.6'
 
+before_install:
+  - gem update --system
+  - gem --version
+  - gem install bundler -v '~> 2'
+
 script:
   - bundle exec rubocop
   - bundle exec rake spec
