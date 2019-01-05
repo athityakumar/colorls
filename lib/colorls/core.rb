@@ -4,7 +4,7 @@ module ColorLS
   class Core
     def initialize(input, all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false, tree_depth: 3)
+      reverse: false, hyperlink: false, tree_depth: nil)
       @input        = File.absolute_path(input)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -357,9 +357,12 @@ module ColorLS
         print " #{fetch_string(path, content, *options(content))} \n"
         next unless content.directory?
 
-        depth += 1
-        tree_traverse("#{path}/#{content}", prespace + indent, depth, indent) unless depth > @tree[:depth]
+        tree_traverse("#{path}/#{content}", prespace + indent, depth + 1, indent) unless valid_depth?(depth + 1)
       end
+    end
+
+    def valid_depth?(depth)
+      !@tree[:depth].nil? && depth > @tree[:depth]
     end
 
     def tree_branch_preprint(prespace, indent, prespace_icon)

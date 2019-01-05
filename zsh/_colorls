@@ -20,7 +20,7 @@ _arguments -s -S \
   "-l[use a long listing format]" \
   "--long[use a long listing format]" \
   "-x[list entries by lines instead of by columns]" \
-  "--tree[shows tree view of the directory (default depth 3)]" \
+  "--tree[shows tree view of the directory]" \
   "--sd[sort directories first]" \
   "--sort-dirs[sort directories first]" \
   "--group-directories-first[sort directories first]" \
