@@ -357,12 +357,12 @@ module ColorLS
         print " #{fetch_string(path, content, *options(content))} \n"
         next unless content.directory?
 
-        tree_traverse("#{path}/#{content}", prespace + indent, depth + 1, indent) unless valid_depth?(depth + 1)
+        tree_traverse("#{path}/#{content}", prespace + indent, depth + 1, indent) if keep_going(depth)
       end
     end
 
-    def valid_depth?(depth)
-      !@tree[:depth].nil? && depth > @tree[:depth]
+    def keep_going(depth)
+      @tree[:depth].nil? || depth < @tree[:depth]
     end
 
     def tree_branch_preprint(prespace, indent, prespace_icon)

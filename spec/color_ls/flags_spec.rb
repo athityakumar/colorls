@@ -191,7 +191,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--tree=1', FIXTURES] }
 
     it { is_expected.to match(/├──/) } # displays file hierarchy
-    it { is_expected.not_to match /ReadmeLink.md|Supportlink|doesnotexisttest.txt|third-level-file.txt/ }
+    it { is_expected.not_to match(/ReadmeLink.md|Supportlink|doesnotexisttest.txt|third-level-file.txt/) }
   end
 
   context 'with --tree=3 flag' do
