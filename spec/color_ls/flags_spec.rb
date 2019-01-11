@@ -184,6 +184,21 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--tree', FIXTURES] }
 
     it { is_expected.to match(/├──/) } # displays file hierarchy
+    it { is_expected.to match(/third-level-file.txt/) }
+  end
+
+  context 'with --tree=1 flag' do
+    let(:args) { ['--tree=1', FIXTURES] }
+
+    it { is_expected.to match(/├──/) } # displays file hierarchy
+    it { is_expected.not_to match(/ReadmeLink.md|Supportlink|doesnotexisttest.txt|third-level-file.txt/) }
+  end
+
+  context 'with --tree=3 flag' do
+    let(:args) { ['--tree=3', FIXTURES] }
+
+    it { is_expected.to match(/├──/) } # displays file hierarchy
+    it { is_expected.to match(/third-level-file.txt/) }
   end
 
   context 'with --hyperlink flag' do

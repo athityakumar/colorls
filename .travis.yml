@@ -55,4 +55,6 @@ script:
   - colorls --color=auto
   - colorls --color=never
   - colorls --color=always
+  - colorls --tree
+  - colorls --tree=1
 
