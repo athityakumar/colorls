@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'optparse'
 require 'colorls/version'
 require 'ostruct'
@@ -18,7 +20,8 @@ module ColorLS
         almost_all: false,
         report: false,
         git_status: false,
-        colors: []
+        colors: [],
+        tree_depth: 3
       }
 
       parse_options
@@ -41,7 +44,8 @@ module ColorLS
       @args.sort!.each_with_index do |path, i|
         begin
           next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
-          puts '' if i > 0
+
+          puts '' if i.positive?
           puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
           Core.new(path, @opts).ls
         rescue SystemCallError => e
@@ -113,8 +117,11 @@ module ColorLS
       end
       options.on('-1', 'list one file per line')                          { @opts[:mode] = :one_per_line }
       options.on('-l', '--long', 'use a long listing format')             { @opts[:mode] = :long }
-      options.on('--tree', 'shows tree view of the directory')            { @opts[:mode] = :tree }
       options.on('-x', 'list entries by lines instead of by columns')     { @opts[:mode] = true }
+      options.on('--tree=[DEPTH]', Integer, 'shows tree view of the directory') do |depth|
+        @opts[:tree_depth] = depth
+        @opts[:mode] = :tree
+      end
     end
 
     def add_general_options(options)

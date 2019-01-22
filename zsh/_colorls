@@ -19,8 +19,8 @@ _arguments -s -S \
   "-1[list one file per line]" \
   "-l[use a long listing format]" \
   "--long[use a long listing format]" \
-  "--tree[shows tree view of the directory]" \
   "-x[list entries by lines instead of by columns]" \
+  "--tree[shows tree view of the directory]" \
   "--sd[sort directories first]" \
   "--sort-dirs[sort directories first]" \
   "--group-directories-first[sort directories first]" \

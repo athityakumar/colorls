@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module ColorLS
   class Core
     def initialize(input, all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false)
+      reverse: false, hyperlink: false, tree_depth: nil)
       @input        = File.absolute_path(input)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -15,7 +17,7 @@ module ColorLS
       @show         = show
       @one_per_line = mode == :one_per_line
       @long         = mode == :long
-      @tree         = mode == :tree
+      @tree         = {mode: mode == :tree, depth: tree_depth}
       process_git_status_details(git_status)
 
       @screen_width = IO.console.winsize[1]
@@ -31,9 +33,9 @@ module ColorLS
     def ls
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
-      if @tree
+      if @tree[:mode]
         print "\n"
-        tree_traverse(@input, 0, 2)
+        tree_traverse(@input, 0, 1, 2)
       else
         @contents = chunkify
         @contents.each { |chunk| ls_line(chunk) }
@@ -76,6 +78,7 @@ module ColorLS
       @total_content_length = @contents.length
 
       return @contents unless @long
+
       init_user_lengths
       init_group_lengths
       @contents
@@ -210,6 +213,7 @@ module ColorLS
       size = "#{size[0][0..-4].rjust(4,' ')} #{size[1].ljust(3,' ')}"
       return size.colorize(@colors[:file_large])  if filesize >= 512 * 1024 ** 2
       return size.colorize(@colors[:file_medium]) if filesize >= 128 * 1024 ** 2
+
       size.colorize(@colors[:file_small])
     end
 
@@ -218,11 +222,14 @@ module ColorLS
       now = Time.now
       return mtime.colorize(@colors[:hour_old]) if now - file_mtime < 60 * 60
       return mtime.colorize(@colors[:day_old])  if now - file_mtime < 24 * 60 * 60
+
       mtime.colorize(@colors[:no_modifier])
     end
 
     def process_git_status_details(git_status)
-      return false unless git_status
+      @git_status = nil
+
+      return unless git_status
 
       @git_root_path = IO.popen(['git', '-C', @input, 'rev-parse', '--show-toplevel'], err: :close, &:gets)
 
@@ -250,6 +257,7 @@ module ColorLS
 
     def git_file_info(path)
       return '  ✓ '.colorize(@colors[:unchanged]) unless @git_status[path]
+
       Git.colored_status_symbols(@git_status[path].uniq, @colors)
     end
 
@@ -267,12 +275,14 @@ module ColorLS
 
     def long_info(content)
       return '' unless @long
+
       [mode_info(content.stats), user_info(content), group_info(content.group),
        size_info(content.size), mtime_info(content.mtime)].join('  ')
     end
 
     def symlink_info(content)
       return '' unless @long && content.symlink?
+
       link_info = " ⇒ #{content.link_target}"
       if content.dead?
         "#{link_info} [Dead link]".colorize(@colors[:dead_link])
@@ -314,13 +324,14 @@ module ColorLS
 
     def dir_color(content)
       return @colors[:dir] unless @colors[:dir_suffixes]
+
       name = content.name
 
       suffix_arr = @colors[:dir_suffixes].find do |suffix|
         name.end_with? suffix[0].to_s
       end
 
-      suffix_arr ? @colors[:dir_suffixes][suffix_arr.first] : @colors[:dir]
+      suffix_arr ? suffix_arr[1] : @colors[:dir]
     end
 
     def file_color(file, key)
@@ -335,14 +346,11 @@ module ColorLS
     end
 
     def dir_options(content)
+      key = content.name.to_sym
+      key = @folder_aliases[key] unless @folders.key? key
+      key = :folder if key.nil?
       group = :folders
       color = dir_color(content)
-      key =
-        if @folders.include?(key) && @folder_keys.include?(key)
-          @folder_aliases[key]
-        else
-          :folder
-        end
 
       [key, color, group]
     end
@@ -359,22 +367,29 @@ module ColorLS
 
     def options(content)
       return dir_options(content) if content.directory?
+
       file_options(content)
     end
 
-    def tree_traverse(path, prespace, indent)
+    def tree_traverse(path, prespace, depth, indent)
       contents = init_contents(path)
       contents.each do |content|
         icon = content == contents.last || content.directory? ? ' └──' : ' ├──'
         print tree_branch_preprint(prespace, indent, icon).colorize(@colors[:tree])
         print " #{fetch_string(path, content, *options(content))} \n"
         next unless content.directory?
-        tree_traverse("#{path}/#{content}", prespace + indent, indent)
+
+        tree_traverse("#{path}/#{content}", prespace + indent, depth + 1, indent) if keep_going(depth)
       end
+    end
+
+    def keep_going(depth)
+      @tree[:depth].nil? || depth < @tree[:depth]
     end
 
     def tree_branch_preprint(prespace, indent, prespace_icon)
       return prespace_icon if prespace.zero?
+
       ' │ ' * (prespace/indent) + prespace_icon + '─' * indent
     end
 

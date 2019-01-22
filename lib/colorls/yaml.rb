@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ColorLS
   class Yaml
     def initialize(filename)
@@ -26,6 +28,7 @@ module ColorLS
       end
 
       return yaml unless aliase
+
       deep_transform_key_vals_in_object(yaml.to_a, &:to_sym).to_h
     end
 
