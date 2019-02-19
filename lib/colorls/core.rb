@@ -252,7 +252,8 @@ module ColorLS
       else
         git_file_info(relative_path)
       end
-      # puts "\n\n"
+    rescue Errno::ENOENT
+      return '    '
     end
 
     def git_file_info(path)
