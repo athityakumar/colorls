@@ -25,8 +25,20 @@ POST_INSTALL_MESSAGE = %(
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
+  is_tagged = ENV['TRAVIS_TAG'] == "v#{ColorLS::VERSION}"
+  is_origin = ENV['TRAVIS_REPO_SLUG'] == 'athityakumar/colorls'
+  build_number = ENV['TRAVIS_BUILD_NUMBER']
+
   spec.name          = 'colorls'
-  spec.version       = ColorLS::VERSION
+  spec.version       = if build_number && is_origin && !is_tagged
+                         # Prereleasing on Travis CI
+                         digits = ColorLS::VERSION.to_s.split '.'
+                         digits[-1] = digits[-1].to_s.succ
+
+                         digits.join('.') + ".pre.#{build_number}"
+                       else
+                         ColorLS::VERSION
+                       end
   spec.authors       = ['Athitya Kumar']
   spec.email         = ['athityakumar@gmail.com']
   spec.summary       = "A Ruby CLI gem that beautifies the terminal's ls command, with color and font-awesome icons."
