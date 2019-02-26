@@ -58,3 +58,12 @@ script:
   - colorls --tree
   - colorls --tree=1
 
+deploy:
+  provider: rubygems
+  api_key:
+    secure: iHo85pvy3iIp0/r8mbP0q0VPCFyYcwaQb19YUxwIGbMrksswIJPe2bsdAQTvd1fU3U+uwAgyzfaLMWgY6T1evVjv5GGXW0zmNthgWuaCbTBmzx3q6OPV6zJLsinKSJ4xbKjmTOi6BIhXTtc09dRRNp1d9U8HtmM9KyvD5ORm5M9W0/WxP3+8oOe0/yl3DOVNgCQ0j64KEqowLlfdJXe2q5iSUkZEvf+o5F6pz0g7dFiVHPVpJbZ9sOchPzYNMjLCx4jPt42J806oAH7TMeRC4lFpKgJr9U05LRGb22jiokHH6gl17RpuGRYJIexWkf3jb5iy9bivT2S2fGo9/BBKO5BvQAaL7McCwpdKM2QEyVy7RVbUz5D8vfXkJNIJankQj3Ikuz7qYyDglucGCpSGjecNCqL61NoBag7ORJ0RMWg7zklKjR59zeT4oks8rByx688y5Oi4f9Z98SPfc9NIJbHxbrDHtr13gm509cEXxwOLuVePa9J+mDGq2Uawi/PuIon1x2ztHUgvTx0DSYtwv96HzXet8QqXHwRKKjddxEApvCvGvaJV3akeUVjcsyei892ajHP6CffaKazPtogotfsu68g8WmKFWHFRkdmS6NIqg7MrnMRCjDkxAoQYYzt6cl95aBk4G7CTbjtXgIct1LGMM/WjE6K/jpeF0YLsVR4=
+  gem: colorls
+  on:
+    repo: athityakumar/colorls
+    rvm: '2.6'
+    os: linux
