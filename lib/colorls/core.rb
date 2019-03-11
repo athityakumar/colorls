@@ -231,28 +231,17 @@ module ColorLS
 
       return unless git_status
 
-      @git_root_path = IO.popen(['git', '-C', @input, 'rev-parse', '--show-toplevel'], err: :close, &:gets)
-
-      return false unless $CHILD_STATUS.success?
-
-      @git_status = Git.status(@git_root_path.chomp!)
+      @git_status = Git.status(@input)
     end
 
-    def git_info(path, content)
+    def git_info(content)
       return '' unless @git_status
 
-      real_path = File.realdirpath(content.name, path)
-
-      return '    ' unless real_path.start_with? path
-
-      relative_path = real_path.remove(Regexp.new('^' + Regexp.escape(@git_root_path) + '/?'))
-
       if content.directory?
-        git_dir_info(relative_path)
+        git_dir_info(content.name)
       else
-        git_file_info(relative_path)
+        git_file_info(content.name)
       end
-      # puts "\n\n"
     end
 
     def git_file_info(path)
@@ -304,7 +293,7 @@ module ColorLS
 
       [
         long_info(content),
-        " #{git_info(path,content)} ",
+        " #{git_info(content)} ",
         logo.colorize(color),
         "  #{name.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
       ].join
