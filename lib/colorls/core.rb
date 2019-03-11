@@ -227,11 +227,11 @@ module ColorLS
     end
 
     def process_git_status_details(git_status)
-      @git_status = nil
-
-      return unless git_status
-
-      @git_status = Git.status(@input)
+      @git_status = case
+                    when !git_status then nil
+                    when File.directory?(@input) then Git.status(@input)
+                    else Git.status(File.dirname(@input))
+                    end
     end
 
     def git_info(content)
