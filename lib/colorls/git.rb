@@ -3,13 +3,18 @@
 module ColorLS
   module Git
     def self.status(repo_path)
+      prefix = IO.popen(['git', '-C', repo_path, 'rev-parse', '--show-prefix'], err: :close, &:gets)
+
+      return unless $CHILD_STATUS.success?
+
+      prefix.chomp!
       git_status = {}
 
-      IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored']) do |output|
+      IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored', '.']) do |output|
         while (status_line = output.gets "\x0")
           mode, file = status_line.chomp("\x0").split(' ', 2)
 
-          git_status[file] = mode
+          git_status[file.delete_prefix(prefix)] = mode
 
           # skip the next \x0 separated original path for renames, issue #185
           output.gets("\x0") if mode.start_with? 'R'
