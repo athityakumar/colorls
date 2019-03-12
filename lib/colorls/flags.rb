@@ -141,13 +141,22 @@ module ColorLS
       options.on('--hyperlink') { @opts[:hyperlink] = true }
     end
 
+    def add_compatiblity_options(options)
+      options.separator ''
+      options.separator 'options for compatiblity with ls (ignored):'
+      options.separator ''
+      options.on('-h', '--human-readable') {}
+    end
+
+    def show_help
+      puts @parser
+      show_examples
+      exit
+    end
+
     def add_help_option(opts)
       opts.separator ''
-      opts.on_tail('-h', '--help', 'prints this help') do
-        puts @parser
-        show_examples
-        exit
-      end
+      opts.on_tail('--help', 'prints this help') { show_help }
     end
 
     def show_examples
@@ -191,6 +200,9 @@ EXAMPLES
           exit
         end
       end
+
+      # show help and exit if the only argument is -h
+      show_help if !@args.empty? && @args.all? { |arg| arg == '-h' }
 
       @parser.parse!(@args)
 
