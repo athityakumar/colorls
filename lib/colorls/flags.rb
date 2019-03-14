@@ -192,6 +192,7 @@ EXAMPLES
         add_common_options(opts)
         add_format_options(opts)
         add_sort_options(opts)
+        add_compatiblity_options(opts)
         add_general_options(opts)
         add_help_option(opts)
 

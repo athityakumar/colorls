@@ -11,6 +11,9 @@ RSpec.describe ColorLS::Flags do
     $stdout = fake = StringIO.new
     yield
     fake.string
+  rescue SystemExit => e
+    raise "colorls exited with #{e.status}" unless e.success?
+    fake.string
   ensure
     $stdout = old
   end
@@ -154,13 +157,13 @@ RSpec.describe ColorLS::Flags do
   context 'with --help flag' do
     let(:args) { ['--help', FIXTURES] }
 
-    it { is_expected.to match(/show this help/) }
+    it { is_expected.to match(/prints this help/)  }
   end
 
   context 'with -h flag only' do
     let(:args) { ['-h'] }
 
-    it { is_expected.to match(/show this help/) }
+    it { is_expected.to match(/prints this help/) }
   end
 
   context 'with -h and additional argument' do
@@ -260,7 +263,7 @@ RSpec.describe ColorLS::Flags do
         expect(message).to match "--snafu"
       end
 
-      expect { subject }.to raise_error(SystemExit).and output(/--help/).to_stderr
+      expect { subject }.to raise_error('colorls exited with 2').and output(/--help/).to_stderr
     end
   end
 end
