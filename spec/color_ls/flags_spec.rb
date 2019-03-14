@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 RSpec.describe ColorLS::Flags do
@@ -148,6 +149,36 @@ RSpec.describe ColorLS::Flags do
 
       is_expected.to match(/symlinks.+a-file.+z-file/)
     end
+  end
+
+  context 'with --help flag' do
+    let(:args) { ['--help', FIXTURES] }
+
+    it { is_expected.to match(/show this help/) }
+  end
+
+  context 'with -h flag only' do
+    let(:args) { ['-h'] }
+
+    it { is_expected.to match(/show this help/) }
+  end
+
+  context 'with -h and additional argument' do
+    let(:args) { ['-h', FIXTURES] }
+
+    it { is_expected.to match(/a-file/) }
+  end
+
+  context 'with -h and additional options' do
+    let(:args) { ['-ht'] }
+
+    it { is_expected.not_to match(/show this help/) }
+  end
+
+  context 'with --human-readable flag' do
+    let(:args) { ['--human-readable', FIXTURES] }
+
+    it { is_expected.to match(/a-file/) }
   end
 
   context 'with --sort=extension flag' do

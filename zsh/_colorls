@@ -37,7 +37,6 @@ _arguments -s -S \
   "--light[use light color scheme]" \
   "--dark[use dark color scheme]" \
   "--hyperlink[]" \
-  "-h[prints this help]" \
   "--help[prints this help]" \
   "--version[show version]" \
   '*:file:_files' && return 0
