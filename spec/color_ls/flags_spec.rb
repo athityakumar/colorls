@@ -4,63 +4,57 @@ require 'spec_helper'
 RSpec.describe ColorLS::Flags do
   FIXTURES = 'spec/fixtures'.freeze
 
-  subject { capture_stdout { described_class.new(*args).process } }
-
-  def capture_stdout
-    old = $stdout
-    $stdout = fake = StringIO.new
-    yield
-    fake.string
-  rescue SystemExit => e
-    raise "colorls exited with #{e.status}" unless e.success?
-    fake.string
-  ensure
-    $stdout = old
+  subject do
+    begin
+      described_class.new(*args).process
+    rescue SystemExit => e
+      raise "colorls exited with #{e.status}" unless e.success?
+    end
   end
 
   context 'with no flags' do
     let(:args) { [FIXTURES] }
 
-    it { is_expected.not_to match(/((r|-).*(w|-).*(x|-).*){3}/) } # does not list file info
-    it { is_expected.not_to match(/\.hidden-file/) } # does not display hidden files
-    it { is_expected.not_to match(/Found \d+ contents/) } # does not show a report
-    it { is_expected.to match(/a-file.+symlinks.+z-file/m) } # displays dirs & files alphabetically
+    it('does not list file info')              { expect { subject }.not_to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout }
+    it('does not display hidden files')        { expect { subject }.not_to output(/\.hidden-file/).to_stdout }
+    it('does not show a report')               { expect { subject }.not_to output(/Found \d+ contents/).to_stdout }
+    it('displays dirs & files alphabetically') { expect { subject }.to output(/a-file.+symlinks.+z-file/m).to_stdout }
 
     it 'displays multiple files per line' do
       expect(::STDOUT).to receive(:tty?).and_return(true)
 
-      is_expected.not_to match(/(.*\n){3}/)
+      expect { subject }.not_to output(/(.*\n){3}/).to_stdout
     end
 
-    it { is_expected.not_to match(%r(\.{1,2}/)) } # does not display ./ or ../
-    it { is_expected.not_to match(/├──/) } # does not display file hierarchy
+    it('does not display ./ or ../')           { expect { subject }.not_to output(%r(\.{1,2}/)).to_stdout }
+    it('does not display file hierarchy')      { expect { subject }.not_to output(/├──/).to_stdout }
   end
 
   context 'with --reverse flag' do
     let(:args) { ['--reverse', FIXTURES] }
 
-    it { is_expected.to match(/z-file.+symlinks.+a-file/m) } # displays dirs & files in reverse alphabetical order
+    it('displays dirs & files in reverse alphabetical order') { expect { subject }.to output(/z-file.+symlinks.+a-file/m).to_stdout }
   end
 
   context 'with --format flag' do
     let(:args) { ['--format=single-column', FIXTURES] }
 
-    it { is_expected.to match(/.*a-file.*\n # on the first line
-                               (?m:.*)      # more lines...
-                               .*z-file.*\n # on the last line
-                              /x) }
+    it { expect { subject }.to output(/.*a-file.*\n # on the first line
+                                       (?m:.*)      # more lines...
+                                       .*z-file.*\n # on the last line
+                                      /x).to_stdout }
   end
 
   context 'with --long flag & file path' do
     let(:args) { ['--long', "#{FIXTURES}/.hidden-file"] }
 
-    it { is_expected.not_to match(/No Info/) } # lists info of a hidden file
+    it('lists info of a hidden file') { expect { subject }.not_to output(/No Info/).to_stdout }
   end
 
   context 'with --long flag' do
     let(:args) { ['--long', FIXTURES] }
 
-    it { is_expected.to match(/((r|-).*(w|-).*(x|-).*){3}/) } # lists file info
+    it('lists file info') { expect { subject }.to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout }
   end
 
   context 'with --long flag and special bits' do
@@ -89,7 +83,7 @@ RSpec.describe ColorLS::Flags do
 
       allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", true) { fileInfo }
 
-      is_expected.to match(/r-Sr-Sr-T  \s+  user  \s+  sys  .*  a.txt/mx)
+      expect { subject }.to output(/r-Sr-Sr-T  \s+  user  \s+  sys  .*  a.txt/mx).to_stdout
     end
   end
 
@@ -105,26 +99,26 @@ RSpec.describe ColorLS::Flags do
       expect(::Etc).to receive(:getpwuid).and_return(nil)
       expect(::Etc).to receive(:getgrgid).and_return(nil)
 
-      is_expected.to match(/\s+  \d+  \s+  \d+  .*  a.txt/mx)
+      expect { subject }.to output(/\s+  \d+  \s+  \d+  .*  a.txt/mx).to_stdout
     end
   end
 
   context 'with --all flag' do
     let(:args) { ['--all', FIXTURES] }
 
-    it { is_expected.to match(/\.hidden-file/) } # lists hidden files
+    it('lists hidden files') { expect { subject }.to output(/\.hidden-file/).to_stdout }
   end
 
   context 'with --sort-dirs flag' do
     let(:args) { ['--sort-dirs', FIXTURES] }
 
-    it { is_expected.to match(/symlinks.+a-file.+z-file/m) } # sorts results alphabetically, directories first
+    it('sorts results alphabetically, directories first') { expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout }
   end
 
   context 'with --sort-files flag' do
     let(:args) { ['--sort-files', FIXTURES] }
 
-    it { is_expected.to match(/a-file.+z-file.+symlinks/m) } # sorts results alphabetically, files first
+    it('sorts results alphabetically, files first') { expect { subject }.to output(/a-file.+z-file.+symlinks/m).to_stdout }
   end
 
   context 'with --sort=time' do
@@ -141,7 +135,7 @@ RSpec.describe ColorLS::Flags do
 
     let(:args) { ['--sort=time', FIXTURES] }
 
-    it { is_expected.to match(expected) }
+    it { expect { subject }.to output(expected).to_stdout }
   end
 
   context 'with --sort=size flag' do
@@ -150,89 +144,89 @@ RSpec.describe ColorLS::Flags do
     it 'sorts results by size' do
       expect(::STDOUT).to receive(:tty?).and_return(true)
 
-      is_expected.to match(/symlinks.+a-file.+z-file/)
+      expect { subject }.to output(/symlinks.+a-file.+z-file/).to_stdout
     end
   end
 
   context 'with --help flag' do
     let(:args) { ['--help', FIXTURES] }
 
-    it { is_expected.to match(/prints this help/)  }
+    it { expect { subject }.to output(/prints this help/).to_stdout }
   end
 
   context 'with -h flag only' do
     let(:args) { ['-h'] }
 
-    it { is_expected.to match(/prints this help/) }
+    it { expect { subject }.to output(/prints this help/).to_stdout }
   end
 
   context 'with -h and additional argument' do
     let(:args) { ['-h', FIXTURES] }
 
-    it { is_expected.to match(/a-file/) }
+    it { expect { subject }.to output(/a-file/).to_stdout }
   end
 
   context 'with -h and additional options' do
     let(:args) { ['-ht'] }
 
-    it { is_expected.not_to match(/show this help/) }
+    it { expect { subject }.not_to output(/show this help/).to_stdout }
   end
 
   context 'with --human-readable flag' do
     let(:args) { ['--human-readable', FIXTURES] }
 
-    it { is_expected.to match(/a-file/) }
+    it { expect { subject }.to output(/a-file/).to_stdout }
   end
 
   context 'with --sort=extension flag' do
     let(:args) { ['--sort=extension', FIXTURES] }
 
-    it { is_expected.to match(/a-file.+symlinks.+z-file.+a.md.+a.txt.+z.txt/m) } # sorts results by extension
+    it('sorts results by extension') { expect { subject }.to output(/a-file.+symlinks.+z-file.+a.md.+a.txt.+z.txt/m).to_stdout }
   end
 
   context 'with --dirs flag' do
     let(:args) { ['--dirs', FIXTURES] }
 
-    it { is_expected.not_to match(/a-file/) } # displays dirs only
+    it('displays dirs only') { expect { subject }.not_to output(/a-file/).to_stdout }
   end
 
   context 'with --files flag' do
     let(:args) { ['--files', FIXTURES] }
 
-    it { is_expected.not_to match(/symlinks/) } # displays files only
+    it('displays files only') { expect { subject }.not_to output(/symlinks/).to_stdout }
   end
 
   context 'with -1 flag' do
     let(:args) { ['-1', FIXTURES] }
 
-    it { is_expected.to match(/(.*\n){3}/) } # displays one file per line
+    it('displays one file per line') { expect { subject }.to output(/(.*\n){3}/).to_stdout }
   end
 
   context 'with --almost-all flag' do
     let(:args) { ['--almost-all', FIXTURES] }
 
-    it { is_expected.to match(/\.hidden-file/) } # displays hidden files
+    it('displays hidden files') { expect { subject }.to output(/\.hidden-file/).to_stdout }
   end
 
   context 'with --tree flag' do
     let(:args) { ['--tree', FIXTURES] }
 
-    it { is_expected.to match(/├──/) } # displays file hierarchy
-    it { is_expected.to match(/third-level-file.txt/) }
+    it('displays file hierarchy') { expect { subject }.to output(/├──/).to_stdout }
+    it { expect { subject }.to output(/third-level-file.txt/).to_stdout }
   end
 
   context 'with --tree=1 flag' do
     let(:args) { ['--tree=1', FIXTURES] }
 
-    it { is_expected.to match(/├──/) } # displays file hierarchy
-    it { is_expected.not_to match(/ReadmeLink.md|Supportlink|doesnotexisttest.txt|third-level-file.txt/) }
+    it('displays file hierarchy') { expect { subject }.to output(/├──/).to_stdout }
+    it { expect { subject }.not_to output(/ReadmeLink.md|Supportlink|doesnotexisttest.txt|third-level-file.txt/).to_stdout }
   end
 
   context 'with --tree=3 flag' do
     let(:args) { ['--tree=3', FIXTURES] }
 
-    it { is_expected.to match(/├──/) } # displays file hierarchy
-    it { is_expected.to match(/third-level-file.txt/) }
+    it('displays file hierarchy') { expect { subject }.to output(/├──/).to_stdout }
+    it { expect { subject }.to output(/third-level-file.txt/).to_stdout }
   end
 
   context 'with --hyperlink flag' do
@@ -240,19 +234,19 @@ RSpec.describe ColorLS::Flags do
 
     href = "file://#{File.absolute_path(FIXTURES)}/a.txt"
 
-    it { is_expected.to match(href) }
+    it { expect { subject }.to output(include(href)).to_stdout }
   end
 
   context 'symlinked directory' do
     let(:args) { [File.join(FIXTURES, 'symlinks', 'Supportlink')] }
 
-    it { is_expected.to match(/Supportlink/) }
+    it { expect { subject }.to output(/Supportlink/).to_stdout }
   end
 
   context 'symlinked directory with trailing separator' do
     let(:args) { [File.join(FIXTURES, 'symlinks', 'Supportlink', File::SEPARATOR)] }
 
-    it { is_expected.to match(/yaml_sort_checker.rb/) }
+    it { expect { subject }.to output(/yaml_sort_checker.rb/).to_stdout }
   end
 
   context 'when passing invalid flags' do
@@ -260,7 +254,7 @@ RSpec.describe ColorLS::Flags do
 
     it 'should issue a warning, hint about `--help` and exit' do
       allow(::Kernel).to receive(:warn) do |message|
-        expect(message).to match "--snafu"
+        expect(message).to output "--snafu"
       end
 
       expect { subject }.to raise_error('colorls exited with 2').and output(/--help/).to_stderr
