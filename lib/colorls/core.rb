@@ -251,15 +251,19 @@ module ColorLS
     end
 
     def git_dir_info(path)
+      return '    ' if path == '..'
+
       direct_status = @git_status.fetch("#{path}/", nil)
 
       return Git.colored_status_symbols(direct_status.uniq, @colors) unless direct_status.nil?
 
-      modes = @git_status.select { |file, mode| file.start_with?(path) && mode != '!!' }
+      prefix = path == '.' ? '' : path + '/'
+
+      modes = @git_status.select { |file, mode| file.start_with?(prefix) && mode != '!!' }.values
 
       return '  ✓ '.colorize(@colors[:unchanged]) if modes.empty?
 
-      Git.colored_status_symbols(modes.values.join.uniq, @colors)
+      Git.colored_status_symbols(modes.join.uniq, @colors)
     end
 
     def long_info(content)
