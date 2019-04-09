@@ -1,3 +1,5 @@
+require: rubocop-performance
+
 AllCops:
   Include:
     - 'lib/**/*'
@@ -77,6 +79,9 @@ Style/EmptyCaseCondition:
   Enabled: false
 
 Style/MultilineBlockChain:
+  Enabled: false
+
+Style/StderrPuts:
   Enabled: false
 
 # Current preferred metrics --------------------------------------------
