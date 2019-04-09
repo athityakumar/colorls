@@ -79,6 +79,9 @@ Style/EmptyCaseCondition:
 Style/MultilineBlockChain:
   Enabled: false
 
+Style/StderrPuts:
+  Enabled: false
+
 # Current preferred metrics --------------------------------------------
 # Better values are encouraged, but not required.
 Metrics/AbcSize:
