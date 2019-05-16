@@ -71,7 +71,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.7'
   spec.add_development_dependency 'rspec-its', '~> 1.2'
   spec.add_development_dependency 'rubocop', '~> 0.69.0'
-  spec.add_development_dependency 'rubocop-performance', '~> 1.2.0'
+  spec.add_development_dependency 'rubocop-performance', '~> 1.3.0'
   spec.add_development_dependency 'rubocop-rspec', '~> 1.27'
   spec.add_development_dependency 'rubygems-tasks', '~> 0'
   spec.add_development_dependency 'simplecov', '~> 0.16.1'
