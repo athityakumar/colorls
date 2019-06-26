@@ -2,6 +2,8 @@
 unrecognized_file: gold
 recognized_file:   lime
 dir:               dodgerblue
+dir_suffixes:
+  _venv:           royalblue
 
 # Link
 dead_link: red

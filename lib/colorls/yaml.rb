@@ -7,6 +7,19 @@ module ColorLS
       @user_config_filepath = File.join(Dir.home, ".config/colorls/#{filename}")
     end
 
+    def deep_transform_key_vals_in_object(object, &block)
+      case object
+      when Hash
+        object.each_with_object({}) do |(key, value), result|
+          result[yield(key)] = deep_transform_key_vals_in_object(value, &block)
+        end
+      when Array
+        object.map { |e| deep_transform_key_vals_in_object(e, &block) }
+      else
+        yield object
+      end
+    end
+
     def load(aliase: false)
       yaml = read_file(@filepath)
       if File.exist?(@user_config_filepath)
@@ -16,7 +29,7 @@ module ColorLS
 
       return yaml unless aliase
 
-      yaml.to_a.map! { |k, v| [k, v.to_sym] }.to_h
+      deep_transform_key_vals_in_object(yaml.to_a, &:to_sym).to_h
     end
 
     def read_file(filepath)
