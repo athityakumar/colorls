@@ -57,7 +57,7 @@ RSpec.describe ColorLS::Flags do
     it('lists file info') { expect { subject }.to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout }
   end
 
-  context 'with --long flag and special bits' do
+  context 'with --long flag for `a.txt`' do
     let(:args) { ['--long', "#{FIXTURES}/a.txt"] }
 
     it 'shows special permission bits' do
@@ -68,6 +68,7 @@ RSpec.describe ColorLS::Flags do
         :directory? => false,
         :owner => "user",
         :name => "a.txt",
+        :nlink => 1,
         :size => 128,
         :blockdev? => false,
         :chardev? => false,
@@ -83,7 +84,34 @@ RSpec.describe ColorLS::Flags do
 
       allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", true) { fileInfo }
 
-      expect { subject }.to output(/r-Sr-Sr-T  \s+  user  \s+  sys  .*  a.txt/mx).to_stdout
+      expect { subject }.to output(/r-Sr-Sr-T  .*  a.txt/mx).to_stdout
+    end
+
+    it 'shows number of hardlinks' do
+      fileInfo = instance_double(
+        'FileInfo',
+        :group => "sys",
+        :mtime => Time.now,
+        :directory? => false,
+        :owner => "user",
+        :name => "a.txt",
+        :nlink => 5, # number of hardlinks
+        :size => 128,
+        :blockdev? => false,
+        :chardev? => false,
+        :socket? => false,
+        :symlink? => false,
+        :stats => OpenStruct.new(
+          mode: 0o444, # read for user, owner, other
+          setuid?: true,
+          setgid?: true,
+          sticky?: true
+        )
+      )
+
+      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", true) { fileInfo }
+
+      expect { subject }.to output(/\S+\s+ 5 .*  a.txt/mx).to_stdout
     end
   end
 

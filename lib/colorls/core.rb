@@ -269,7 +269,7 @@ module ColorLS
     def long_info(content)
       return '' unless @long
 
-      [mode_info(content.stats), user_info(content), group_info(content.group),
+      [mode_info(content.stats), content.nlink, user_info(content), group_info(content.group),
        size_info(content.size), mtime_info(content.mtime)].join('  ')
     end
 
