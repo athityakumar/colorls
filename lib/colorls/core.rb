@@ -18,6 +18,7 @@ module ColorLS
       @one_per_line = mode == :one_per_line
       @long         = mode == :long
       @tree         = {mode: mode == :tree, depth: tree_depth}
+      @horizontal   = mode == :horizontal
       process_git_status_details(git_status)
 
       @screen_width = IO.console.winsize[1]
@@ -26,20 +27,28 @@ module ColorLS
       init_colors colors
 
       @contents   = init_contents(input)
-      @max_widths = @contents.map { |c| c.name.length }
       init_icons
     end
 
     def ls
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
-      if @tree[:mode]
-        print "\n"
-        tree_traverse(@input, 0, 1, 2)
-      else
-        @contents = chunkify
-        @contents.each { |chunk| ls_line(chunk) }
+      layout = case
+               when @tree[:mode] then
+                 print "\n"
+                 return tree_traverse(@input, 0, 1, 2)
+               when @horizontal then
+                 HorizontalLayout.new(@contents, item_widths, @screen_width)
+               when @one_per_line || @long then
+                 SingleColumnLayout.new(@contents)
+               else
+                 VerticalLayout.new(@contents, item_widths, @screen_width)
+               end
+
+      layout.each_line do |line, widths|
+        ls_line(line, widths)
       end
+
       display_report if @report
       true
     end
@@ -57,6 +66,13 @@ module ColorLS
                 end
         hash[key] = key.colorize(@colors[color]).freeze
       end
+    end
+
+    # how much characters an item occupies besides its name
+    CHARS_PER_ITEM = 12
+
+    def item_widths
+      @contents.map { |item| item.name.size + CHARS_PER_ITEM }
     end
 
     def init_contents(path)
@@ -142,30 +158,6 @@ module ColorLS
       @file_aliases   = ColorLS::Yaml.new('file_aliases.yaml').load(aliase: true)
       @folders        = ColorLS::Yaml.new('folders.yaml').load
       @folder_aliases = ColorLS::Yaml.new('folder_aliases.yaml').load(aliase: true)
-    end
-
-    def chunkify
-      return @contents.zip if @one_per_line || @long
-
-      chunk_size = @contents.size
-      max_widths = @max_widths
-
-      until in_line(chunk_size, max_widths) || chunk_size <= 1
-        chunk_size -= 1
-        max_widths      = @max_widths.each_slice(chunk_size).to_a
-        max_widths[-1] += [0] * (chunk_size - max_widths.last.size)
-        max_widths      = max_widths.transpose.map(&:max)
-      end
-      @max_widths = max_widths
-      @contents = get_chunk(chunk_size)
-    end
-
-    def get_chunk(chunk_size)
-      @contents.each_slice(chunk_size).to_a
-    end
-
-    def in_line(chunk_size, max_widths)
-      (max_widths.sum + 12 * chunk_size <= @screen_width)
     end
 
     def display_report
@@ -280,33 +272,27 @@ module ColorLS
       end
     end
 
-    def slash?(content)
-      content.directory? ? '/'.colorize(@colors[:dir]) : ' '
-    end
-
     def fetch_string(path, content, key, color, increment)
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
       name = content.name
       name = make_link(path, name) if @hyperlink
+      name += content.directory? ? '/' : ' '
+      entry = logo + '  ' + name
 
-      [
-        long_info(content),
-        " #{git_info(content)} ",
-        logo.colorize(color),
-        "  #{name.colorize(color)}#{slash?(content)}#{symlink_info(content)}"
-      ].join
+      "#{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end
 
-    def ls_line(chunk)
+    def ls_line(chunk, widths)
+      padding = 0
+      line = +''
       chunk.each_with_index do |content, i|
-        break if content.name.empty?
-
-        print "  #{fetch_string(@input, content, *options(content))}"
-        print ' ' * (@max_widths[i] - content.name.length) unless @one_per_line || @long
+        line << ' ' * padding
+        line << '  ' << fetch_string(@input, content, *options(content))
+        padding = widths[i] - content.name.length - CHARS_PER_ITEM
       end
-      print "\n"
+      print line << "\n"
     end
 
     def file_color(file, key)
