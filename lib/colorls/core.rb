@@ -94,7 +94,8 @@ module ColorLS
       @total_content_length = @contents.length
 
       return @contents unless @long
-
+      
+      init_nlink_lengths
       init_user_lengths
       init_group_lengths
       @contents
@@ -104,7 +105,13 @@ module ColorLS
       @contents -= %w[. ..] unless @all
       @contents.keep_if { |x| !x.start_with? '.' } unless @all || @almost_all
     end
-
+    
+    def init_nlink_lengths
+      @nlinklength = @contents.map do |c|
+        c.nlink.to_s.length
+      end.max
+    end
+    
     def init_user_lengths
       @userlength = @contents.map do |c|
         c.owner.length
@@ -183,6 +190,10 @@ module ColorLS
 
       @modes[m_r] + @modes[m_w] + @modes[m_x]
     end
+        
+    def nlink(content)
+      content.nlink.to_s.rjust(@nlinklength.to_i, ' ')
+    end    
 
     def mode_info(stat)
       m = stat.mode
@@ -210,7 +221,7 @@ module ColorLS
     end
 
     def mtime_info(file_mtime)
-      mtime = file_mtime.asctime
+      mtime = file_mtime.strftime("%e %b %Y %H:%M")
       now = Time.now
       return mtime.colorize(@colors[:hour_old]) if now - file_mtime < 60 * 60
       return mtime.colorize(@colors[:day_old])  if now - file_mtime < 24 * 60 * 60
@@ -257,7 +268,7 @@ module ColorLS
     def long_info(content)
       return '' unless @long
 
-      [mode_info(content.stats), content.nlink, user_info(content), group_info(content.group),
+      [mode_info(content.stats), nlink(content), user_info(content), group_info(content.group),
        size_info(content.size), mtime_info(content.mtime)].join('  ')
     end
 
