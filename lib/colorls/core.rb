@@ -191,6 +191,10 @@ module ColorLS
         format_mode(m >> 3, stat.setgid?, 's') +
         format_mode(m, stat.sticky?, 't')
     end
+    
+    def nlink(nlink)
+      nlink.to_s.rjust(4, ' ')
+    end     
 
     def user_info(content)
       content.owner.ljust(@userlength, ' ').colorize(@colors[:user])
@@ -257,7 +261,7 @@ module ColorLS
     def long_info(content)
       return '' unless @long
 
-      [mode_info(content.stats), content.nlink, user_info(content), group_info(content.group),
+      [mode_info(content.stats), nlink(content.nlink), user_info(content), group_info(content.group),
        size_info(content.size), mtime_info(content.mtime)].join('  ')
     end
 
