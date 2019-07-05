@@ -221,8 +221,14 @@ module ColorLS
     end
 
     def mtime_info(file_mtime)
-      mtime = file_mtime.strftime("%e %b %Y %H:%M")
       now = Time.now
+      
+      if now.strftime("%Y") == file_mtime.strftime("%Y")
+        mtime = file_mtime.strftime("%b %e %H:%M")
+      else
+        mtime = file_mtime.strftime("%b %e  %Y")
+      end
+      
       return mtime.colorize(@colors[:hour_old]) if now - file_mtime < 60 * 60
       return mtime.colorize(@colors[:day_old])  if now - file_mtime < 24 * 60 * 60
 
