@@ -93,10 +93,8 @@ module ColorLS
       end
       @total_content_length = @contents.length
 
-      return @contents unless @long
+      init_column_lengths
 
-      init_user_lengths
-      init_group_lengths
       @contents
     end
 
@@ -105,16 +103,20 @@ module ColorLS
       @contents.keep_if { |x| !x.start_with? '.' } unless @all || @almost_all
     end
 
-    def init_user_lengths
-      @userlength = @contents.map do |c|
-        c.owner.length
-      end.max
-    end
+    def init_column_lengths
+      return unless @long
 
-    def init_group_lengths
-      @grouplength = @contents.map do |c|
-        c.group.length
-      end.max
+      maxlink = maxuser = maxgroup = 0
+
+      @contents.each do |c|
+        maxlink = c.nlink if c.nlink > maxlink
+        maxuser = c.owner.length if c.owner.length > maxuser
+        maxgroup = c.group.length if c.group.length > maxgroup
+      end
+
+      @linklength = maxlink.digits.length
+      @userlength = maxuser
+      @grouplength = maxgroup
     end
 
     def filter_contents
@@ -257,7 +259,9 @@ module ColorLS
     def long_info(content)
       return '' unless @long
 
-      [mode_info(content.stats), content.nlink, user_info(content), group_info(content.group),
+      links = content.nlink.to_s.rjust(@linklength)
+
+      [mode_info(content.stats), links, user_info(content), group_info(content.group),
        size_info(content.size), mtime_info(content.mtime)].join('  ')
     end
 
