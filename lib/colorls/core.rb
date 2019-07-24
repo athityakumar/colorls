@@ -37,9 +37,9 @@ module ColorLS
                when @tree[:mode] then
                  print "\n"
                  return tree_traverse(@input, 0, 1, 2)
-               when @horizontal then
+               when @horizontal
                  HorizontalLayout.new(@contents, item_widths, @screen_width)
-               when @one_per_line || @long then
+               when @one_per_line || @long
                  SingleColumnLayout.new(@contents)
                else
                  VerticalLayout.new(@contents, item_widths, @screen_width)
