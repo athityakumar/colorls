@@ -55,6 +55,15 @@ module ColorLS
 
     private
 
+    @@encoding = begin # rubocop:disable Style/ClassVars
+      if ENV['OS'] == 'Windows_NT' && RUBY_PLATFORM !~ /cygwin/
+        # use UTF-8 to read entries of directories on windows
+        Encoding::UTF_8
+      else
+        Encoding.find('filesystem')
+      end
+    end
+
     def init_colors(colors)
       @colors  = colors
       @modes = Hash.new do |hash, key|
@@ -79,7 +88,7 @@ module ColorLS
       info = FileInfo.new(path, link_info = @long)
 
       if info.directory?
-        @contents = Dir.entries(path)
+        @contents = Dir.entries(path, encoding: @@encoding)
 
         filter_hidden_contents
 
