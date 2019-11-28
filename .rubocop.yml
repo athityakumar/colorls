@@ -32,7 +32,7 @@ Layout/SpaceInsideBlockBraces:
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 
 Style/EmptyElse:
