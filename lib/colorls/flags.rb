@@ -47,7 +47,7 @@ module ColorLS
 
           puts '' if i.positive?
           puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
-          Core.new(path, @opts).ls
+          Core.new(path, **@opts).ls
         rescue SystemCallError => e
           STDERR.puts "#{path}: #{e}".colorize(:red)
         end
