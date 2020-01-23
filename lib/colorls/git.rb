@@ -51,7 +51,7 @@ module ColorLS
       end
 
       def git_subdir_status(repo_path)
-        IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored', '.'])
+        yield IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored', '.'])
       end
     end
   end
