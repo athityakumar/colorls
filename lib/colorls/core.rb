@@ -248,12 +248,14 @@ module ColorLS
       modes = if path == '.'
                 Set.new(@git_status.values).flatten
               else
-                @git_status.fetch(path, nil)
+                @git_status[path]
               end
 
-      return Git.colored_status_symbols(modes, @colors) unless modes.nil?
-
-      '    '
+      if modes.empty? && Dir.empty?(File.join(@input, path))
+        '    '
+      else
+        Git.colored_status_symbols(modes, @colors)
+      end
     end
 
     def long_info(content)
