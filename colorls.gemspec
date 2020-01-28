@@ -74,6 +74,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop-performance', '~> 1.5.0'
   spec.add_development_dependency 'rubocop-rspec', '~> 1.27'
   spec.add_development_dependency 'rubygems-tasks', '~> 0'
-  spec.add_development_dependency 'simplecov', '~> 0.17.0'
+  spec.add_development_dependency 'simplecov', '~> 0.18.0'
 end
 # rubocop:enable Metrics/BlockLength
