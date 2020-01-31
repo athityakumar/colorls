@@ -270,7 +270,8 @@ module ColorLS
     def symlink_info(content)
       return '' unless @long && content.symlink?
 
-      link_info = " ⇒ #{content.link_target}"
+      target = content.link_target.nil? ? '…' : content.link_target
+      link_info = " ⇒ #{target}"
       if content.dead?
         "#{link_info} [Dead link]".colorize(@colors[:dead_link])
       else

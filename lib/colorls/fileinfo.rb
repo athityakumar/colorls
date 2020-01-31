@@ -16,10 +16,7 @@ module ColorLS
       @name = File.basename(path)
       @stats = File.lstat(path)
 
-      return unless link_info && @stats.symlink?
-
-      @dead = !File.exist?(path)
-      @target = File.readlink(path)
+      handle_symlink(path) if link_info && @stats.symlink?
     end
 
     def self.info(path)
@@ -58,5 +55,14 @@ module ColorLS
     end
 
     def_delegators :@stats, :directory?, :socket?, :chardev?, :symlink?, :blockdev?, :mtime, :nlink, :size, :owned?
+
+    private
+
+    def handle_symlink(path)
+      @target = File.readlink(path)
+      @dead = !File.exist?(path)
+    rescue SystemCallError => e
+      STDERR.puts "cannot read symbolic link: #{e}"
+    end
   end
 end
