@@ -290,4 +290,14 @@ RSpec.describe ColorLS::Flags do
       expect { subject }.to raise_error('colorls exited with 2').and output(/--help/).to_stderr
     end
   end
+
+  context 'for invalid locale' do
+    let(:args) { [FIXTURES] }
+
+    it 'should warn but not raise an error' do
+      allow(CLocale).to receive(:setlocale).with(CLocale::LC_COLLATE, '').and_raise(RuntimeError.new("setlocale error"))
+
+      expect { subject }.to output(/setlocale error/).to_stderr.and output.to_stdout
+    end
+  end
 end

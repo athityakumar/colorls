@@ -37,8 +37,7 @@ module ColorLS
     end
 
     def process
-      # initialize locale from environment
-      CLocale.setlocale(CLocale::LC_COLLATE, '')
+      init_locale
 
       @args = [Dir.pwd] if @args.empty?
       @args.sort!.each_with_index do |path, i|
@@ -68,6 +67,13 @@ module ColorLS
     end
 
     private
+
+    def init_locale
+      # initialize locale from environment
+      CLocale.setlocale(CLocale::LC_COLLATE, '')
+    rescue RuntimeError => e
+      warn "WARN: #{e}, check your locale settings"
+    end
 
     def add_sort_options(options)
       options.separator ''
