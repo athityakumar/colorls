@@ -315,7 +315,7 @@ module ColorLS
 
     def options(content)
       if content.directory?
-        key = content.name.to_sym
+        key = content.name.downcase.to_sym
         key = @folder_aliases[key] unless @folders.key? key
         key = :folder if key.nil?
         color = @colors[:dir]
