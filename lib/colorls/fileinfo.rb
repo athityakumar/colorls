@@ -16,11 +16,20 @@ module ColorLS
       @name = File.basename(path)
       @stats = File.lstat(path)
 
+      @show_name = nil
+
       handle_symlink(path) if link_info && @stats.symlink?
     end
 
     def self.info(path)
       FileInfo.new(path)
+    end
+
+    def show
+      return @show_name unless @show_name.nil?
+
+      @show_name = @name.encode(Encoding.find('filesystem'), Encoding.default_external,
+                                invalid: :replace, undef: :replace)
     end
 
     def dead?

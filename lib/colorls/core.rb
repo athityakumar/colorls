@@ -72,14 +72,14 @@ module ColorLS
     CHARS_PER_ITEM = 12
 
     def item_widths
-      @contents.map { |item| item.name.size + CHARS_PER_ITEM }
+      @contents.map { |item| item.show.size + CHARS_PER_ITEM }
     end
 
     def init_contents(path)
       info = FileInfo.new(path, link_info = @long)
 
       if info.directory?
-        @contents = Dir.entries(path)
+        @contents = Dir.entries(path, encoding: Encoding::ASCII_8BIT)
 
         filter_hidden_contents
 
@@ -239,7 +239,11 @@ module ColorLS
     end
 
     def git_file_info(path)
-      return '  ✓ '.colorize(@colors[:unchanged]) unless @git_status[path]
+      unless @git_status[path]
+        return '  ✓ '
+               .encode(Encoding.default_external, undef: :replace, replace: '=')
+               .colorize(@colors[:unchanged])
+      end
 
       Git.colored_status_symbols(@git_status[path], @colors)
     end
@@ -283,10 +287,10 @@ module ColorLS
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
-      name = content.name
+      name = content.show
       name = make_link(path, name) if @hyperlink
       name += content.directory? ? '/' : ' '
-      entry = logo + '  ' + name
+      entry = logo.encode(Encoding.default_external, undef: :replace, replace: '') + '  ' + name
 
       "#{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end
@@ -295,9 +299,10 @@ module ColorLS
       padding = 0
       line = +''
       chunk.each_with_index do |content, i|
+        entry = fetch_string(@input, content, *options(content))
         line << ' ' * padding
-        line << '  ' << fetch_string(@input, content, *options(content))
-        padding = widths[i] - content.name.length - CHARS_PER_ITEM
+        line << '  ' << entry.encode(Encoding.default_external, undef: :replace)
+        padding = widths[i] - content.show.length - CHARS_PER_ITEM
       end
       print line << "\n"
     end

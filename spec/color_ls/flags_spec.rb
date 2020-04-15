@@ -68,6 +68,7 @@ RSpec.describe ColorLS::Flags do
         :directory? => false,
         :owner => "user",
         :name => "a.txt",
+        :show => "a.txt",
         :nlink => 1,
         :size => 128,
         :blockdev? => false,
@@ -95,6 +96,7 @@ RSpec.describe ColorLS::Flags do
         :directory? => false,
         :owner => "user",
         :name => "a.txt",
+        :show => "a.txt",
         :nlink => 5, # number of hardlinks
         :size => 128,
         :blockdev? => false,
