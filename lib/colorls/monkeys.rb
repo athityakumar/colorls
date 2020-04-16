@@ -12,16 +12,6 @@ class String
   def uniq
     split('').uniq.join
   end
-
-  unless instance_methods.include? :delete_prefix
-    define_method(:delete_prefix) do |prefix|
-      if start_with? prefix
-        slice(prefix.length..-1)
-      else
-        slice(0..length)
-      end
-    end
-  end
 end
 
 class Hash
@@ -32,8 +22,4 @@ class Hash
     end
     new_hash
   end
-end
-
-class Array
-  define_method(:sum) { inject(:+) } unless instance_methods.include? :sum
 end
