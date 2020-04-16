@@ -42,15 +42,13 @@ module ColorLS
 
       @args = [Dir.pwd] if @args.empty?
       @args.sort!.each_with_index do |path, i|
-        begin
-          next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
+        next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
 
-          puts '' if i.positive?
-          puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
-          Core.new(path, **@opts).ls
-        rescue SystemCallError => e
-          STDERR.puts "#{path}: #{e}".colorize(:red)
-        end
+        puts '' if i.positive?
+        puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
+        Core.new(path, **@opts).ls
+      rescue SystemCallError => e
+        STDERR.puts "#{path}: #{e}".colorize(:red)
       end
     end
 

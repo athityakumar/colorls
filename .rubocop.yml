@@ -10,7 +10,7 @@ AllCops:
     - 'lib/yaml/*'
     - 'lib/**/*.sh'
   DisplayCopNames: true
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 # Preferred codebase style ---------------------------------------------
 
@@ -34,6 +34,12 @@ Layout/SpaceInsideHashLiteralBraces:
 
 Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
 
 Style/EmptyElse:
   EnforcedStyle: empty
@@ -62,6 +68,15 @@ Style/ParallelAssignment:
 
 Style/DoubleNegation:
   Enabled: false
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
 
 Style/SingleLineBlockParams:
   Enabled: false
