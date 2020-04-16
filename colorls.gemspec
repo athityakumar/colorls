@@ -47,7 +47,9 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.4.0'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+  spec.files         = IO.popen(
+    %w[git ls-files -z], external_encoding: Encoding::ASCII_8BIT
+  ).read.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
 

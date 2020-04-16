@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe ColorLS::Git do
+  before(:all) do
+    `echo` # initialize $CHILD_STATUS
+    expect($CHILD_STATUS).to be_success
+  end
+
   def git_status(*entries)
     StringIO.new entries.map { |line| line + "\x0" }.join
   end

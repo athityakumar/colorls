@@ -31,7 +31,11 @@ module ColorLS
     end
 
     def self.colored_status_symbols(modes, colors)
-      return '  ✓ '.colorize(colors[:unchanged]) if modes.empty?
+      if modes.empty?
+        return '  ✓ '
+               .encode(Encoding.default_external, undef: :replace, replace: '=')
+               .colorize(colors[:unchanged])
+      end
 
       modes = modes.to_a.join.uniq.rjust(3).ljust(4)
 
@@ -51,7 +55,10 @@ module ColorLS
       end
 
       def git_subdir_status(repo_path)
-        yield IO.popen(['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored', '.'])
+        yield IO.popen(
+          ['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored', '.'],
+          external_encoding: Encoding::ASCII_8BIT
+        )
       end
     end
   end
