@@ -10,6 +10,7 @@ AllCops:
     - 'lib/yaml/*'
     - 'lib/**/*.sh'
   DisplayCopNames: true
+  NewCops: enable
   TargetRubyVersion: 2.5
 
 # Preferred codebase style ---------------------------------------------
