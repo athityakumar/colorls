@@ -1,7 +1,26 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# workaround https://github.com/rubygems/rubygems/issues/3087
+
+# rubocop:disable Style/GlobalVars
+$loading = true
+
+class Dir
+  @@old_pwd = singleton_method(:pwd) # rubocop:disable Style/ClassVars
+
+  def self.pwd
+    @@old_pwd.call
+  rescue Errno::ENOENT => e
+    return '/' if $loading
+
+    raise e
+  end
+end
+
 require 'colorls'
 
+$loading = false
+# rubocop:enable Style/GlobalVars
+
 ColorLS::Flags.new(*ARGV).process
-true

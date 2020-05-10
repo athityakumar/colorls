@@ -39,7 +39,7 @@ module ColorLS
     def process
       init_locale
 
-      @args = [Dir.pwd] if @args.empty?
+      @args = ['.'] if @args.empty?
       @args.sort!.each_with_index do |path, i|
         next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
 
