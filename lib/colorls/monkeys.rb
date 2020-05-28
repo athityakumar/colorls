@@ -2,7 +2,7 @@
 
 class String
   def colorize(color)
-    self.color(color.to_sym)
+    self.color(color)
   end
 
   def remove(pattern)
