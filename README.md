@@ -163,7 +163,9 @@ You can overwrite the existing icons and colors mapping by copying the yaml file
 
 - To overwrite color mapping :
 
-  Please have a look at the [list of supported color names](https://github.com/sickill/rainbow#color-list). Let's say that you're using the dark color scheme and would like to change the color of untracked file (`??`) in the `--git-status` flag to yellow. Copy the defaut `dark_colors.yaml` and change it.
+  Please have a look at the [list of supported color names](https://github.com/sickill/rainbow#color-list). You may also use a color hex code as long as it is quoted within the YAML file and prefaced with a `#` symbol.
+
+  Let's say that you're using the dark color scheme and would like to change the color of untracked file (`??`) in the `--git-status` flag to yellow. Copy the defaut `dark_colors.yaml` and change it.
 
   ```sh
   cp $(dirname $(gem which colorls))/yaml/dark_colors.yaml ~/.config/colorls/dark_colors.yaml`
@@ -173,6 +175,12 @@ You can overwrite the existing icons and colors mapping by copying the yaml file
 
   ```
   untracked: yellow
+  ```
+
+  Or, using hex color codes:
+
+  ```
+  untracked: '#FFFF00'
   ```
 
 - To overwrite icon mapping :

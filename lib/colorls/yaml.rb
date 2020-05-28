@@ -16,7 +16,7 @@ module ColorLS
 
       return yaml unless aliase
 
-      yaml.to_a.map! { |k, v| [k, v.to_sym] }.to_h
+      yaml.to_a.map! { |k, v| v.include?('#') ? [k, v] : [k, v.to_sym] }.to_h
     end
 
     def read_file(filepath)
