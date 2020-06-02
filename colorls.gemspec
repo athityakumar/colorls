@@ -72,7 +72,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'ronn', '~> 0'
   spec.add_development_dependency 'rspec', '~> 3.7'
   spec.add_development_dependency 'rspec-its', '~> 1.2'
-  spec.add_development_dependency 'rubocop', '~> 0.84.0'
+  spec.add_development_dependency 'rubocop', '~> 0.85.0'
   spec.add_development_dependency 'rubocop-performance', '~> 1.5.0'
   spec.add_development_dependency 'rubocop-rspec', '~> 1.27'
   spec.add_development_dependency 'rubygems-tasks', '~> 0'
