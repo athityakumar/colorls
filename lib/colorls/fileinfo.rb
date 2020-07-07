@@ -9,8 +9,7 @@ module ColorLS
     @@users  = {}              # rubocop:disable Style/ClassVars
     @@groups = {}              # rubocop:disable Style/ClassVars
 
-    attr_reader :stats
-    attr_reader :name
+    attr_reader :stats, :name
 
     def initialize(path, link_info=true)
       @name = File.basename(path)
