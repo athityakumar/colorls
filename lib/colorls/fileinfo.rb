@@ -11,7 +11,7 @@ module ColorLS
 
     attr_reader :stats, :name
 
-    def initialize(path, link_info=true)
+    def initialize(path, link_info: true)
       @name = File.basename(path)
       @stats = File.lstat(path)
 
@@ -70,7 +70,7 @@ module ColorLS
       @target = File.readlink(path)
       @dead = !File.exist?(path)
     rescue SystemCallError => e
-      STDERR.puts "cannot read symbolic link: #{e}"
+      $stderr.puts "cannot read symbolic link: #{e}"
     end
   end
 end

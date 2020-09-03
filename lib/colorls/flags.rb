@@ -15,7 +15,7 @@ module ColorLS
         sort: true,
         reverse: false,
         group: nil,
-        mode: STDOUT.tty? ? :vertical : :one_per_line,
+        mode: STDOUT.tty? ? :vertical : :one_per_line, # rubocop:disable Style/GlobalStdStream
         all: false,
         almost_all: false,
         report: false,
@@ -41,13 +41,13 @@ module ColorLS
 
       @args = ['.'] if @args.empty?
       @args.sort!.each_with_index do |path, i|
-        next STDERR.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
+        next $stderr.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
 
         puts '' if i.positive?
         puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
         Core.new(path, **@opts).ls
       rescue SystemCallError => e
-        STDERR.puts "#{path}: #{e}".colorize(:red)
+        $stderr.puts "#{path}: #{e}".colorize(:red)
       end
     end
 
