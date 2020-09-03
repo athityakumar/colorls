@@ -34,7 +34,7 @@ module ColorLS
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
       layout = case
-               when @tree[:mode] then
+               when @tree[:mode]
                  print "\n"
                  return tree_traverse(@input, 0, 1, 2)
                when @horizontal
@@ -76,14 +76,14 @@ module ColorLS
     end
 
     def init_contents(path)
-      info = FileInfo.new(path, link_info = @long)
+      info = FileInfo.new(path, link_info: @long)
 
       if info.directory?
         @contents = Dir.entries(path, encoding: Encoding::ASCII_8BIT)
 
         filter_hidden_contents
 
-        @contents.map! { |e| FileInfo.new(File.join(path, e), link_info = @long) }
+        @contents.map! { |e| FileInfo.new(File.join(path, e), link_info: @long) }
 
         filter_contents if @show
         sort_contents   if @sort
@@ -290,7 +290,7 @@ module ColorLS
       name = content.show
       name = make_link(path, name) if @hyperlink
       name += content.directory? ? '/' : ' '
-      entry = logo.encode(Encoding.default_external, undef: :replace, replace: '') + '  ' + name
+      entry = "#{logo.encode(Encoding.default_external, undef: :replace, replace: '')}  #{name}"
 
       "#{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end

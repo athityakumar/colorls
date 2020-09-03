@@ -83,7 +83,7 @@ RSpec.describe ColorLS::Flags do
         )
       )
 
-      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", true) { fileInfo }
+      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { fileInfo }
 
       expect { subject }.to output(/r-Sr-Sr-T  .*  a.txt/mx).to_stdout
     end
@@ -111,7 +111,7 @@ RSpec.describe ColorLS::Flags do
         )
       )
 
-      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", true) { fileInfo }
+      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { fileInfo }
 
       expect { subject }.to output(/\S+\s+ 5 .*  a.txt/mx).to_stdout
     end
