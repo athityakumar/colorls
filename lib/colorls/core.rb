@@ -313,7 +313,7 @@ module ColorLS
                   when file.blockdev? then :blockdev
                   when file.socket? then :socket
                   else
-                    @files.key?(key) ? :recognized_file : :unrecognized_file
+                    (key != :file and @files.key?(key)) ? :recognized_file : :unrecognized_file
                   end
       @colors[color_key]
     end
@@ -330,7 +330,7 @@ module ColorLS
         key = @file_aliases[key] unless @files.key? key
         key = :file if key.nil?
         color = file_color(content, key)
-        group = @files.key?(key) ? :recognized_files : :unrecognized_files
+        group = (key != :file and @files.key?(key)) ? :recognized_files : :unrecognized_files
       end
 
       [key, color, group]
