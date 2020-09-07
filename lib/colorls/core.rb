@@ -328,9 +328,9 @@ module ColorLS
       else
         key = content.name.split('.').last.downcase.to_sym
         key = @file_aliases[key] unless @files.key? key
-        key = :file if key.nil?
         color = file_color(content, key)
         group = @files.key?(key) ? :recognized_files : :unrecognized_files
+        key = :file if key.nil?
       end
 
       [key, color, group]

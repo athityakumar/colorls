@@ -300,4 +300,12 @@ RSpec.describe ColorLS::Flags do
       expect { subject }.to output(/setlocale error/).to_stderr.and output.to_stdout
     end
   end
+
+  context 'with unrecognized files' do
+    let(:args) { ['--report', FIXTURES] }
+
+    it 'should show a report with unrecognized files' do
+      expect { subject }.to output(/Unrecognized files\s+: 3/).to_stdout
+    end
+  end
 end
