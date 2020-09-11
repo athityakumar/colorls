@@ -9,9 +9,6 @@ cache:
   bundler
 
 rvm:
-  - '2.5'
-  - '2.6'
-  - '2.7'
   - 'truffleruby-head'
 
 before_install:
