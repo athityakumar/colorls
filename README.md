@@ -122,7 +122,7 @@ Man pages have been added. Checkout `man colorls`.
 
     *Note for `iTerm2` users - Please enable the Nerd Font at iTerm2 > Preferences > Profiles > Text > Non-ASCII font > Hack Regular Nerd Font Complete.*
 
-    *Note for `HyperJS` users - Please add `"Hack Regular Nerd"` Font as an option to `fontFamily` in your `~/.hyper.js` file.*
+    *Note for `HyperJS` users - Please add `"Hack Nerd Font"` Font as an option to `fontFamily` in your `~/.hyper.js` file.*
 
 3. Install the [colorls](https://rubygems.org/gems/colorls/) ruby gem with `gem install colorls`
 
