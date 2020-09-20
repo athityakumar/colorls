@@ -41,7 +41,13 @@ module ColorLS
 
       @args = ['.'] if @args.empty?
       @args.sort!.each_with_index do |path, i|
-        next $stderr.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red) unless File.exist?(path)
+        unless File.exist?(path)
+          $stderr.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red)
+          at_exit do
+            exit 2
+          end
+          next
+        end
 
         puts '' if i.positive?
         puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
