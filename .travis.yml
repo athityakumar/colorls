@@ -9,8 +9,14 @@ cache:
   bundler
 
 rvm:
+  - '2.5'
+  - '2.6'
+  - '2.7'
   - 'truffleruby-head'
-  
+matrix:
+  fast_finish: true
+  allow_failures:
+    - rvm: truffleruby-head
 
 before_install:
   - gem --version
