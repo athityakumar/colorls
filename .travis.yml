@@ -12,6 +12,12 @@ rvm:
   - '2.5'
   - '2.6'
   - '2.7'
+  - 'truffleruby-head'
+
+jobs:
+  fast_finish: true
+  allow_failures:
+    - rvm: truffleruby-head
 
 before_install:
   - gem --version
