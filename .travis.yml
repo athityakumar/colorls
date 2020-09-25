@@ -13,7 +13,8 @@ rvm:
   - '2.6'
   - '2.7'
   - 'truffleruby-head'
-matrix:
+
+jobs:
   fast_finish: true
   allow_failures:
     - rvm: truffleruby-head
