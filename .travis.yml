@@ -28,6 +28,9 @@ jobs:
     - os: windows
 
   include:
+    - os: osx
+      rvm: '2.7'
+
     - os: windows
       language: bash
       before_cache:
