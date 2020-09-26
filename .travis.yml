@@ -5,8 +5,14 @@ if: branch = master OR tag IS present
 language:
   ruby
 
+os:
+  - linux
+
 cache:
-  bundler
+  bundler: true
+  directories:
+    - $HOME/AppData/Local/Temp/chocolatey
+    - /C/tools/msys64
 
 rvm:
   - '2.5'
@@ -16,8 +22,25 @@ rvm:
 
 jobs:
   fast_finish: true
+
   allow_failures:
     - rvm: truffleruby-head
+    - os: windows
+
+  include:
+    - os: windows
+      language: bash
+      before_cache:
+        - |-
+          # https://unix.stackexchange.com/a/137322/107554
+          $msys2 pacman --sync --clean --noconfirm
+      before_install:
+        - ruby --version
+        - gem --version
+        - choco install msys2 --params /NoUpdate
+        - powershell -Command 'Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass ; & c:\tools\ruby27\bin\ridk.ps1' install dev_tools
+      install:
+        - bundle install --retry=3
 
 before_install:
   - gem --version
