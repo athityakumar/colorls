@@ -23,4 +23,5 @@ require 'colorls'
 $loading = false
 # rubocop:enable Style/GlobalVars
 
-ColorLS::Flags.new(*ARGV).process
+exit_status_code = ColorLS::Flags.new(*ARGV).process
+exit exit_status_code unless exit_status_code.zero?

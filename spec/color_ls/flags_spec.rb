@@ -308,4 +308,13 @@ RSpec.describe ColorLS::Flags do
       expect { subject }.to output(/Unrecognized files\s+: 3/).to_stdout
     end
   end
+
+  context 'with not exist path' do
+    let(:args) { ['not_exist_file'] }
+
+    it 'should exit with status code 2' do
+      expect {subject}.to output(/   Specified path 'not_exist_file' doesn't exist./).to_stderr
+      expect(subject).to eq 2
+    end
+  end
 end
