@@ -89,6 +89,17 @@ script:
   - colorls --tree=1
   - LC_ALL=C colorls spec/fixtures/
   - LC_ALL=C colorls --git spec/fixtures/
+  - |
+    if colorls does-not-exist; then
+      echo "expected error!"
+      exit 1
+    else
+      ret=$?
+      if [ $ret -ne 2 ]; then
+        echo "unexpected error: $ret"
+        exit 1
+      fi
+    fi
 
 deploy:
   provider: rubygems

@@ -23,4 +23,4 @@ require 'colorls'
 $loading = false
 # rubocop:enable Style/GlobalVars
 
-ColorLS::Flags.new(*ARGV).process
+exit ColorLS::Flags.new(*ARGV).process
