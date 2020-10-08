@@ -85,7 +85,7 @@ script:
   - colorls --color=auto
   - colorls --color=never
   - colorls --color=always
-  - colorls --tree
+  - colorls --tree spec
   - colorls --tree=1
   - LC_ALL=C colorls spec/fixtures/
   - LC_ALL=C colorls --git spec/fixtures/
