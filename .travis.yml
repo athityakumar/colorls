@@ -21,7 +21,6 @@ jobs:
 
   allow_failures:
     - rvm: truffleruby-head
-    - os: windows
 
   include:
     - os: osx

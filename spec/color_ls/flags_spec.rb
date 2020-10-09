@@ -152,7 +152,7 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'with --sort=time' do
-    entries = Dir.entries(FIXTURES).grep(/^[^.]/).shuffle.freeze
+    entries = Dir.entries(FIXTURES, encoding: Encoding::UTF_8).grep(/^[^.]/).shuffle.freeze
     mtime = Time.new(2017, 11, 7, 2, 2, 2).freeze
 
     files = entries.each_with_index do |e, i|
@@ -276,7 +276,13 @@ RSpec.describe ColorLS::Flags do
   context 'symlinked directory with trailing separator' do
     let(:args) { ['-x', File.join(FIXTURES, 'symlinks', 'Supportlink', File::SEPARATOR)] }
 
-    it { expect { subject }.to output(/yaml_sort_checker.rb/).to_stdout }
+    it 'should show the file in the linked directory' do
+      if File.symlink? File.join(FIXTURES, 'symlinks', 'Supportlink')
+        expect { subject }.to output(/yaml_sort_checker.rb/).to_stdout
+      else
+        skip "symlinks not supported"
+      end
+    end
   end
 
   context 'when passing invalid flags' do

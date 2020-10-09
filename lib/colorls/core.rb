@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module ColorLS
+  # on Windows (were the special 'nul' device exists) we need to use UTF-8
+  @file_encoding = File.exist?('nul') ? Encoding::UTF_8 : Encoding::ASCII_8BIT
+
+  def self.file_encoding
+    @file_encoding
+  end
+
   class Core
     def initialize(input, all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
@@ -79,7 +86,7 @@ module ColorLS
       info = FileInfo.new(path, link_info: @long)
 
       if info.directory?
-        @contents = Dir.entries(path, encoding: Encoding::ASCII_8BIT)
+        @contents = Dir.entries(path, encoding: ColorLS.file_encoding)
 
         filter_hidden_contents
 
@@ -283,6 +290,10 @@ module ColorLS
       end
     end
 
+    def out_encode(str)
+      str.encode(Encoding.default_external, undef: :replace, replace: '')
+    end
+
     def fetch_string(path, content, key, color, increment)
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
@@ -290,7 +301,7 @@ module ColorLS
       name = content.show
       name = make_link(path, name) if @hyperlink
       name += content.directory? ? '/' : ' '
-      entry = "#{logo.encode(Encoding.default_external, undef: :replace, replace: '')}  #{name}"
+      entry = "#{out_encode(logo)}  #{out_encode(name)}"
 
       "#{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end
