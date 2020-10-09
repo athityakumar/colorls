@@ -8,11 +8,7 @@ language:
 os:
   - linux
 
-cache:
-  bundler: true
-  directories:
-    - $HOME/AppData/Local/Temp/chocolatey
-    - /C/tools/msys64
+cache: bundler
 
 rvm:
   - '2.5'
@@ -25,7 +21,6 @@ jobs:
 
   allow_failures:
     - rvm: truffleruby-head
-    - os: windows
 
   include:
     - os: osx
@@ -36,14 +31,27 @@ jobs:
       before_cache:
         - |-
           # https://unix.stackexchange.com/a/137322/107554
-          $msys2 pacman --sync --clean --noconfirm
+          pacman --sync --clean --noconfirm
+        - bundle clean
       before_install:
         - ruby --version
         - gem --version
-        - choco install msys2 --params /NoUpdate
-        - powershell -Command 'Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass ; & c:\tools\ruby27\bin\ridk.ps1' install dev_tools
+        - |
+          if [[ ! -f /C/tools/msys64/--msys2-- ]]; then
+             rm -rf /C/tools/msys64
+             choco uninstall -y mingw
+             choco upgrade --no-progress -y msys2 --params /NoUpdate
+             ridk.cmd install dev_tools
+          fi
+        - touch /C/tools/msys64/--msys2--
       install:
-        - bundle install --retry=3
+        - bundle install --path vendor/bundle --retry=3
+        - export MSYS=winsymlinks:nativestrict
+      cache:
+        directories:
+          - $HOME/AppData/Local/Temp/chocolatey
+          - /C/tools/msys64
+          - vendor/bundle
 
 before_install:
   - gem --version
@@ -85,7 +93,7 @@ script:
   - colorls --color=auto
   - colorls --color=never
   - colorls --color=always
-  - colorls --tree
+  - colorls --tree spec
   - colorls --tree=1
   - LC_ALL=C colorls spec/fixtures/
   - LC_ALL=C colorls --git spec/fixtures/
