@@ -5,10 +5,6 @@ class String
     self.color(color)
   end
 
-  def remove(pattern)
-    gsub(pattern, '')
-  end
-
   def uniq
     split('').uniq.join
   end
