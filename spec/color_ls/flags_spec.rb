@@ -80,7 +80,8 @@ RSpec.describe ColorLS::Flags do
           setuid?: true,
           setgid?: true,
           sticky?: true
-        )
+        ),
+        :executable? => false
       )
 
       allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { fileInfo }
@@ -108,7 +109,8 @@ RSpec.describe ColorLS::Flags do
           setuid?: true,
           setgid?: true,
           sticky?: true
-        )
+        ),
+        :executable? => false
       )
 
       allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { fileInfo }
