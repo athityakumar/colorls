@@ -302,6 +302,7 @@ module ColorLS
       name = make_link(path, name) if @hyperlink
       name += content.directory? ? '/' : ' '
       entry = "#{out_encode(logo)}  #{out_encode(name)}"
+      entry = entry.bright if !content.directory? && content.executable?
 
       "#{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end
