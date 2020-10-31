@@ -45,7 +45,8 @@ jobs:
           fi
         - touch /C/tools/msys64/--msys2--
       install:
-        - bundle install --path vendor/bundle --retry=3
+        - bundle config set path 'vendor/bundle'
+        - bundle install --retry=3
         - export MSYS=winsymlinks:nativestrict
       cache:
         directories:
