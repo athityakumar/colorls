@@ -157,7 +157,7 @@ module ColorLS
       options.separator ''
       options.separator 'options for compatiblity with ls (ignored):'
       options.separator ''
-      options.on('-h', '--human-readable') {}
+      options.on('-h', '--human-readable') {} # always active
     end
 
     def show_help
