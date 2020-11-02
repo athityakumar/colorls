@@ -1,23 +1,13 @@
+require 'colorls/monkeys'
 
-RSpec.describe "String#delete_prefix" do
-  # back compat for Ruby < 2.5
+RSpec.describe String, '#uniq' do
+ it 'removes all duplicate characters' do
+   expect('abca'.uniq).to be == 'abc'
+ end
+end
 
-  it "returns a copy of the string, with the given prefix removed" do
-    expect('hello'.delete_prefix('hell')).to eq 'o'
-    expect('hello'.delete_prefix('hello')).to eq ''
+RSpec.describe String, '#colorize' do
+  it 'colors a string with red' do
+    expect('hello'.colorize(:red)).to be == Rainbow('hello').red
   end
-
-  it "returns a copy of the string, when the prefix isn't found" do
-    s = 'hello'
-    r = s.delete_prefix('hello!')
-    expect(r).not_to equal s
-    expect(r).to be == s
-    r = s.delete_prefix('ell')
-    expect(r).not_to equal s
-    expect(r).to be == s
-    r = s.delete_prefix('')
-    expect(r).not_to equal s
-    expect(r).to be == s
-  end
-
 end

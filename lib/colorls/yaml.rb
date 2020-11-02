@@ -20,7 +20,7 @@ module ColorLS
     end
 
     def read_file(filepath)
-      ::YAML.safe_load(File.read(filepath, encoding: Encoding::UTF_8)).symbolize_keys
+      ::YAML.safe_load(File.read(filepath, encoding: Encoding::UTF_8)).transform_keys!(&:to_sym)
     end
   end
 end
