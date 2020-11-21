@@ -10,19 +10,7 @@ module ColorLS
       @args = args
       @light_colors = false
 
-      @opts = {
-        show: false,
-        sort: true,
-        reverse: false,
-        group: nil,
-        mode: STDOUT.tty? ? :vertical : :one_per_line, # rubocop:disable Style/GlobalStdStream
-        all: false,
-        almost_all: false,
-        report: false,
-        git_status: false,
-        colors: [],
-        tree_depth: 3
-      }
+      @opts = default_opts
 
       parse_options
 
@@ -81,6 +69,24 @@ module ColorLS
       warn "WARN: #{e}, check your locale settings"
     end
 
+    def default_opts
+      {
+        show: false,
+        sort: true,
+        reverse: false,
+        group: nil,
+        mode: STDOUT.tty? ? :vertical : :one_per_line, # rubocop:disable Style/GlobalStdStream
+        all: false,
+        almost_all: false,
+        report: false,
+        git_status: false,
+        colors: [],
+        tree_depth: 3,
+        show_group: true,
+        show_user: true
+      }
+    end
+
     def add_sort_options(options)
       options.separator ''
       options.separator 'sorting options:'
@@ -126,14 +132,25 @@ module ColorLS
         when 'single-column' then @opts[:mode] = :one_per_line
         end
       end
-      options.on('-1', 'list one file per line')                          { @opts[:mode] = :one_per_line }
-      options.on('-l', '--long', 'use a long listing format')             { @opts[:mode] = :long }
+      options.on('-1', 'list one file per line') { @opts[:mode] = :one_per_line }
       options.on('--tree=[DEPTH]', Integer, 'shows tree view of the directory') do |depth|
         @opts[:tree_depth] = depth
         @opts[:mode] = :tree
       end
       options.on('-x', 'list entries by lines instead of by columns')     { @opts[:mode] = :horizontal }
       options.on('-C', 'list entries by columns instead of by lines')     { @opts[:mode] = :vertical }
+    end
+
+    def add_long_style_options(options)
+      options.on('-l', '--long', 'use a long listing format')             { @opts[:mode] = :long }
+      options.on('-o', 'use a long listing format without group information') do
+        @opts[:mode] = :long
+        @opts[:show_group] = false
+      end
+      options.on('-g', 'use a long listing format without owner information') do
+        @opts[:mode] = :long
+        @opts[:show_user] = false
+      end
     end
 
     def add_general_options(options)
@@ -196,17 +213,22 @@ module ColorLS
 EXAMPLES
     end
 
+    def assign_each_options(opts)
+      add_common_options(opts)
+      add_format_options(opts)
+      add_long_style_options(opts)
+      add_sort_options(opts)
+      add_compatiblity_options(opts)
+      add_general_options(opts)
+      add_help_option(opts)
+    end
+
     def parse_options
       @parser = OptionParser.new do |opts|
         opts.banner = 'Usage:  colorls [OPTION]... [FILE]...'
         opts.separator ''
 
-        add_common_options(opts)
-        add_format_options(opts)
-        add_sort_options(opts)
-        add_compatiblity_options(opts)
-        add_general_options(opts)
-        add_help_option(opts)
+        assign_each_options(opts)
 
         opts.on_tail('--version', 'show version') do
           puts ColorLS::VERSION

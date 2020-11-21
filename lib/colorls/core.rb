@@ -11,7 +11,7 @@ module ColorLS
   class Core
     def initialize(input, all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false, tree_depth: nil)
+      reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true)
       @input        = (+input).force_encoding(ColorLS.file_encoding)
       @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -23,7 +23,7 @@ module ColorLS
       @group        = group
       @show         = show
       @one_per_line = mode == :one_per_line
-      @long         = mode == :long
+      init_long_format(mode,show_group,show_user)
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
       process_git_status_details(git_status)
@@ -73,6 +73,12 @@ module ColorLS
                 end
         hash[key] = key.colorize(@colors[color]).freeze
       end
+    end
+
+    def init_long_format(mode,show_group,show_user)
+      @long = mode == :long
+      @show_group = show_group
+      @show_user = show_user
     end
 
     # how much characters an item occupies besides its name
@@ -274,8 +280,11 @@ module ColorLS
 
       links = content.nlink.to_s.rjust(@linklength)
 
-      [mode_info(content.stats), links, user_info(content), group_info(content.group),
-       size_info(content.size), mtime_info(content.mtime)].join('  ')
+      line_array = [mode_info(content.stats), links]
+      line_array.push user_info(content) if @show_user
+      line_array.push group_info(content.group) if @show_group
+      line_array.concat [size_info(content.size), mtime_info(content.mtime)]
+      line_array.join('   ')
     end
 
     def symlink_info(content)
