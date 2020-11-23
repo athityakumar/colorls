@@ -7,6 +7,7 @@ require 'filesize'
 require 'io/console'
 require 'rainbow/ext/string'
 require 'clocale'
+require 'unicode/display_width'
 
 require 'colorls/core'
 require 'colorls/fileinfo'

@@ -79,7 +79,7 @@ module ColorLS
     CHARS_PER_ITEM = 12
 
     def item_widths
-      @contents.map { |item| item.show.size + CHARS_PER_ITEM }
+      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + CHARS_PER_ITEM }
     end
 
     def init_contents(path)
@@ -314,7 +314,7 @@ module ColorLS
         entry = fetch_string(@input, content, *options(content))
         line << ' ' * padding
         line << '  ' << entry.encode(Encoding.default_external, undef: :replace)
-        padding = widths[i] - content.show.length - CHARS_PER_ITEM
+        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - CHARS_PER_ITEM
       end
       print line << "\n"
     end
