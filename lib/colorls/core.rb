@@ -8,6 +8,13 @@ module ColorLS
     @file_encoding
   end
 
+  @screen_width = IO.console.winsize[1]
+  @screen_width = 80 if @screen_width.zero?
+
+  def self.screen_width
+    @screen_width
+  end
+
   class Core
     def initialize(input, all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
@@ -28,9 +35,6 @@ module ColorLS
       @horizontal   = mode == :horizontal
       process_git_status_details(git_status)
 
-      @screen_width = IO.console.winsize[1]
-      @screen_width = 80 if @screen_width.zero?
-
       init_colors colors
 
       @contents   = init_contents(@input)
@@ -45,11 +49,11 @@ module ColorLS
                  print "\n"
                  return tree_traverse(@input, 0, 1, 2)
                when @horizontal
-                 HorizontalLayout.new(@contents, item_widths, @screen_width)
+                 HorizontalLayout.new(@contents, item_widths, ColorLS.screen_width)
                when @one_per_line || @long
                  SingleColumnLayout.new(@contents)
                else
-                 VerticalLayout.new(@contents, item_widths, @screen_width)
+                 VerticalLayout.new(@contents, item_widths, ColorLS.screen_width)
                end
 
       layout.each_line do |line, widths|
