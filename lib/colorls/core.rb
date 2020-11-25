@@ -61,7 +61,6 @@ module ColorLS
       end
 
       display_report if @report
-      true
     end
 
     private
