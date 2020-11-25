@@ -2,11 +2,9 @@
 require 'spec_helper'
 
 RSpec.describe ColorLS::Core do
-  subject { described_class.new(*args) }
+  subject { described_class.new(colors: Hash.new('black')) }
 
-  context 'initialize' do
-    let(:args) { 'Imágenes' }
-
+  context 'ls' do
     it 'works with Unicode characters' do
       camera = 'Cámara'.force_encoding(ColorLS::file_encoding)
       imagenes = 'Imágenes'.force_encoding(ColorLS::file_encoding)
@@ -62,7 +60,7 @@ RSpec.describe ColorLS::Core do
       allow(ColorLS::FileInfo).to receive(:new).and_return(dirInfo)
       allow(ColorLS::FileInfo).to receive(:new).with(File.join(imagenes, camera), link_info: false) { fileInfo }
 
-      expect { subject }.not_to raise_error
+      expect { subject.ls('Imágenes') }.to output(/mara/).to_stdout
     end
   end
 end

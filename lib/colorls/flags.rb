@@ -28,6 +28,9 @@ module ColorLS
       init_locale
 
       @args = ['.'] if @args.empty?
+
+      core = Core.new(**@opts)
+
       exit_status_code = 0
       @args.sort!.each_with_index do |path, i|
         unless File.exist?(path)
@@ -38,7 +41,8 @@ module ColorLS
 
         puts '' if i.positive?
         puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
-        Core.new(path, **@opts).ls
+
+        core.ls(path)
       rescue SystemCallError => e
         $stderr.puts "#{path}: #{e}".colorize(:red)
       end

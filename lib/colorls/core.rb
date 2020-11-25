@@ -16,11 +16,10 @@ module ColorLS
   end
 
   class Core
-    def initialize(input, all: false, report: false, sort: false, show: false,
+    def initialize(all: false, report: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true)
-      @input        = (+input).force_encoding(ColorLS.file_encoding)
-      @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
+      @count        = nil
       @all          = all
       @almost_all   = almost_all
       @hyperlink    = hyperlink
@@ -37,11 +36,13 @@ module ColorLS
 
       init_colors colors
 
-      @contents   = init_contents(@input)
       init_icons
     end
 
-    def ls
+    def ls(input)
+      @input    = (+input).force_encoding(ColorLS.file_encoding)
+      @contents = init_contents(@input)
+
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
       layout = case
@@ -92,6 +93,8 @@ module ColorLS
     end
 
     def init_contents(path)
+      @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
+
       info = FileInfo.new(path, link_info: @long)
 
       if info.directory?
