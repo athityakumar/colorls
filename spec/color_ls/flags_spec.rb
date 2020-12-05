@@ -439,4 +439,42 @@ RSpec.describe ColorLS::Flags do
       expect { subject }.not_to output(/user/).to_stdout
     end
   end
+
+  context 'with -G flag in a listing format' do
+    let(:args) { ['-l', '-G', "#{FIXTURES}/a.txt"] }
+
+    before do
+      fileInfo = instance_double(
+        'FileInfo',
+        :group => "sys",
+        :mtime => Time.now,
+        :directory? => false,
+        :owner => "user",
+        :name => "a.txt",
+        :show => "a.txt",
+        :nlink => 1,
+        :size => 128,
+        :blockdev? => false,
+        :chardev? => false,
+        :socket? => false,
+        :symlink? => false,
+        :stats => OpenStruct.new(
+          mode: 0o444, # read for user, owner, other
+          setuid?: true,
+          setgid?: true,
+          sticky?: true
+        ),
+        :executable? => false
+      )
+
+      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { fileInfo }
+    end
+
+    it 'lists without group info' do
+      expect { subject }.not_to output(/sys/).to_stdout
+    end
+    it 'lists without user info' do
+      expect { subject }.to output(/user/).to_stdout
+    end
+  end
 end

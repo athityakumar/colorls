@@ -151,6 +151,7 @@ module ColorLS
         @opts[:mode] = :long
         @opts[:show_user] = false
       end
+      options.on('-G', '--no-group', 'show no group information in a long listing') { @opts[:show_group] = false }
     end
 
     def add_general_options(options)

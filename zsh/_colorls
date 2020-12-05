@@ -24,6 +24,8 @@ _arguments -s -S \
   "--long[use a long listing format]" \
   "-o[use a long listing format without group information]" \
   "-g[use a long listing format without owner information]" \
+  "-G[show no group information in a long listing]" \
+  "--no-group[show no group information in a long listing]" \
   "--sd[sort directories first]" \
   "--sort-dirs[sort directories first]" \
   "--group-directories-first[sort directories first]" \
