@@ -17,11 +17,15 @@ _arguments -s -S \
   "--report[show brief report]" \
   "--format[use format: across (-x), horizontal (-x), long (-l), single-column (-1), vertical (-C)]" \
   "-1[list one file per line]" \
-  "-l[use a long listing format]" \
-  "--long[use a long listing format]" \
   "--tree[shows tree view of the directory]" \
   "-x[list entries by lines instead of by columns]" \
   "-C[list entries by columns instead of by lines]" \
+  "-l[use a long listing format]" \
+  "--long[use a long listing format]" \
+  "-o[use a long listing format without group information]" \
+  "-g[use a long listing format without owner information]" \
+  "-G[show no group information in a long listing]" \
+  "--no-group[show no group information in a long listing]" \
   "--sd[sort directories first]" \
   "--sort-dirs[sort directories first]" \
   "--group-directories-first[sort directories first]" \
