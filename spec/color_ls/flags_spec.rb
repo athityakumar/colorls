@@ -473,7 +473,7 @@ RSpec.describe ColorLS::Flags do
     it 'lists without group info' do
       expect { subject }.not_to output(/sys/).to_stdout
     end
-    it 'lists without user info' do
+    it 'lists with user info' do
       expect { subject }.to output(/user/).to_stdout
     end
   end
