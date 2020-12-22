@@ -19,12 +19,13 @@ RSpec.describe ColorLS::Flags do
         subject
       end.not_to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout
     }
+
     it('does not display hidden files')        { expect { subject }.not_to output(/\.hidden-file/).to_stdout }
     it('does not show a report')               { expect { subject }.not_to output(/Found \d+ contents/).to_stdout }
     it('displays dirs & files alphabetically') { expect { subject }.to output(/a-file.+symlinks.+z-file/m).to_stdout }
 
     it 'displays multiple files per line' do
-      expect($stdout).to receive(:tty?).and_return(true)
+      allow($stdout).to receive(:tty?).and_return(true)
 
       expect { subject }.not_to output(/(.*\n){3}/).to_stdout
     end
@@ -137,8 +138,8 @@ RSpec.describe ColorLS::Flags do
     end
 
     it 'returns no user / group info' do
-      expect(::Etc).to receive(:getpwuid).and_return(nil)
-      expect(::Etc).to receive(:getgrgid).and_return(nil)
+      allow(::Etc).to receive(:getpwuid).and_return(nil)
+      allow(::Etc).to receive(:getgrgid).and_return(nil)
 
       expect { subject }.to output(/\s+  \d+  \s+  \d+  .*  a.txt/mx).to_stdout
     end
@@ -191,7 +192,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--sort=size', '--group-directories-first', '-1', FIXTURES] }
 
     it 'sorts results by size' do
-      expect($stdout).to receive(:tty?).and_return(true)
+      allow($stdout).to receive(:tty?).and_return(true)
 
       expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout
     end
@@ -272,6 +273,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--tree=1', FIXTURES] }
 
     it('displays file hierarchy') { expect { subject }.to output(/├──/).to_stdout }
+
     it {
       expect do
         subject
@@ -303,7 +305,7 @@ RSpec.describe ColorLS::Flags do
   context 'symlinked directory with trailing separator' do
     let(:args) { ['-x', File.join(FIXTURES, 'symlinks', 'Supportlink', File::SEPARATOR)] }
 
-    it 'should show the file in the linked directory' do
+    it 'shows the file in the linked directory' do
       if File.symlink? File.join(FIXTURES, 'symlinks', 'Supportlink')
         expect { subject }.to output(/yaml_sort_checker.rb/).to_stdout
       else
@@ -315,7 +317,7 @@ RSpec.describe ColorLS::Flags do
   context 'when passing invalid flags' do
     let(:args) { ['--snafu'] }
 
-    it 'should issue a warning, hint about `--help` and exit' do
+    it 'issues a warning, hint about `--help` and exit' do # rubocop:todo RSpec/MultipleExpectations
       allow(::Kernel).to receive(:warn) do |message|
         expect(message).to output '--snafu'
       end
@@ -324,10 +326,10 @@ RSpec.describe ColorLS::Flags do
     end
   end
 
-  context 'for invalid locale' do
+  context 'with invalid locale' do
     let(:args) { [FIXTURES] }
 
-    it 'should warn but not raise an error' do
+    it 'warns but not raise an error' do
       allow(CLocale).to receive(:setlocale).with(CLocale::LC_COLLATE, '').and_raise(RuntimeError.new('setlocale error'))
 
       expect { subject }.to output(/setlocale error/).to_stderr.and output.to_stdout
@@ -337,7 +339,7 @@ RSpec.describe ColorLS::Flags do
   context 'with unrecognized files' do
     let(:args) { ['--report', FIXTURES] }
 
-    it 'should show a report with unrecognized files' do
+    it 'shows a report with unrecognized files' do
       expect { subject }.to output(/Unrecognized files\s+: 3/).to_stdout
     end
   end
@@ -345,7 +347,7 @@ RSpec.describe ColorLS::Flags do
   context 'with non-existent path' do
     let(:args) { ['not_exist_file'] }
 
-    it 'should exit with status code 2' do
+    it 'exits with status code 2' do # rubocop:todo RSpec/MultipleExpectations
       expect { subject }.to output(/   Specified path 'not_exist_file' doesn't exist./).to_stderr
       expect(subject).to eq 2
     end
@@ -384,6 +386,7 @@ RSpec.describe ColorLS::Flags do
     it 'lists without group info' do
       expect { subject }.not_to output(/sys/).to_stdout
     end
+
     it 'lists with user info' do
       expect { subject }.to output(/user/).to_stdout
     end
@@ -422,6 +425,7 @@ RSpec.describe ColorLS::Flags do
     it 'lists with group info' do
       expect { subject }.to output(/sys/).to_stdout
     end
+
     it 'lists without user info' do
       expect { subject }.not_to output(/user/).to_stdout
     end
@@ -460,6 +464,7 @@ RSpec.describe ColorLS::Flags do
     it 'lists without group info' do
       expect { subject }.not_to output(/sys/).to_stdout
     end
+
     it 'lists without user info' do
       expect { subject }.not_to output(/user/).to_stdout
     end
@@ -498,6 +503,7 @@ RSpec.describe ColorLS::Flags do
     it 'lists without group info' do
       expect { subject }.not_to output(/sys/).to_stdout
     end
+
     it 'lists with user info' do
       expect { subject }.to output(/user/).to_stdout
     end

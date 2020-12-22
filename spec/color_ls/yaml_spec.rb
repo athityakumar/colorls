@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ColorLS::Yaml do
-  ::FILENAMES = {
+  filenames = {
     file_aliases: :value,
     folder_aliases: :value,
     folders: :key,
@@ -12,7 +12,7 @@ RSpec.describe ColorLS::Yaml do
 
   let(:base_directory) { 'lib/yaml' }
 
-  FILENAMES.each do |filename, sort_type|
+  filenames.each do |filename, sort_type|
     describe filename do
       let(:checker) { YamlSortChecker.new("#{base_directory}/#{filename}.yaml") }
 

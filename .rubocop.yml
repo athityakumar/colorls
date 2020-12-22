@@ -117,3 +117,15 @@ Metrics/PerceivedComplexity:
 
 Style/Documentation:
   Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/SubjectStub:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
