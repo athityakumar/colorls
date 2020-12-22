@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe ColorLS::Yaml do
   ::FILENAMES = {
-    file_aliases:   :value,
+    file_aliases: :value,
     folder_aliases: :value,
-    folders:        :key,
-    files:          :key
+    folders: :key,
+    files: :key
   }.freeze
 
   let(:base_directory) { 'lib/yaml' }

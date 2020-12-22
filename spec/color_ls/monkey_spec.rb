@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'colorls/monkeys'
 
 RSpec.describe String, '#uniq' do
- it 'removes all duplicate characters' do
-   expect('abca'.uniq).to be == 'abc'
- end
+  it 'removes all duplicate characters' do
+    expect('abca'.uniq).to be == 'abc'
+  end
 end
 
 RSpec.describe String, '#colorize' do

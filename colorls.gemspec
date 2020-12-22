@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'colorls/version'
@@ -21,7 +23,7 @@ POST_INSTALL_MESSAGE = %(
     Man pages have been added. Checkout `man colorls`.
 
   *******************************************************************
-).freeze
+)
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
@@ -47,7 +49,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.5.0'
 
-  spec.files         = IO.popen(
+  spec.files = IO.popen(
     %w[git ls-files -z], external_encoding: Encoding::ASCII_8BIT
   ).read.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})

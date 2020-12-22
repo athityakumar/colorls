@@ -3,15 +3,10 @@ require:
   - rubocop-rake
 
 AllCops:
-  Include:
-    - 'lib/**/*'
-    - 'Rakefile'
   Exclude:
     - 'vendor/**/*'
     - 'benchmarks/*'
     - 'profile/*'
-    - 'lib/yaml/*'
-    - 'lib/**/*.sh'
   DisplayCopNames: true
   NewCops: enable
   TargetRubyVersion: 2.5
