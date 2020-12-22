@@ -1,8 +1,11 @@
-require: rubocop-performance
+require:
+  - rubocop-performance
+  - rubocop-rake
 
 AllCops:
   Include:
     - 'lib/**/*'
+    - 'Rakefile'
   Exclude:
     - 'vendor/**/*'
     - 'benchmarks/*'
