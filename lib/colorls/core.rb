@@ -336,11 +336,11 @@ module ColorLS
 
     def file_color(file, key)
       color_key = case
-                  when file.chardev? then :chardev
-                  when file.blockdev? then :blockdev
-                  when file.socket? then :socket
-                  else
-                    @files.key?(key) ? :recognized_file : :unrecognized_file
+                  when file.chardev?    then :chardev
+                  when file.blockdev?   then :blockdev
+                  when file.socket?     then :socket
+                  when @files.key?(key) then :recognized_file
+                  else                       :unrecognized_file
                   end
       @colors[color_key]
     end
