@@ -10,9 +10,7 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 require 'rubocop/rake_task'
-RuboCop::RakeTask.new do |task|
-  task.requires << 'rubocop-rspec'
-end
+RuboCop::RakeTask.new
 
 desc 'Build the manual'
 file 'man/colorls.1' => ['man/colorls.1.ronn', 'lib/colorls/flags.rb'] do
