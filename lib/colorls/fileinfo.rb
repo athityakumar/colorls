@@ -9,19 +9,24 @@ module ColorLS
     @@users  = {}              # rubocop:disable Style/ClassVars
     @@groups = {}              # rubocop:disable Style/ClassVars
 
-    attr_reader :stats, :name
+    attr_reader :stats, :name, :path, :parent
 
-    def initialize(path, link_info: true)
-      @name = File.basename(path)
-      @stats = File.lstat(path)
-
+    def initialize(name:, parent:, path: nil, link_info: true)
+      @name = name
+      @parent = parent
+      @path = path.nil? ? File.join(parent, name) : path
+      @stats = File.lstat(@path)
       @show_name = nil
 
-      handle_symlink(path) if link_info && @stats.symlink?
+      handle_symlink(@path) if link_info && @stats.symlink?
     end
 
-    def self.info(path)
-      FileInfo.new(path)
+    def self.info(path, link_info: true)
+      FileInfo.new(name: File.basename(path), parent: File.dirname(path), path: path, link_info: link_info)
+    end
+
+    def self.dir_entry(dir, child, link_info: true)
+      FileInfo.new(name: child, parent: dir, link_info: link_info)
     end
 
     def show

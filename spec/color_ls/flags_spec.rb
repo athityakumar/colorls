@@ -94,7 +94,12 @@ RSpec.describe ColorLS::Flags do
         executable?: false
       )
 
-      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { file_info }
+      allow(ColorLS::FileInfo).to receive(:new).with(
+        path: File.join(FIXTURES, 'a.txt'),
+        parent: FIXTURES,
+        name: 'a.txt',
+        link_info: true
+      ) { file_info }
 
       expect { subject }.to output(/r-Sr-Sr-T  .*  a.txt/mx).to_stdout
     end
@@ -123,7 +128,12 @@ RSpec.describe ColorLS::Flags do
         executable?: false
       )
 
-      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { file_info }
+      allow(ColorLS::FileInfo).to receive(:new).with(
+        path: File.join(FIXTURES, 'a.txt'),
+        parent: FIXTURES,
+        name: 'a.txt',
+        link_info: true
+      ) { file_info }
 
       expect { subject }.to output(/\S+\s+ 5 .*  a.txt/mx).to_stdout
     end
@@ -354,7 +364,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['not_exist_file'] }
 
     it 'exits with status code 2' do # rubocop:todo RSpec/MultipleExpectations
-      expect { subject }.to output(/   Specified path 'not_exist_file' doesn't exist./).to_stderr
+      expect { subject }.to output(/colorls: Specified path 'not_exist_file' doesn't exist./).to_stderr
       expect(subject).to eq 2
     end
   end
@@ -386,7 +396,12 @@ RSpec.describe ColorLS::Flags do
         executable?: false
       )
 
-      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { file_info }
+      allow(ColorLS::FileInfo).to receive(:new).with(
+        path: File.join(FIXTURES, 'a.txt'),
+        parent: FIXTURES,
+        name: 'a.txt',
+        link_info: true
+      ) { file_info }
     end
 
     it 'lists without group info' do
@@ -425,7 +440,12 @@ RSpec.describe ColorLS::Flags do
         executable?: false
       )
 
-      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { file_info }
+      allow(ColorLS::FileInfo).to receive(:new).with(
+        path: File.join(FIXTURES, 'a.txt'),
+        parent: FIXTURES,
+        name: 'a.txt',
+        link_info: true
+      ) { file_info }
     end
 
     it 'lists with group info' do
@@ -464,7 +484,12 @@ RSpec.describe ColorLS::Flags do
         executable?: false
       )
 
-      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { file_info }
+      allow(ColorLS::FileInfo).to receive(:new).with(
+        path: File.join(FIXTURES, 'a.txt'),
+        parent: FIXTURES,
+        name: 'a.txt',
+        link_info: true
+      ) { file_info }
     end
 
     it 'lists without group info' do
@@ -503,7 +528,12 @@ RSpec.describe ColorLS::Flags do
         executable?: false
       )
 
-      allow(ColorLS::FileInfo).to receive(:new).with("#{FIXTURES}/a.txt", link_info: true) { file_info }
+      allow(ColorLS::FileInfo).to receive(:new).with(
+        path: File.join(FIXTURES, 'a.txt'),
+        parent: FIXTURES,
+        name: 'a.txt',
+        link_info: true
+      ) { file_info }
     end
 
     it 'lists without group info' do

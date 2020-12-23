@@ -10,18 +10,23 @@ module ColorLS
 
       return unless success
 
-      prefix = Pathname.new(prefix)
+      prefix_path = Pathname.new(prefix)
 
       git_status = Hash.new { |hash, key| hash[key] = Set.new }
 
       git_subdir_status(repo_path) do |mode, file|
-        path = Pathname.new(file).relative_path_from(prefix)
-
-        git_status[path.descend.first.cleanpath.to_s].add(mode)
+        if file == prefix
+          git_status.default = Set[mode].freeze
+        else
+          path = Pathname.new(file).relative_path_from(prefix_path)
+          git_status[path.descend.first.cleanpath.to_s].add(mode)
+        end
       end
+
       warn "git status failed in #{repo_path}" unless $CHILD_STATUS.success?
 
-      git_status
+      git_status.default = Set.new.freeze if git_status.default.nil?
+      git_status.freeze
     end
 
     def self.colored_status_symbols(modes, colors)

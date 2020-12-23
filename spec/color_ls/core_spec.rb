@@ -17,6 +17,7 @@ RSpec.describe ColorLS::Core do
         directory?: true,
         owner: 'user',
         name: imagenes,
+        path: '.',
         show: imagenes,
         nlink: 1,
         size: 128,
@@ -58,10 +59,9 @@ RSpec.describe ColorLS::Core do
 
       allow(::Dir).to receive(:entries).and_return([camera])
 
-      allow(ColorLS::FileInfo).to receive(:new).and_return(dir_info)
-      allow(ColorLS::FileInfo).to receive(:new).with(File.join(imagenes, camera), link_info: false) { file_info }
+      allow(ColorLS::FileInfo).to receive(:new).and_return(file_info)
 
-      expect { subject.ls('Imágenes') }.to output(/mara/).to_stdout
+      expect { subject.ls_dir(dir_info) }.to output(/mara/).to_stdout
     end
   end
 end

@@ -12,6 +12,7 @@ module ColorLS
 
       @opts = default_opts
       @show_report = false
+      @exit_status_code = 0
 
       parse_options
 
@@ -54,29 +55,42 @@ module ColorLS
       warn "WARN: #{e}, check your locale settings"
     end
 
+    def group_files_and_directories
+      infos = @args.flat_map do |arg|
+        FileInfo.info(arg)
+      rescue Errno::ENOENT
+        $stderr.puts "colorls: Specified path '#{arg}' doesn't exist.".colorize(:red)
+        @exit_status_code = 2
+        []
+      rescue SystemCallError => e
+        $stderr.puts "#{path}: #{e}".colorize(:red)
+        @exit_status_code = 2
+        []
+      end
+
+      infos.group_by(&:directory?).values_at(true, false)
+    end
+
     def process_args
       core = Core.new(**@opts)
 
-      exit_status_code = 0
+      directories, files = group_files_and_directories
 
-      @args.sort!.each_with_index do |path, i|
-        unless File.exist?(path)
-          $stderr.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red)
-          exit_status_code = 2
-          next
-        end
+      core.ls_files(files) unless files.nil?
 
-        puts '' if i.positive?
-        puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
+      directories&.sort_by! do |a|
+        CLocale.strxfrm(a.name)
+      end&.each do |dir|
+        puts "\n#{dir.show}:" if @args.size > 1
 
-        core.ls(path)
+        core.ls_dir(dir)
       rescue SystemCallError => e
-        $stderr.puts "#{path}: #{e}".colorize(:red)
+        $stderr.puts "#{dir}: #{e}".colorize(:red)
       end
 
       core.display_report if @show_report
 
-      exit_status_code
+      @exit_status_code
     end
 
     def default_opts
