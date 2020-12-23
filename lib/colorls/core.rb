@@ -16,14 +16,13 @@ module ColorLS
   end
 
   class Core
-    def initialize(all: false, report: false, sort: false, show: false,
+    def initialize(all: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true)
-      @count        = nil
+      @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
       @hyperlink    = hyperlink
-      @report       = report
       @sort         = sort
       @reverse      = reverse
       @group        = group
@@ -60,8 +59,15 @@ module ColorLS
       layout.each_line do |line, widths|
         ls_line(line, widths)
       end
+    end
 
-      display_report if @report
+    def display_report
+      print "\n   Found #{@count.values.sum} items in total.".colorize(@colors[:report])
+
+      puts  "\n\n\tFolders\t\t\t: #{@count[:folders]}"\
+        "\n\tRecognized files\t: #{@count[:recognized_files]}"\
+        "\n\tUnrecognized files\t: #{@count[:unrecognized_files]}"
+        .colorize(@colors[:report])
     end
 
     private
@@ -93,8 +99,6 @@ module ColorLS
     end
 
     def init_contents(path)
-      @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
-
       info = FileInfo.new(path, link_info: @long)
 
       if info.directory?
@@ -110,7 +114,6 @@ module ColorLS
       else
         @contents = [info]
       end
-      @total_content_length = @contents.length
 
       init_column_lengths
 
@@ -179,18 +182,6 @@ module ColorLS
       @file_aliases   = ColorLS::Yaml.new('file_aliases.yaml').load(aliase: true)
       @folders        = ColorLS::Yaml.new('folders.yaml').load
       @folder_aliases = ColorLS::Yaml.new('folder_aliases.yaml').load(aliase: true)
-    end
-
-    def display_report
-      print "\n   Found #{@total_content_length} contents in directory "
-        .colorize(@colors[:report])
-
-      print File.expand_path(@input).to_s.colorize(@colors[:dir])
-
-      puts  "\n\n\tFolders\t\t\t: #{@count[:folders]}"\
-        "\n\tRecognized files\t: #{@count[:recognized_files]}"\
-        "\n\tUnrecognized files\t: #{@count[:unrecognized_files]}"
-        .colorize(@colors[:report])
     end
 
     def format_mode(rwx, special, char)
