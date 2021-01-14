@@ -14,17 +14,10 @@ module ColorLS
 
       git_status = Hash.new { |hash, key| hash[key] = Set.new }
 
-      git_subdir_status(repo_path) do |output|
-        while (status_line = output.gets "\x0")
-          mode, file = status_line.chomp("\x0").split(' ', 2)
+      git_subdir_status(repo_path) do |mode, file|
+        path = Pathname.new(file).relative_path_from(prefix)
 
-          path = Pathname.new(file).relative_path_from(prefix)
-
-          git_status[path.descend.first.cleanpath.to_s].add(mode)
-
-          # skip the next \x0 separated original path for renames, issue #185
-          output.gets("\x0") if mode.start_with? 'R'
-        end
+        git_status[path.descend.first.cleanpath.to_s].add(mode)
       end
       warn "git status failed in #{repo_path}" unless $CHILD_STATUS.success?
 
@@ -61,10 +54,19 @@ module ColorLS
       end
 
       def git_subdir_status(repo_path)
-        yield IO.popen(
+        IO.popen(
           ['git', '-C', repo_path, 'status', '--porcelain', '-z', '-unormal', '--ignored', '.'],
           external_encoding: Encoding::ASCII_8BIT
-        )
+        ) do |output|
+          while (status_line = output.gets "\x0")
+            mode, file = status_line.chomp("\x0").split(' ', 2)
+
+            yield mode, file
+
+            # skip the next \x0 separated original path for renames, issue #185
+            output.gets("\x0") if mode.start_with? 'R'
+          end
+        end
       end
     end
   end
