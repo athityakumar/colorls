@@ -8,6 +8,7 @@ require 'io/console'
 require 'rainbow/ext/string'
 require 'clocale'
 require 'unicode/display_width'
+require 'addressable/uri'
 
 require 'colorls/core'
 require 'colorls/fileinfo'

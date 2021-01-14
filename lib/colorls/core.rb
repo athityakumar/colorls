@@ -377,8 +377,8 @@ module ColorLS
     end
 
     def make_link(path, name)
-      href = "file://#{File.absolute_path(path)}/#{name}"
-      "\033]8;;#{href}\007#{name}\033]8;;\007"
+      uri = Addressable::URI.convert_path(File.absolute_path(File.join(path, name)))
+      "\033]8;;#{uri}\007#{name}\033]8;;\007"
     end
   end
 end

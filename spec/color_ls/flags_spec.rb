@@ -291,9 +291,15 @@ RSpec.describe ColorLS::Flags do
   context 'with --hyperlink flag' do
     let(:args) { ['--hyperlink', FIXTURES] }
 
-    href = "file://#{File.absolute_path(FIXTURES)}/a.txt"
+    href = if File::ALT_SEPARATOR.nil?
+             "file://#{File.absolute_path(FIXTURES)}/a.txt"
+           else
+             "file:///#{File.absolute_path(FIXTURES)}/a.txt"
+           end
 
-    it { expect { subject }.to output(include(href)).to_stdout }
+    pattern = File.fnmatch('cat', 'CAT', File::FNM_SYSCASE) ? /#{href}/i : /#{href}/
+
+    it { expect { subject }.to output(match(pattern)).to_stdout }
   end
 
   context 'symlinked directory' do
