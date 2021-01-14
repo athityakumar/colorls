@@ -31,14 +31,11 @@ module ColorLS
                .colorize(colors[:unchanged])
       end
 
-      modes = modes.to_a.join.uniq.rjust(3).ljust(4)
-
-      modes
-        .gsub('?', '?'.colorize(colors[:untracked]))
-        .gsub('A', 'A'.colorize(colors[:addition]))
-        .gsub('M', 'M'.colorize(colors[:modification]))
-        .gsub('D', 'D'.colorize(colors[:deletion]))
-        .tr('!', ' ')
+      modes.to_a.join.uniq.delete('!').rjust(3).ljust(4)
+           .sub('?', '?'.colorize(colors[:untracked]))
+           .sub('A', 'A'.colorize(colors[:addition]))
+           .sub('M', 'M'.colorize(colors[:modification]))
+           .sub('D', 'D'.colorize(colors[:deletion]))
     end
 
     class << self
