@@ -6,11 +6,11 @@ require 'set'
 module ColorLS
   module Git
     def self.status(repo_path)
-      prefix = git_prefix(repo_path)
+      prefix, success = git_prefix(repo_path)
 
-      return unless $CHILD_STATUS.success?
+      return unless success
 
-      prefix = Pathname.new(prefix.chomp)
+      prefix = Pathname.new(prefix)
 
       git_status = Hash.new { |hash, key| hash[key] = Set.new }
 
@@ -52,7 +52,12 @@ module ColorLS
       private
 
       def git_prefix(repo_path)
-        IO.popen(['git', '-C', repo_path, 'rev-parse', '--show-prefix'], err: :close, &:gets)
+        [
+          IO.popen(['git', '-C', repo_path, 'rev-parse', '--show-prefix'], err: :close, &:gets)&.chomp,
+          $CHILD_STATUS.success?
+        ]
+      rescue Errno::ENOENT
+        [nil, false]
       end
 
       def git_subdir_status(repo_path)
