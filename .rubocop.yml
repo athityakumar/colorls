@@ -1,14 +1,13 @@
-require: rubocop-performance
+require:
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
 
 AllCops:
-  Include:
-    - 'lib/**/*'
   Exclude:
     - 'vendor/**/*'
     - 'benchmarks/*'
     - 'profile/*'
-    - 'lib/yaml/*'
-    - 'lib/**/*.sh'
   DisplayCopNames: true
   NewCops: enable
   TargetRubyVersion: 2.5
@@ -117,4 +116,16 @@ Metrics/PerceivedComplexity:
 # TODO -----------------------------------------------------------------
 
 Style/Documentation:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/SubjectStub:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/ContextWording:
   Enabled: false

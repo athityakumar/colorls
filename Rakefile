@@ -1,16 +1,16 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 require 'rubygems/tasks'
 Gem::Tasks.new
 
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = "--warnings"
+  t.rspec_opts = '--warnings'
 end
 
 require 'rubocop/rake_task'
-RuboCop::RakeTask.new do |task|
-  task.requires << 'rubocop-rspec'
-end
+RuboCop::RakeTask.new
 
 desc 'Build the manual'
 file 'man/colorls.1' => ['man/colorls.1.ronn', 'lib/colorls/flags.rb'] do

@@ -8,16 +8,21 @@ module ColorLS
     @file_encoding
   end
 
+  @screen_width = IO.console.winsize[1]
+  @screen_width = 80 if @screen_width.zero?
+
+  def self.screen_width
+    @screen_width
+  end
+
   class Core
-    def initialize(input, all: false, report: false, sort: false, show: false,
+    def initialize(all: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true)
-      @input        = (+input).force_encoding(ColorLS.file_encoding)
-      @count        = {folders: 0, recognized_files: 0, unrecognized_files: 0}
+      @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
       @hyperlink    = hyperlink
-      @report       = report
       @sort         = sort
       @reverse      = reverse
       @group        = group
@@ -26,41 +31,67 @@ module ColorLS
       init_long_format(mode,show_group,show_user)
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
-      process_git_status_details(git_status)
-
-      @screen_width = IO.console.winsize[1]
-      @screen_width = 80 if @screen_width.zero?
+      @git_status   = init_git_status(git_status)
 
       init_colors colors
 
-      @contents   = init_contents(@input)
       init_icons
     end
 
-    def ls
+    def ls_dir(info)
+      if @tree[:mode]
+        print "\n"
+        return tree_traverse(info.path, 0, 1, 2)
+      end
+
+      @contents = Dir.entries(info.path, encoding: ColorLS.file_encoding)
+
+      filter_hidden_contents
+
+      @contents.map! { |e| FileInfo.dir_entry(info.path, e, link_info: @long) }
+
+      filter_contents if @show
+      sort_contents   if @sort
+      group_contents  if @group
+
       return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
 
+      ls
+    end
+
+    def ls_files(files)
+      @contents = files
+
+      ls
+    end
+
+    def display_report
+      print "\n   Found #{@count.values.sum} items in total.".colorize(@colors[:report])
+
+      puts  "\n\n\tFolders\t\t\t: #{@count[:folders]}"\
+        "\n\tRecognized files\t: #{@count[:recognized_files]}"\
+        "\n\tUnrecognized files\t: #{@count[:unrecognized_files]}"
+        .colorize(@colors[:report])
+    end
+
+    private
+
+    def ls
+      init_column_lengths
+
       layout = case
-               when @tree[:mode]
-                 print "\n"
-                 return tree_traverse(@input, 0, 1, 2)
                when @horizontal
-                 HorizontalLayout.new(@contents, item_widths, @screen_width)
+                 HorizontalLayout.new(@contents, item_widths, ColorLS.screen_width)
                when @one_per_line || @long
                  SingleColumnLayout.new(@contents)
                else
-                 VerticalLayout.new(@contents, item_widths, @screen_width)
+                 VerticalLayout.new(@contents, item_widths, ColorLS.screen_width)
                end
 
       layout.each_line do |line, widths|
         ls_line(line, widths)
       end
-
-      display_report if @report
-      true
     end
-
-    private
 
     def init_colors(colors)
       @colors  = colors
@@ -75,10 +106,24 @@ module ColorLS
       end
     end
 
-    def init_long_format(mode,show_group,show_user)
+    def init_long_format(mode, show_group, show_user)
       @long = mode == :long
       @show_group = show_group
       @show_user = show_user
+    end
+
+    def init_git_status(show_git)
+      return {}.freeze unless show_git
+
+      # stores git status information per directory
+      Hash.new do |hash, key|
+        path = File.absolute_path key.parent
+        if hash.key? path
+          hash[path]
+        else
+          hash[path] = Git.status(path)
+        end
+      end
     end
 
     # how much characters an item occupies besides its name
@@ -86,29 +131,6 @@ module ColorLS
 
     def item_widths
       @contents.map { |item| Unicode::DisplayWidth.of(item.show) + CHARS_PER_ITEM }
-    end
-
-    def init_contents(path)
-      info = FileInfo.new(path, link_info: @long)
-
-      if info.directory?
-        @contents = Dir.entries(path, encoding: ColorLS.file_encoding)
-
-        filter_hidden_contents
-
-        @contents.map! { |e| FileInfo.new(File.join(path, e), link_info: @long) }
-
-        filter_contents if @show
-        sort_contents   if @sort
-        group_contents  if @group
-      else
-        @contents = [info]
-      end
-      @total_content_length = @contents.length
-
-      init_column_lengths
-
-      @contents
     end
 
     def filter_hidden_contents
@@ -175,18 +197,6 @@ module ColorLS
       @folder_aliases = ColorLS::Yaml.new('folder_aliases.yaml').load(aliase: true)
     end
 
-    def display_report
-      print "\n   Found #{@total_content_length} contents in directory "
-        .colorize(@colors[:report])
-
-      print File.expand_path(@input).to_s.colorize(@colors[:dir])
-
-      puts  "\n\n\tFolders\t\t\t: #{@count[:folders]}"\
-        "\n\tRecognized files\t: #{@count[:recognized_files]}"\
-        "\n\tUnrecognized files\t: #{@count[:unrecognized_files]}"
-        .colorize(@colors[:report])
-    end
-
     def format_mode(rwx, special, char)
       m_r = (rwx & 4).zero? ? '-' : 'r'
       m_w = (rwx & 2).zero? ? '-' : 'w'
@@ -233,42 +243,32 @@ module ColorLS
       mtime.colorize(@colors[:no_modifier])
     end
 
-    def process_git_status_details(git_status)
-      @git_status = case
-                    when !git_status then nil
-                    when File.directory?(@input) then Git.status(@input)
-                    else Git.status(File.dirname(@input))
-                    end
-    end
-
     def git_info(content)
-      return '' unless @git_status
+      return '' unless (status = @git_status[content])
 
       if content.directory?
-        git_dir_info(content.name)
+        git_dir_info(content, status)
       else
-        git_file_info(content.name)
+        git_file_info(status[content.name])
       end
     end
 
-    def git_file_info(path)
-      unless @git_status[path]
-        return '  ✓ '
-               .encode(Encoding.default_external, undef: :replace, replace: '=')
-               .colorize(@colors[:unchanged])
-      end
+    def git_file_info(status)
+      return Git.colored_status_symbols(status, @colors) if status
 
-      Git.colored_status_symbols(@git_status[path], @colors)
+      '  ✓ '
+        .encode(Encoding.default_external, undef: :replace, replace: '=')
+        .colorize(@colors[:unchanged])
     end
 
-    def git_dir_info(path)
-      modes = if path == '.'
-                Set.new(@git_status.values).flatten
+    def git_dir_info(content, status)
+      modes = if content.path == '.'
+                Set.new(status.values).flatten
               else
-                @git_status[path]
+                status[content.name]
               end
 
-      if modes.empty? && Dir.empty?(File.join(@input, path))
+      if modes.empty? && Dir.empty?(content.path)
         '    '
       else
         Git.colored_status_symbols(modes, @colors)
@@ -303,12 +303,12 @@ module ColorLS
       str.encode(Encoding.default_external, undef: :replace, replace: '')
     end
 
-    def fetch_string(path, content, key, color, increment)
+    def fetch_string(content, key, color, increment)
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
       name = content.show
-      name = make_link(path, name) if @hyperlink
+      name = make_link(content) if @hyperlink
       name += content.directory? ? '/' : ' '
       entry = "#{out_encode(logo)}  #{out_encode(name)}"
       entry = entry.bright if !content.directory? && content.executable?
@@ -320,7 +320,7 @@ module ColorLS
       padding = 0
       line = +''
       chunk.each_with_index do |content, i|
-        entry = fetch_string(@input, content, *options(content))
+        entry = fetch_string(content, *options(content))
         line << ' ' * padding
         line << '  ' << entry.encode(Encoding.default_external, undef: :replace)
         padding = widths[i] - Unicode::DisplayWidth.of(content.show) - CHARS_PER_ITEM
@@ -330,11 +330,11 @@ module ColorLS
 
     def file_color(file, key)
       color_key = case
-                  when file.chardev? then :chardev
-                  when file.blockdev? then :blockdev
-                  when file.socket? then :socket
-                  else
-                    @files.key?(key) ? :recognized_file : :unrecognized_file
+                  when file.chardev?    then :chardev
+                  when file.blockdev?   then :blockdev
+                  when file.socket?     then :socket
+                  when @files.key?(key) then :recognized_file
+                  else                       :unrecognized_file
                   end
       @colors[color_key]
     end
@@ -357,12 +357,26 @@ module ColorLS
       [key, color, group]
     end
 
+    def tree_contents(path)
+      @contents = Dir.entries(path, encoding: ColorLS.file_encoding)
+
+      filter_hidden_contents
+
+      @contents.map! { |e| FileInfo.dir_entry(path, e, link_info: @long) }
+
+      filter_contents if @show
+      sort_contents   if @sort
+      group_contents  if @group
+
+      @contents
+    end
+
     def tree_traverse(path, prespace, depth, indent)
-      contents = init_contents(path)
+      contents = tree_contents(path)
       contents.each do |content|
         icon = content == contents.last || content.directory? ? ' └──' : ' ├──'
         print tree_branch_preprint(prespace, indent, icon).colorize(@colors[:tree])
-        print " #{fetch_string(path, content, *options(content))} \n"
+        print " #{fetch_string(content, *options(content))} \n"
         next unless content.directory?
 
         tree_traverse("#{path}/#{content}", prespace + indent, depth + 1, indent) if keep_going(depth)
@@ -379,9 +393,9 @@ module ColorLS
       ' │ ' * (prespace/indent) + prespace_icon + '─' * indent
     end
 
-    def make_link(path, name)
-      href = "file://#{File.absolute_path(path)}/#{name}"
-      "\033]8;;#{href}\007#{name}\033]8;;\007"
+    def make_link(content)
+      uri = Addressable::URI.convert_path(File.absolute_path(content.path))
+      "\033]8;;#{uri}\007#{content.name}\033]8;;\007"
     end
   end
 end

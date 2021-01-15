@@ -1,68 +1,67 @@
-# coding: utf-8
+# frozen_string_literal: false
+
 require 'spec_helper'
 
 RSpec.describe ColorLS::Core do
-  subject { described_class.new(*args) }
+  subject { described_class.new(colors: Hash.new('black')) }
 
-  context 'initialize' do
-    let(:args) { 'Imágenes' }
-
+  context 'ls' do
     it 'works with Unicode characters' do
-      camera = 'Cámara'.force_encoding(ColorLS::file_encoding)
-      imagenes = 'Imágenes'.force_encoding(ColorLS::file_encoding)
+      camera = 'Cámara'.force_encoding(ColorLS.file_encoding)
+      imagenes = 'Imágenes'.force_encoding(ColorLS.file_encoding)
 
-      dirInfo = instance_double(
+      dir_info = instance_double(
         'FileInfo',
-        :group => "sys",
-        :mtime => Time.now,
-        :directory? => true,
-        :owner => "user",
-        :name => imagenes,
-        :show => imagenes,
-        :nlink => 1,
-        :size => 128,
-        :blockdev? => false,
-        :chardev? => false,
-        :socket? => false,
-        :symlink? => false,
-        :stats => OpenStruct.new(
+        group: 'sys',
+        mtime: Time.now,
+        directory?: true,
+        owner: 'user',
+        name: imagenes,
+        path: '.',
+        show: imagenes,
+        nlink: 1,
+        size: 128,
+        blockdev?: false,
+        chardev?: false,
+        socket?: false,
+        symlink?: false,
+        stats: OpenStruct.new(
           mode: 0o444, # read for user, owner, other
           setuid?: false,
           setgid?: false,
           sticky?: false
         ),
-        :executable? => true
+        executable?: true
       )
 
-      fileInfo = instance_double(
+      file_info = instance_double(
         'FileInfo',
-        :group => "sys",
-        :mtime => Time.now,
-        :directory? => false,
-        :owner => "user",
-        :name => camera,
-        :show => camera,
-        :nlink => 1,
-        :size => 128,
-        :blockdev? => false,
-        :chardev? => false,
-        :socket? => false,
-        :symlink? => false,
-        :stats => OpenStruct.new(
+        group: 'sys',
+        mtime: Time.now,
+        directory?: false,
+        owner: 'user',
+        name: camera,
+        show: camera,
+        nlink: 1,
+        size: 128,
+        blockdev?: false,
+        chardev?: false,
+        socket?: false,
+        symlink?: false,
+        stats: OpenStruct.new(
           mode: 0o444, # read for user, owner, other
           setuid?: false,
           setgid?: false,
           sticky?: false
         ),
-        :executable? => false
+        executable?: false
       )
 
-      expect(::Dir).to receive(:entries).and_return([camera])
+      allow(::Dir).to receive(:entries).and_return([camera])
 
-      allow(ColorLS::FileInfo).to receive(:new).and_return(dirInfo)
-      allow(ColorLS::FileInfo).to receive(:new).with(File.join(imagenes, camera), link_info: false) { fileInfo }
+      allow(ColorLS::FileInfo).to receive(:new).and_return(file_info)
 
-      expect { subject }.not_to raise_error
+      expect { subject.ls_dir(dir_info) }.to output(/mara/).to_stdout
     end
   end
 end

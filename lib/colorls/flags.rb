@@ -11,6 +11,8 @@ module ColorLS
       @light_colors = false
 
       @opts = default_opts
+      @show_report = false
+      @exit_status_code = 0
 
       parse_options
 
@@ -19,30 +21,14 @@ module ColorLS
       # FIXME: `--all` and `--tree` do not work together, use `--almost-all` instead
       @opts[:almost_all] = true if @opts[:all]
       @opts[:all] = false
-
-      # `--tree` does not support reports
-      @opts[:report] = false
     end
 
     def process
       init_locale
 
       @args = ['.'] if @args.empty?
-      exit_status_code = 0
-      @args.sort!.each_with_index do |path, i|
-        unless File.exist?(path)
-          $stderr.puts "\n   Specified path '#{path}' doesn't exist.".colorize(:red)
-          exit_status_code = 2
-          next
-        end
 
-        puts '' if i.positive?
-        puts "\n#{path}:" if Dir.exist?(path) && @args.size > 1
-        Core.new(path, **@opts).ls
-      rescue SystemCallError => e
-        $stderr.puts "#{path}: #{e}".colorize(:red)
-      end
-      exit_status_code
+      process_args
     end
 
     def options
@@ -69,6 +55,44 @@ module ColorLS
       warn "WARN: #{e}, check your locale settings"
     end
 
+    def group_files_and_directories
+      infos = @args.flat_map do |arg|
+        FileInfo.info(arg)
+      rescue Errno::ENOENT
+        $stderr.puts "colorls: Specified path '#{arg}' doesn't exist.".colorize(:red)
+        @exit_status_code = 2
+        []
+      rescue SystemCallError => e
+        $stderr.puts "#{path}: #{e}".colorize(:red)
+        @exit_status_code = 2
+        []
+      end
+
+      infos.group_by(&:directory?).values_at(true, false)
+    end
+
+    def process_args
+      core = Core.new(**@opts)
+
+      directories, files = group_files_and_directories
+
+      core.ls_files(files) unless files.nil?
+
+      directories&.sort_by! do |a|
+        CLocale.strxfrm(a.name)
+      end&.each do |dir|
+        puts "\n#{dir.show}:" if @args.size > 1
+
+        core.ls_dir(dir)
+      rescue SystemCallError => e
+        $stderr.puts "#{dir}: #{e}".colorize(:red)
+      end
+
+      core.display_report if @show_report
+
+      @exit_status_code
+    end
+
     def default_opts
       {
         show: false,
@@ -78,7 +102,6 @@ module ColorLS
         mode: STDOUT.tty? ? :vertical : :one_per_line, # rubocop:disable Style/GlobalStdStream
         all: false,
         almost_all: false,
-        report: false,
         git_status: false,
         colors: [],
         tree_depth: 3,
@@ -117,7 +140,7 @@ module ColorLS
       options.on('-d', '--dirs', 'show only directories')                 { @opts[:show] = :dirs }
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
       options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
-      options.on('--report', 'show brief report')                         { @opts[:report] = true }
+      options.on('--report', 'show brief report')                         { @show_report = true }
     end
 
     def add_format_options(options)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'colorls/version'
@@ -21,7 +23,7 @@ POST_INSTALL_MESSAGE = %(
     Man pages have been added. Checkout `man colorls`.
 
   *******************************************************************
-).freeze
+)
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
@@ -47,7 +49,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.5.0'
 
-  spec.files         = IO.popen(
+  spec.files = IO.popen(
     %w[git ls-files -z], external_encoding: Encoding::ASCII_8BIT
   ).read.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
@@ -59,6 +61,7 @@ Gem::Specification.new do |spec|
 
   spec.post_install_message = POST_INSTALL_MESSAGE
 
+  spec.add_runtime_dependency 'addressable', '~> 2.7'
   spec.add_runtime_dependency 'clocale', '~> 0'
   spec.add_runtime_dependency 'filesize', '~> 0'
   spec.add_runtime_dependency 'manpages', '~> 0'
@@ -75,6 +78,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec-its', '~> 1.2'
   spec.add_development_dependency 'rubocop', '~> 1.8.0'
   spec.add_development_dependency 'rubocop-performance', '~> 1.9.0'
+  spec.add_development_dependency 'rubocop-rake', '~> 0.5'
   spec.add_development_dependency 'rubocop-rspec', '~> 2.0'
   spec.add_development_dependency 'rubygems-tasks', '~> 0'
   spec.add_development_dependency 'simplecov', '~> 0.20.0'

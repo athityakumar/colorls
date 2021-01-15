@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
+
+# rubocop:todo RSpec/MultipleDescribes
 
 RSpec.describe(ColorLS::HorizontalLayout, '#each_line') do
   subject { described_class.new(array, array.map(&:length), width) }
@@ -18,7 +22,7 @@ RSpec.describe(ColorLS::HorizontalLayout, '#each_line') do
     let(:array) { [first] }
     let(:width) { 11 }
 
-    it 'should be on a single line' do
+    it 'is on a single line' do
       expect { |b| subject.each_line(&b) }.to yield_successive_args([[first], [first.size]])
     end
   end
@@ -29,7 +33,7 @@ RSpec.describe(ColorLS::HorizontalLayout, '#each_line') do
     let(:array) { [first] }
     let(:width) { 1 }
 
-    it 'should be on a single column' do
+    it 'is on a single column' do
       expect { |b| subject.each_line(&b) }.to yield_successive_args([[first], [first.size]])
     end
   end
@@ -40,7 +44,7 @@ RSpec.describe(ColorLS::HorizontalLayout, '#each_line') do
     let(:array) { [first, 'a'] }
     let(:width) { 100 }
 
-    it 'should be on a single line' do
+    it 'is on a single line' do
       expect { |b| subject.each_line(&b) }.to yield_successive_args([[first, 'a'], [first.size, 1]])
     end
   end
@@ -51,7 +55,7 @@ RSpec.describe(ColorLS::HorizontalLayout, '#each_line') do
     let(:array) { [first, 'a', first] }
     let(:width) { first.size + 1 }
 
-    it 'should be on two lines' do
+    it 'is on two lines' do
       max_widths = [first.size, 1]
       expect { |b| subject.each_line(&b) }.to yield_successive_args([[first, 'a'], max_widths], [[first], max_widths])
     end
@@ -76,7 +80,7 @@ RSpec.describe(ColorLS::VerticalLayout, '#each_line') do
     let(:array) { [first] }
     let(:width) { 11 }
 
-    it 'should be on a single line' do
+    it 'is on a single line' do
       expect { |b| subject.each_line(&b) }.to yield_successive_args([[first], [first.size]])
     end
   end
@@ -87,7 +91,7 @@ RSpec.describe(ColorLS::VerticalLayout, '#each_line') do
     let(:array) { [first] }
     let(:width) { 1 }
 
-    it 'should be on a single column' do
+    it 'is on a single column' do
       expect { |b| subject.each_line(&b) }.to yield_successive_args([[first], [first.size]])
     end
   end
@@ -98,7 +102,7 @@ RSpec.describe(ColorLS::VerticalLayout, '#each_line') do
     let(:array) { [first, 'a'] }
     let(:width) { 100 }
 
-    it 'should be on a single line' do
+    it 'is on a single line' do
       expect { |b| subject.each_line(&b) }.to yield_successive_args([[first, 'a'], [first.size, 1]])
     end
   end
@@ -109,9 +113,11 @@ RSpec.describe(ColorLS::VerticalLayout, '#each_line') do
     let(:array) { [first, 'a', first] }
     let(:width) { first.size * 2 }
 
-    it 'should be on two lines' do
+    it 'is on two lines' do
       max_widths = [first.size, first.size]
       expect { |b| subject.each_line(&b) }.to yield_successive_args([[first, first], max_widths], [['a'], max_widths])
     end
   end
 end
+
+# rubocop:enable RSpec/MultipleDescribes

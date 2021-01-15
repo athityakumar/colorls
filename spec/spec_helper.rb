@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 
 SimpleCov.start do
@@ -12,7 +14,7 @@ end
 require 'bundler/setup'
 require 'colorls'
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |file| require file }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |file| require file }
 
 # disable rainbow globally to ease checking expected output
 Rainbow.enabled = false
