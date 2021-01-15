@@ -11,55 +11,17 @@ os:
 cache: bundler
 
 rvm:
-  - '2.5'
-  - '2.6'
-  - '2.7'
   - 'truffleruby-head'
 
 jobs:
   fast_finish: true
-
-  allow_failures:
-    - rvm: truffleruby-head
-
-  include:
-    - os: osx
-      rvm: '2.7'
-
-    - os: windows
-      language: bash
-      before_cache:
-        - |-
-          # https://unix.stackexchange.com/a/137322/107554
-          pacman --sync --clean --noconfirm
-        - bundle clean
-      before_install:
-        - ruby --version
-        - gem --version
-        - |
-          if [[ ! -f /C/tools/msys64/--msys2-- ]]; then
-             rm -rf /C/tools/msys64
-             choco uninstall -y mingw
-             choco upgrade --no-progress -y msys2 --params /NoUpdate
-             ridk.cmd install dev_tools
-          fi
-        - touch /C/tools/msys64/--msys2--
-      install:
-        - bundle config set path 'vendor/bundle'
-        - bundle install --retry=3
-        - export MSYS=winsymlinks:nativestrict
-      cache:
-        directories:
-          - $HOME/AppData/Local/Temp/chocolatey
-          - /C/tools/msys64
-          - vendor/bundle
 
 before_install:
   - gem --version
   - gem install bundler -v '~> 2'
 
 script:
-  - bundle exec rubocop
+  - bundle exec rubocop -d
   - bundle exec rake spec
   - bundle exec rake install
   - bundle binstubs colorls
