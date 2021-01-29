@@ -63,5 +63,26 @@ RSpec.describe ColorLS::Core do
 
       expect { subject.ls_dir(dir_info) }.to output(/mara/).to_stdout
     end
+
+    it 'works for `...`' do
+      file_info = instance_double(
+        'FileInfo',
+        group: 'sys',
+        mtime: Time.now,
+        directory?: false,
+        owner: 'user',
+        name: '...',
+        show: '...',
+        nlink: 1,
+        size: 128,
+        blockdev?: false,
+        chardev?: false,
+        socket?: false,
+        symlink?: false,
+        executable?: false
+      )
+
+      expect { subject.ls_files([file_info]) }.to output(/[.]{3}/).to_stdout
+    end
   end
 end
