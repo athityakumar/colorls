@@ -347,7 +347,7 @@ module ColorLS
         color = @colors[:dir]
         group = :folders
       else
-        key = content.name.split('.').last.downcase.to_sym
+        key = File.extname(content.name).delete_prefix('.').downcase.to_sym
         key = @file_aliases[key] unless @files.key? key
         color = file_color(content, key)
         group = @files.key?(key) ? :recognized_files : :unrecognized_files
