@@ -1,6 +1,7 @@
 # Main Colors
 unrecognized_file: gold
-recognized_file:   lime
+recognized_file:   yellow
+executable_file:   lime
 dir:               dodgerblue
 
 # Link
