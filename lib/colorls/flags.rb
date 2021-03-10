@@ -261,7 +261,7 @@ EXAMPLES
       end
 
       # show help and exit if the only argument is -h
-      show_help if !@args.empty? && @args.all? { |arg| arg == '-h' }
+      show_help if !@args.empty? && @args.all?('-h')
 
       @parser.parse!(@args)
 
