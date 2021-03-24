@@ -14,9 +14,11 @@ module ColorLS
     def initialize(name:, parent:, path: nil, link_info: true)
       @name = name
       @parent = parent
-      @path = path.nil? ? File.join(parent, name) : path
+      @path = path.nil? ? File.join(parent, name) : +path
       @stats = File.lstat(@path)
       @show_name = nil
+
+      @path.force_encoding(ColorLS.file_encoding)
 
       handle_symlink(@path) if link_info && @stats.symlink?
     end
