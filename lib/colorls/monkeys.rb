@@ -6,6 +6,6 @@ class String
   end
 
   def uniq
-    split('').uniq.join
+    chars.uniq.join
   end
 end
