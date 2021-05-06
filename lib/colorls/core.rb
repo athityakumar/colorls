@@ -8,8 +8,17 @@ module ColorLS
     @file_encoding
   end
 
-  @screen_width = IO.console.winsize[1]
-  @screen_width = 80 if @screen_width.zero?
+  def self.terminal_width
+    console = IO.console
+
+    width = IO.console_size[1]
+
+    return width if console.nil? || console.winsize[1].zero?
+
+    console.winsize[1]
+  end
+
+  @screen_width = terminal_width
 
   def self.screen_width
     @screen_width
