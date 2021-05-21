@@ -106,7 +106,8 @@ module ColorLS
         colors: [],
         tree_depth: 3,
         show_group: true,
-        show_user: true
+        show_user: true,
+        indicator_style: 'slash'
       }
     end
 
@@ -141,6 +142,9 @@ module ColorLS
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
       options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
       options.on('--report', 'show brief report')                         { @show_report = true }
+      options.on('--indicator-style=[STYLE]', String, 'append indicator to entry names') do |style|
+        @opts[:indicator_style] = style
+      end
     end
 
     def add_format_options(options)

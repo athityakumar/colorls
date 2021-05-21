@@ -544,4 +544,10 @@ RSpec.describe ColorLS::Flags do
       expect { subject }.to output(/user/).to_stdout
     end
   end
+
+  context 'with --indicator-style=none' do
+    let(:args) { ['-dl', '--indicator-style=none', FIXTURES] }
+
+    it { expect { subject }.to output(/.+second-level \n.+symlinks \n/).to_stdout }
+  end
 end
