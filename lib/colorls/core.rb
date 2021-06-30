@@ -75,11 +75,14 @@ module ColorLS
     end
 
     def display_report
-      print "\n   Found #{@count.values.sum} items in total.".colorize(@colors[:report])
+      puts <<~REPORT
 
-      puts  "\n\n\tFolders\t\t\t: #{@count[:folders]}"\
-        "\n\tRecognized files\t: #{@count[:recognized_files]}"\
-        "\n\tUnrecognized files\t: #{@count[:unrecognized_files]}"
+           Found #{@count.values.sum} items in total.
+
+        \tFolders\t\t\t: #{@count[:folders]}
+        \tRecognized files\t: #{@count[:recognized_files]}
+        \tUnrecognized files\t: #{@count[:unrecognized_files]}
+      REPORT
         .colorize(@colors[:report])
     end
 
