@@ -142,7 +142,11 @@ module ColorLS
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
       options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
       options.on('--report', 'show brief report')                         { @show_report = true }
-      options.on('--indicator-style=[STYLE]', String, 'append indicator to entry names') do |style|
+      options.on('-p', 'append / indicator to directories')               { @opts[:indicator_style] = 'slash' }
+      options.on(
+        '--indicator-style=[STYLE]',
+        %w[none slash], 'append indicator with style STYLE to entry names: none, slash (-p) (default)'
+      ) do |style|
         @opts[:indicator_style] = style
       end
     end
