@@ -4,7 +4,6 @@ lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'colorls/version'
 
-# rubocop:disable Layout/LineEndStringConcatenationIndentation
 POST_INSTALL_MESSAGE = %(
   *******************************************************************
     Changes introduced in colorls
@@ -25,7 +24,6 @@ POST_INSTALL_MESSAGE = %(
 
   *******************************************************************
 )
-# rubocop:enable Layout/LineEndStringConcatenationIndentation
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
@@ -78,7 +76,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'ronn', '~> 0'
   spec.add_development_dependency 'rspec', '~> 3.7'
   spec.add_development_dependency 'rspec-its', '~> 1.2'
-  spec.add_development_dependency 'rubocop', '~> 1.18.0'
+  spec.add_development_dependency 'rubocop', '~> 1.18.3'
   spec.add_development_dependency 'rubocop-performance', '~> 1.11.0'
   spec.add_development_dependency 'rubocop-rake', '~> 0.5'
   spec.add_development_dependency 'rubocop-rspec', '~> 2.0'
