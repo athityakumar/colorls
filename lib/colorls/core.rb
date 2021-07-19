@@ -27,7 +27,8 @@ module ColorLS
   class Core
     def initialize(all: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true)
+      reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true,
+      indicator_style: 'slash')
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -41,6 +42,7 @@ module ColorLS
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
       @git_status   = init_git_status(git_status)
+      @indicator_style = indicator_style
 
       init_colors colors
 
@@ -321,7 +323,7 @@ module ColorLS
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
       name = content.show
       name = make_link(content) if @hyperlink
-      name += content.directory? ? '/' : ' '
+      name += content.directory? && @indicator_style != 'none' ? '/' : ' '
       entry = "#{out_encode(logo)}  #{out_encode(name)}"
       entry = entry.bright if !content.directory? && content.executable?
 
