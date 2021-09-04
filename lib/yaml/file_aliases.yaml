@@ -11,6 +11,7 @@ editorconfig:     conf
 scss:             css
 docx:             doc
 gdoc:             doc
+odt:              doc
 dockerfile:       docker
 mobi:             ebook
 eot:              font
@@ -27,6 +28,7 @@ gif:              image
 ico:              image
 jpeg:             image
 jpg:              image
+odg:              image
 png:              image
 pxm:              image
 svg:              image
@@ -41,6 +43,7 @@ mkd:              md
 rdoc:             md
 readme:           md
 gslides:          ppt
+odp:              ppt
 pptx:             ppt
 ipynb:            py
 pyc:              py
@@ -81,6 +84,7 @@ exe:              windows
 ini:              windows
 csv:              xls
 gsheet:           xls
+ods:              xls
 xlsx:             xls
 xul:              xml
 yaml:             yml
