@@ -242,8 +242,8 @@ module ColorLS
     def size_info(filesize)
       size = Filesize.new(filesize).pretty.split
       size = "#{size[0][0..-4].rjust(4,' ')} #{size[1].ljust(3,' ')}"
-      return size.colorize(@colors[:file_large])  if filesize >= 512 * 1024 ** 2
-      return size.colorize(@colors[:file_medium]) if filesize >= 128 * 1024 ** 2
+      return size.colorize(@colors[:file_large])  if filesize >= 512 * (1024 ** 2)
+      return size.colorize(@colors[:file_medium]) if filesize >= 128 * (1024 ** 2)
 
       size.colorize(@colors[:file_small])
     end
@@ -335,7 +335,7 @@ module ColorLS
       line = +''
       chunk.each_with_index do |content, i|
         entry = fetch_string(content, *options(content))
-        line << ' ' * padding
+        line << (' ' * padding)
         line << '  ' << entry.encode(Encoding.default_external, undef: :replace)
         padding = widths[i] - Unicode::DisplayWidth.of(content.show) - CHARS_PER_ITEM
       end
@@ -405,7 +405,7 @@ module ColorLS
     def tree_branch_preprint(prespace, indent, prespace_icon)
       return prespace_icon if prespace.zero?
 
-      ' │ ' * (prespace/indent) + prespace_icon + '─' * indent
+      (' │ ' * (prespace/indent)) + prespace_icon + ('─' * indent)
     end
 
     def make_link(content)
