@@ -25,7 +25,7 @@ file 'man/colorls.1' => ['man/colorls.1.ronn', 'lib/colorls/flags.rb'] do
     organization: "colorls #{ColorLS::VERSION}"
   }
   doc = Ronn::Document.new(nil, attributes) do
-    template = IO.read('man/colorls.1.ronn')
+    template = File.read('man/colorls.1.ronn')
 
     section = ''
     flags.options.each do |o|
@@ -37,7 +37,7 @@ OPTION
     end
     template.sub('{{ OPTIONS }}', section)
   end
-  IO.write('man/colorls.1', doc.convert('roff'))
+  File.write('man/colorls.1', doc.convert('roff'))
 end
 
 desc 'Build the Zsh completion file'
