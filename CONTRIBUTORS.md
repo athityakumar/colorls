@@ -77,5 +77,7 @@ Color LS contributors (sorted alphabetically)
 
 * **[Vladislav Isakov](https://github.com/bladebhs)**
 
+* **[T.Mangoe](https://github.com/t-mangoe)**
+
 
 **[Full contributors list](https://github.com/athityakumar/colorls/graphs/contributors).**
