@@ -250,7 +250,7 @@ module ColorLS
     end
 
     def mtime_info(file_mtime)
-      mtime = @time_style.empty? ? file_mtime.asctime : file_mtime.strftime(@time_style)
+      mtime = @time_style.start_with?('+') ? file_mtime.strftime(@time_style.delete_prefix('+')) : file_mtime.asctime
       now = Time.now
       return mtime.colorize(@colors[:hour_old]) if now - file_mtime < 60 * 60
       return mtime.colorize(@colors[:day_old])  if now - file_mtime < 24 * 60 * 60

@@ -552,7 +552,7 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'with --time-style option' do
-    let(:args) { ['-l', '--time-style=%y-%m-%d %k:%M', "#{FIXTURES}/a.txt"] }
+    let(:args) { ['-l', '--time-style=+%y-%m-%d %k:%M', "#{FIXTURES}/a.txt"] }
 
     mtime = File.mtime("#{FIXTURES}/a.txt")
 
