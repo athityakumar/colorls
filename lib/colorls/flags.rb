@@ -35,7 +35,7 @@ module ColorLS
       list = @parser.top.list + @parser.base.list
 
       result = list.collect do |o|
-        next unless o.respond_to? 'desc'
+        next unless o.respond_to? :desc
 
         flags = o.short + o.long
         next if flags.empty?
