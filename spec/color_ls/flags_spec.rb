@@ -550,4 +550,12 @@ RSpec.describe ColorLS::Flags do
 
     it { expect { subject }.to output(/.+second-level \n.+symlinks \n/).to_stdout }
   end
+
+  context 'with --time-style option' do
+    let(:args) { ['-l', '--time-style=+%y-%m-%d %k:%M', "#{FIXTURES}/a.txt"] }
+
+    mtime = File.mtime("#{FIXTURES}/a.txt")
+
+    it { expect { subject }.to output(/#{mtime.strftime("%y-%m-%d %k:%M")}/).to_stdout }
+  end
 end

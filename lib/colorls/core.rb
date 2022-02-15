@@ -28,7 +28,7 @@ module ColorLS
     def initialize(all: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true,
-      indicator_style: 'slash')
+      indicator_style: 'slash', time_style: '')
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -42,6 +42,7 @@ module ColorLS
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
       @git_status   = init_git_status(git_status)
+      @time_style   = time_style
       @indicator_style = indicator_style
 
       init_colors colors
@@ -249,7 +250,7 @@ module ColorLS
     end
 
     def mtime_info(file_mtime)
-      mtime = file_mtime.asctime
+      mtime = @time_style.start_with?('+') ? file_mtime.strftime(@time_style.delete_prefix('+')) : file_mtime.asctime
       now = Time.now
       return mtime.colorize(@colors[:hour_old]) if now - file_mtime < 60 * 60
       return mtime.colorize(@colors[:day_old])  if now - file_mtime < 24 * 60 * 60

@@ -107,7 +107,8 @@ module ColorLS
         tree_depth: 3,
         show_group: true,
         show_user: true,
-        indicator_style: 'slash'
+        indicator_style: 'slash',
+        time_style: ''
       }
     end
 
@@ -183,6 +184,9 @@ module ColorLS
         @opts[:show_user] = false
       end
       options.on('-G', '--no-group', 'show no group information in a long listing') { @opts[:show_group] = false }
+      options.on('--time-style=FORMAT', String, 'use time display format') do |time_style|
+        @opts[:time_style] = time_style
+      end
     end
 
     def add_general_options(options)
