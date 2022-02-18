@@ -321,7 +321,7 @@ module ColorLS
     def fetch_string(content, key, color, increment)
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
-      logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..-1].to_i(16)].pack('U') }
+      logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..].to_i(16)].pack('U') }
       name = content.show
       name = make_link(content) if @hyperlink
       name += content.directory? && @indicator_style != 'none' ? '/' : ' '
