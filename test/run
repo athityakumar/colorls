@@ -1,6 +1,10 @@
 #! /usr/bin/env bash
 
-set -eEuCo pipefail
+set -EuCo pipefail
+
+if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
+  set -e
+fi
 
 declare RED=$'\033[31m'
 declare GREEN=$'\033[32m'
@@ -53,7 +57,7 @@ function XFAIL() {
     echo "$RED" "FAIL$RESET - $* (unexpected success, ${BASH_SOURCE[1]}:${BASH_LINENO[0]})" >&2
   else
     ret=$?
-    if [[ -v expected && $expected -ne $ret ]]; then
+    if [[ -n "$expected" && $expected -ne $ret ]]; then
       ((++ERRORS))
 
       echo "$RED" "FAIL$RESET - $* (expected: $expected got $ret, ${BASH_SOURCE[1]}:${BASH_LINENO[0]})" >&2
