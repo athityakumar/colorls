@@ -25,6 +25,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Shellcheck
+      if: matrix.os == 'ubuntu-latest'
+      run: shellcheck test/run test/checks
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:

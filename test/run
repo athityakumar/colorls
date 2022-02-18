@@ -103,4 +103,5 @@ function summary() {
 
 trap summary EXIT
 
+# shellcheck source=test/checks
 source "$(dirname "${BASH_SOURCE[0]}")/checks"
