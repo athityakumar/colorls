@@ -1,0 +1,102 @@
+#! /usr/bin/env bash
+
+set -eEuCo pipefail
+
+declare RED=$'\033[31m'
+declare GREEN=$'\033[32m'
+declare RESET=$'\033[39m'
+
+declare -i ERRORS=0 TESTS=0
+
+function colorls() {
+  command bundle exec colorls "$@"
+}
+
+# check that the given command returns exit code 0
+#
+# SYNOPSIS: OK COMMAND [ARGS]
+#
+function OK() {
+  local ret
+
+  ((++TESTS))
+
+  if "$@"; then
+    echo "$GREEN" "OK  $RESET - $*" >&2
+  else
+    ret=$?
+
+    ((++ERRORS))
+
+    echo "$RED" "FAIL$RESET - $* (exit code: $ret, ${BASH_SOURCE[1]}:${BASH_LINENO[0]})" >&2
+  fi
+}
+
+# check that the given command returns a non-zero exit code
+#
+# SYNOPSIS: XFAIL [exit-code] COMMAND [ARGS]
+#
+function XFAIL() {
+  local expected ret
+
+  if [[ "$1" == [1-9] ]]; then
+    # expect a specific non-zero exit code
+    expected="$1"
+    shift
+  fi
+
+  ((++TESTS))
+
+  if "$@"; then
+    ((++ERRORS))
+
+    echo "$RED" "FAIL$RESET - $* (unexpected success, ${BASH_SOURCE[1]}:${BASH_LINENO[0]})" >&2
+  else
+    ret=$?
+    if [[ -v expected && $expected -ne $ret ]]; then
+      ((++ERRORS))
+
+      echo "$RED" "FAIL$RESET - $* (expected: $expected got $ret, ${BASH_SOURCE[1]}:${BASH_LINENO[0]})" >&2
+    else
+      echo "$GREEN" "OK  $RESET - $*" >&2
+    fi
+  fi
+}
+
+# check that the given command returns with exit code 0 and its stdout contains a text
+#
+# SYNOPSIS: OUT TEXT COMMAND [ARGS]
+#
+function OUT() {
+  local STR="$1" ret
+  shift
+
+  ((++TESTS))
+
+  if "$@" | grep -F "$STR"; then
+    echo "$GREEN" "OK  $RESET - $*" >&2
+  else
+    ret=${PIPESTATUS[0]}
+
+    ((++ERRORS))
+
+    if [[ $ret -ne 0 ]]; then
+      echo "$RED" "FAIL$RESET - $* (exit code: $ret, ${BASH_SOURCE[1]}:${BASH_LINENO[0]})" >&2
+    else
+      echo "$RED" "FAIL$RESET - $* ('$STR' not found in output, ${BASH_SOURCE[1]}:${BASH_LINENO[0]})" >&2
+    fi
+  fi
+}
+
+function summary() {
+  if [[ $ERRORS -gt 0 ]]; then
+    printf '\n\n %d of %d tests failed.' "$ERRORS" "$TESTS" >&2
+    exit 1
+  else
+    printf '\n\n %d tests passed.' "$TESTS" >&2
+  fi
+}
+
+trap summary EXIT
+
+source "$(dirname "${BASH_SOURCE[0]}")/checks"

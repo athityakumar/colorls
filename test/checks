@@ -1,0 +1,41 @@
+# -*- mode: sh -*-
+# shellcheck shell=bash
+
+OK colorls
+OK colorls -1
+OK colorls -a
+OK colorls -A
+OK colorls -d
+OK colorls -f
+OK colorls -l
+OK colorls -l spec/fixtures/symlinks
+( cd spec/fixtures || exit ; OUT '.hidden-file' colorls .hidden-file )
+OK colorls -l README.md
+OK colorls -r
+
+OK colorls --sd
+OK colorls --sf
+OK colorls --hyperlink
+OK colorls -t
+OK colorls --sort=time
+OK colorls -U
+OK colorls --sort=none
+OK colorls -S
+OK colorls --sort=size
+OK colorls -h
+OK colorls --gs
+OK colorls spec/fixtures/symlinks
+OK colorls README.md
+OK colorls ./*
+OUT / colorls
+OK colorls --color
+OK colorls --color=auto
+OK colorls --color=never
+OK colorls --color=always
+OK colorls --tree spec
+OK colorls --tree=1
+
+LC_ALL=C OK colorls spec/fixtures/
+LC_ALL=C OK colorls --git spec/fixtures/
+
+XFAIL 2 colorls does-not-exist
