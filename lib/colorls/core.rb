@@ -28,7 +28,7 @@ module ColorLS
     def initialize(all: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true,
-      indicator_style: 'slash', time_style: '')
+      indicator_style: 'slash', time_style: '', hard_links_count: true)
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -44,6 +44,7 @@ module ColorLS
       @git_status   = init_git_status(git_status)
       @time_style   = time_style
       @indicator_style = indicator_style
+      @hard_links_count = hard_links_count
 
       init_colors colors
 
@@ -295,7 +296,8 @@ module ColorLS
 
       links = content.nlink.to_s.rjust(@linklength)
 
-      line_array = [mode_info(content.stats), links]
+      line_array = [mode_info(content.stats)]
+      line_array.push links if @hard_links_count
       line_array.push user_info(content) if @show_user
       line_array.push group_info(content.group) if @show_group
       line_array.concat [size_info(content.size), mtime_info(content.mtime)]

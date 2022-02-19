@@ -108,7 +108,8 @@ module ColorLS
         show_group: true,
         show_user: true,
         indicator_style: 'slash',
-        time_style: ''
+        time_style: '',
+        hard_links_count: true
       }
     end
 
@@ -187,6 +188,7 @@ module ColorLS
       options.on('--time-style=FORMAT', String, 'use time display format') do |time_style|
         @opts[:time_style] = time_style
       end
+      options.on('--no-hardlinks', 'show no hard links count in a long listing') { @opts[:hard_links_count] = false }
     end
 
     def add_general_options(options)
