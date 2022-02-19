@@ -27,8 +27,8 @@ module ColorLS
   class Core
     def initialize(all: false, sort: false, show: false,
       mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true,
-      indicator_style: 'slash', time_style: '', hard_links_count: true)
+      reverse: false, hyperlink: false, tree_depth: nil,
+      indicator_style: 'slash', long_style_options: {})
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -38,13 +38,13 @@ module ColorLS
       @group        = group
       @show         = show
       @one_per_line = mode == :one_per_line
-      init_long_format(mode,show_group,show_user)
+      init_long_format(mode,long_style_options)
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
       @git_status   = init_git_status(git_status)
-      @time_style   = time_style
+      @time_style   = long_style_options.key?(:time_style) ? long_style_options[:time_style] : ''
       @indicator_style = indicator_style
-      @hard_links_count = hard_links_count
+      @hard_links_count = long_style_options.key?(:hard_links_count) ? long_style_options[:hard_links_count] : true
 
       init_colors colors
 
@@ -122,10 +122,10 @@ module ColorLS
       end
     end
 
-    def init_long_format(mode, show_group, show_user)
+    def init_long_format(mode, long_style_options)
       @long = mode == :long
-      @show_group = show_group
-      @show_user = show_user
+      @show_group = long_style_options.key?(:show_group) ? long_style_options[:show_group] : true
+      @show_user = long_style_options.key?(:show_user) ? long_style_options[:show_user] : true
     end
 
     def init_git_status(show_git)
