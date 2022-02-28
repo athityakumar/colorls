@@ -10,7 +10,7 @@ AllCops:
     - 'profile/*'
   DisplayCopNames: true
   NewCops: enable
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
 
 # Preferred codebase style ---------------------------------------------
 

@@ -47,7 +47,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/athityakumar/colorls'
   spec.license       = 'MIT'
 
-  spec.required_ruby_version = '>= 2.5.0'
+  spec.required_ruby_version = '>= 2.6.0'
 
   spec.files = IO.popen(
     %w[git ls-files -z], external_encoding: Encoding::ASCII_8BIT

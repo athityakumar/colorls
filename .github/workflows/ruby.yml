@@ -16,13 +16,18 @@ on:
 jobs:
   test:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
-        ruby-version: ['2.6', '2.7', '3.0']
+        ruby-version: ['2.6', '2.7', '3.0', '3.1']
+        os: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v2
+    - name: Shellcheck
+      if: matrix.os == 'ubuntu-latest'
+      run: shellcheck test/run test/checks
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
