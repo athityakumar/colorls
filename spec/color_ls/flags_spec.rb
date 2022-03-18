@@ -21,8 +21,11 @@ RSpec.describe ColorLS::Flags do
     }
 
     it('does not display hidden files')         { expect { subject }.not_to output(/\.hidden-file/).to_stdout }
-    it('does not show a report')                { expect { subject }.not_to output(/(Found \d+ items in total\.)|(Folders: \d+, Files: \d+\.)/).to_stdout }
     it('displays dirs & files alphabetically')  { expect { subject }.to output(/a-file.+symlinks.+z-file/m).to_stdout }
+
+    it 'does not show a report' do
+      expect { subject }.not_to output(/(Found \d+ items in total\.)|(Folders: \d+, Files: \d+\.)/).to_stdout
+    end
 
     it 'displays multiple files per line' do
       allow($stdout).to receive(:tty?).and_return(true)
