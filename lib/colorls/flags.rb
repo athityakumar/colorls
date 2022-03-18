@@ -143,7 +143,7 @@ module ColorLS
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
       options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
       options.on('-p', 'append / indicator to directories')               { @opts[:indicator_style] = 'slash' }
-      options.on('--report=[WORD]', %w[short long], 'show report') do |word|
+      options.on('--report=[WORD]', %w[short long], 'show report: short, long (default if omitted)') do |word|
         word ||= :long
         @report_mode = word.to_sym
       end
