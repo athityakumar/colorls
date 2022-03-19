@@ -26,8 +26,7 @@ module ColorLS
 
   class Core
     def initialize(all: false, sort: false, show: false,
-      mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true,
+      reverse: false, hyperlink: false, tree_depth: nil, show_inode: false, show_group: true, show_user: true,
       indicator_style: 'slash', time_style: '')
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -38,6 +37,7 @@ module ColorLS
       @group        = group
       @show         = show
       @one_per_line = mode == :one_per_line
+      @show_inode   = show_inode
       init_long_format(mode,show_group,show_user)
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
@@ -298,6 +298,11 @@ module ColorLS
       end
     end
 
+    def get_inode(content)
+      return '' unless @show_inode
+      content.stats.ino.to_s
+    end
+
     def long_info(content)
       return '' unless @long
 
@@ -336,7 +341,7 @@ module ColorLS
       entry = "#{out_encode(logo)}  #{out_encode(name)}"
       entry = entry.bright if !content.directory? && content.executable?
 
-      "#{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
+      "#{get_inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end
 
     def ls_line(chunk, widths)

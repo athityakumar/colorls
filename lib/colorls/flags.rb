@@ -105,6 +105,7 @@ module ColorLS
         git_status: false,
         colors: [],
         tree_depth: 3,
+        show_inode: false,
         show_group: true,
         show_user: true,
         indicator_style: 'slash',
@@ -143,6 +144,7 @@ module ColorLS
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
       options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
       options.on('-p', 'append / indicator to directories')               { @opts[:indicator_style] = 'slash' }
+      options.on('-i', '--inode', 'show inode number')                    { @opts[:show_inode] = true }
       options.on('--report=[WORD]', %w[short long], 'show report: short, long (default if omitted)') do |word|
         word ||= :long
         @report_mode = word.to_sym
