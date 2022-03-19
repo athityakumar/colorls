@@ -102,7 +102,7 @@ module ColorLS
         mode: STDOUT.tty? ? :vertical : :one_per_line, # rubocop:disable Style/GlobalStdStream
         all: false,
         almost_all: false,
-        git_status: false,
+        show_git: false,
         colors: [],
         tree_depth: 3,
         show_inode: false,
@@ -142,7 +142,7 @@ module ColorLS
       options.on('-A', '--almost-all', 'do not list . and ..')            { @opts[:almost_all] = true }
       options.on('-d', '--dirs', 'show only directories')                 { @opts[:show] = :dirs }
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
-      options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
+      options.on('--gs', '--git-status', 'show git status for each file') { @opts[:show_git] = true }
       options.on('-p', 'append / indicator to directories')               { @opts[:indicator_style] = 'slash' }
       options.on('-i', '--inode', 'show inode number')                    { @opts[:show_inode] = true }
       options.on('--report=[WORD]', %w[short long], 'show report: short, long (default if omitted)') do |word|

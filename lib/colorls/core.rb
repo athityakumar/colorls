@@ -26,6 +26,7 @@ module ColorLS
 
   class Core
     def initialize(all: false, sort: false, show: false,
+      mode: nil, show_git: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_inode: false, show_group: true, show_user: true,
       indicator_style: 'slash', time_style: '')
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
@@ -41,7 +42,8 @@ module ColorLS
       init_long_format(mode,show_group,show_user)
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
-      @git_status   = init_git_status(git_status)
+      @show_git     = show_git
+      @git_status   = init_git_status(show_git)
       @time_style   = time_style
       @indicator_style = indicator_style
 
@@ -152,8 +154,12 @@ module ColorLS
     # how much characters an item occupies besides its name
     CHARS_PER_ITEM = 12
 
+    def additional_chars
+      CHARS_PER_ITEM + (@show_git ? 4 : 0) + (@show_inode ? 10 : 0)
+    end
+
     def item_widths
-      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + CHARS_PER_ITEM }
+      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + additional_chars }
     end
 
     def filter_hidden_contents
@@ -351,7 +357,7 @@ module ColorLS
         entry = fetch_string(content, *options(content))
         line << (' ' * padding)
         line << '  ' << entry.encode(Encoding.default_external, undef: :replace)
-        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - CHARS_PER_ITEM
+        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - additional_chars
       end
       print line << "\n"
     end
