@@ -58,7 +58,7 @@ Metrics/ClassLength:
   Max: 350
 
 Metrics/ParameterLists:
-  Max: 15
+  Max: 16
 
 Naming/FileName:
   Enabled: false

@@ -304,8 +304,9 @@ module ColorLS
       end
     end
 
-    def get_inode(content)
+    def inode(content)
       return '' unless @show_inode
+
       content.stats.ino.to_s.colorize(@colors[:inode])
     end
 
@@ -347,7 +348,7 @@ module ColorLS
       entry = "#{out_encode(logo)}  #{out_encode(name)}"
       entry = entry.bright if !content.directory? && content.executable?
 
-      "#{get_inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
+      "#{inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end
 
     def ls_line(chunk, widths)
