@@ -27,13 +27,13 @@ POST_INSTALL_MESSAGE = %(
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
-  is_tagged = ENV['TRAVIS_TAG'] == "v#{ColorLS::VERSION}"
-  is_origin = ENV['TRAVIS_REPO_SLUG'] == 'athityakumar/colorls'
-  build_number = ENV['TRAVIS_BUILD_NUMBER']
+  is_tagged = ENV['GITHUB_REF'] == "refs/tags/v#{ColorLS::VERSION}"
+  is_origin = ENV['GITHUB_REPOSITORY_OWNER'] == 'athityakumar'
+  build_number = ENV['GITHUB_RUN_NUMBER']
 
   spec.name          = 'colorls'
   spec.version       = if build_number && is_origin && !is_tagged
-                         # Prereleasing on Travis CI
+                         # Prereleasing on Github
                          digits = ColorLS::VERSION.to_s.split '.'
                          digits[-1] = digits[-1].to_s.succ
 
