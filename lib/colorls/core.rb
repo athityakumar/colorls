@@ -306,7 +306,7 @@ module ColorLS
 
     def get_inode(content)
       return '' unless @show_inode
-      content.stats.ino.to_s
+      content.stats.ino.to_s.colorize(@colors[:inode])
     end
 
     def long_info(content)

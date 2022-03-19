@@ -36,6 +36,7 @@ tree:   cyan
 empty:  yellow
 error:  red
 normal: darkkhaki
+inode: moccasin
 
 # Git
 addition:     chartreuse
