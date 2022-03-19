@@ -77,16 +77,24 @@ module ColorLS
       ls
     end
 
-    def display_report
-      puts <<~REPORT
+    def display_report(report_mode)
+      if report_mode == :short
+        puts <<~REPORT
 
-           Found #{@count.values.sum} items in total.
+          \s\s\s\sFolders: #{@count[:folders]}, Files: #{@count[:recognized_files] + @count[:unrecognized_files]}.
+        REPORT
+          .colorize(@colors[:report])
+      else
+        puts <<~REPORT
 
-        \tFolders\t\t\t: #{@count[:folders]}
-        \tRecognized files\t: #{@count[:recognized_files]}
-        \tUnrecognized files\t: #{@count[:unrecognized_files]}
-      REPORT
-        .colorize(@colors[:report])
+              Found #{@count.values.sum} items in total.
+
+          \tFolders\t\t\t: #{@count[:folders]}
+          \tRecognized files\t: #{@count[:recognized_files]}
+          \tUnrecognized files\t: #{@count[:unrecognized_files]}
+        REPORT
+          .colorize(@colors[:report])
+      end
     end
 
     private
