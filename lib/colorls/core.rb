@@ -26,8 +26,8 @@ module ColorLS
 
   class Core
     def initialize(all: false, sort: false, show: false,
-      mode: nil, git_status: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false, tree_depth: nil, show_group: true, show_user: true,
+      mode: nil, show_git: false, almost_all: false, colors: [], group: nil,
+      reverse: false, hyperlink: false, tree_depth: nil, show_inode: false, show_group: true, show_user: true,
       indicator_style: 'slash', time_style: '')
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
@@ -38,12 +38,16 @@ module ColorLS
       @group        = group
       @show         = show
       @one_per_line = mode == :one_per_line
+      @show_inode   = show_inode
       init_long_format(mode,show_group,show_user)
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
-      @git_status   = init_git_status(git_status)
+      @show_git     = show_git
+      @git_status   = init_git_status(show_git)
       @time_style   = time_style
       @indicator_style = indicator_style
+      # how much characters an item occupies besides its name
+      @additional_chars_per_item = 12 + (@show_git ? 4 : 0) + (@show_inode ? 10 : 0)
 
       init_colors colors
 
@@ -149,11 +153,8 @@ module ColorLS
       end
     end
 
-    # how much characters an item occupies besides its name
-    CHARS_PER_ITEM = 12
-
     def item_widths
-      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + CHARS_PER_ITEM }
+      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + @additional_chars_per_item }
     end
 
     def filter_hidden_contents
@@ -298,6 +299,12 @@ module ColorLS
       end
     end
 
+    def inode(content)
+      return '' unless @show_inode
+
+      content.stats.ino.to_s.rjust(10).colorize(@colors[:inode])
+    end
+
     def long_info(content)
       return '' unless @long
 
@@ -336,7 +343,7 @@ module ColorLS
       entry = "#{out_encode(logo)}  #{out_encode(name)}"
       entry = entry.bright if !content.directory? && content.executable?
 
-      "#{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
+      "#{inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
     end
 
     def ls_line(chunk, widths)
@@ -346,7 +353,7 @@ module ColorLS
         entry = fetch_string(content, *options(content))
         line << (' ' * padding)
         line << '  ' << entry.encode(Encoding.default_external, undef: :replace)
-        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - CHARS_PER_ITEM
+        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - @additional_chars_per_item
       end
       print line << "\n"
     end
