@@ -52,7 +52,7 @@ Gem::Specification.new do |spec|
   spec.files = %w[man/colorls.1 man/colorls.1 zsh/_colorls] + IO.popen(
     %w[git ls-files -z], external_encoding: Encoding::ASCII_8BIT
   ).read.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
+    f.match(%r{^(test|spec|features|[.]github)/})
   end
 
   spec.bindir        = 'exe'
