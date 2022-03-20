@@ -49,7 +49,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.6.0'
 
-  spec.files = IO.popen(
+  spec.files = %w[man/colorls.1 man/colorls.1 zsh/_colorls] + IO.popen(
     %w[git ls-files -z], external_encoding: Encoding::ASCII_8BIT
   ).read.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
