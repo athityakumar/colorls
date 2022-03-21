@@ -20,7 +20,7 @@ file 'man/colorls.1' => ['man/colorls.1.ronn', 'lib/colorls/flags.rb'] do
 
   flags = ColorLS::Flags.new
   attributes = {
-    date: Date.iso8601(`git log -1 --pretty=format:%cI -- man/colorls.1`),
+    date: Date.iso8601(`git log -1 --pretty=format:%cI -- lib/colorls/flags.rb`),
     manual: 'colorls Manual',
     organization: "colorls #{ColorLS::VERSION}"
   }
@@ -40,9 +40,11 @@ OPTION
   File.write('man/colorls.1', doc.convert('roff'))
 end
 
+directory 'zsh'
+
 desc 'Build the Zsh completion file'
-file 'zsh/_colorls' => ['lib/colorls/flags.rb'] do
+file 'zsh/_colorls' => %w[zsh lib/colorls/flags.rb] do
   ruby "exe/colorls '--*-completion-zsh=colorls' > zsh/_colorls"
 end
 
-task default: %w[spec rubocop]
+task default: %w[spec rubocop man/colorls.1 zsh/_colorls]
