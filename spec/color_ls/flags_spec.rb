@@ -372,7 +372,7 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'with --inode flag' do
-    let(:args) { ['--inode', '-i', 'show inode number', FIXTURES] }
+    let(:args) { ['--inode', FIXTURES] }
 
     it 'shows inode number' do
       expect { subject }.to output(/\d{7,}/).to_stdout
