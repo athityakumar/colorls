@@ -34,6 +34,10 @@ OK colorls --color=never
 OK colorls --color=always
 OK colorls --tree spec
 OK colorls --tree=1
+OK colorls --report
+OK colorls --report=long
+OK colorls --report=short
+OK colorls --inode
 
 LC_ALL=C OK colorls spec/fixtures/
 LC_ALL=C OK colorls --git spec/fixtures/

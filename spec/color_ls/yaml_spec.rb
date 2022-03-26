@@ -17,7 +17,7 @@ RSpec.describe ColorLS::Yaml do
       let(:checker) { YamlSortChecker.new("#{base_directory}/#{filename}.yaml") }
 
       it 'is sorted correctly' do
-        expect(checker.sorted?(sort_type)).to eq true
+        expect(checker.sorted?(sort_type)).to be true
       end
     end
   end

@@ -11,7 +11,7 @@ module ColorLS
       @light_colors = false
 
       @opts = default_opts
-      @show_report = false
+      @report_mode = false
       @exit_status_code = 0
 
       parse_options
@@ -88,7 +88,7 @@ module ColorLS
         $stderr.puts "#{dir}: #{e}".colorize(:red)
       end
 
-      core.display_report if @show_report
+      core.display_report(@report_mode) if @report_mode
 
       @exit_status_code
     end
@@ -102,9 +102,10 @@ module ColorLS
         mode: STDOUT.tty? ? :vertical : :one_per_line, # rubocop:disable Style/GlobalStdStream
         all: false,
         almost_all: false,
-        git_status: false,
+        show_git: false,
         colors: [],
         tree_depth: 3,
+        show_inode: false,
         indicator_style: 'slash',
         long_style_options: {}
       }
@@ -139,9 +140,13 @@ module ColorLS
       options.on('-A', '--almost-all', 'do not list . and ..')            { @opts[:almost_all] = true }
       options.on('-d', '--dirs', 'show only directories')                 { @opts[:show] = :dirs }
       options.on('-f', '--files', 'show only files')                      { @opts[:show] = :files }
-      options.on('--gs', '--git-status', 'show git status for each file') { @opts[:git_status] = true }
-      options.on('--report', 'show brief report')                         { @show_report = true }
+      options.on('--gs', '--git-status', 'show git status for each file') { @opts[:show_git] = true }
       options.on('-p', 'append / indicator to directories')               { @opts[:indicator_style] = 'slash' }
+      options.on('-i', '--inode', 'show inode number')                    { @opts[:show_inode] = true }
+      options.on('--report=[WORD]', %w[short long], 'show report: short, long (default if omitted)') do |word|
+        word ||= :long
+        @report_mode = word.to_sym
+      end
       options.on(
         '--indicator-style=[STYLE]',
         %w[none slash], 'append indicator with style STYLE to entry names: none, slash (-p) (default)'

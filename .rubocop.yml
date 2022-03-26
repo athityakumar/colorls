@@ -10,7 +10,7 @@ AllCops:
     - 'profile/*'
   DisplayCopNames: true
   NewCops: enable
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
 
 # Preferred codebase style ---------------------------------------------
 
@@ -58,7 +58,7 @@ Metrics/ClassLength:
   Max: 350
 
 Metrics/ParameterLists:
-  Max: 15
+  Max: 16
 
 Naming/FileName:
   Enabled: false

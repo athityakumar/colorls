@@ -5,6 +5,9 @@ require 'set'
 
 module ColorLS
   module Git
+    EMPTY_SET = Set.new.freeze
+    private_constant :EMPTY_SET
+
     def self.status(repo_path)
       prefix, success = git_prefix(repo_path)
 
@@ -13,10 +16,11 @@ module ColorLS
       prefix_path = Pathname.new(prefix)
 
       git_status = Hash.new { |hash, key| hash[key] = Set.new }
+      git_status_default = EMPTY_SET
 
       git_subdir_status(repo_path) do |mode, file|
         if file == prefix
-          git_status.default = Set[mode].freeze
+          git_status_default = Set[mode].freeze
         else
           path = Pathname.new(file).relative_path_from(prefix_path)
           git_status[path.descend.first.cleanpath.to_s].add(mode)
@@ -25,7 +29,7 @@ module ColorLS
 
       warn "git status failed in #{repo_path}" unless $CHILD_STATUS.success?
 
-      git_status.default = Set.new.freeze if git_status.default.nil?
+      git_status.default = git_status_default
       git_status.freeze
     end
 

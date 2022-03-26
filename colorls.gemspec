@@ -27,13 +27,13 @@ POST_INSTALL_MESSAGE = %(
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
-  is_tagged = ENV['TRAVIS_TAG'] == "v#{ColorLS::VERSION}"
-  is_origin = ENV['TRAVIS_REPO_SLUG'] == 'athityakumar/colorls'
-  build_number = ENV['TRAVIS_BUILD_NUMBER']
+  is_tagged = ENV['GITHUB_REF'] == "refs/tags/v#{ColorLS::VERSION}"
+  is_origin = ENV['GITHUB_REPOSITORY_OWNER'] == 'athityakumar'
+  build_number = ENV['GITHUB_RUN_NUMBER']
 
   spec.name          = 'colorls'
   spec.version       = if build_number && is_origin && !is_tagged
-                         # Prereleasing on Travis CI
+                         # Prereleasing on Github
                          digits = ColorLS::VERSION.to_s.split '.'
                          digits[-1] = digits[-1].to_s.succ
 
@@ -47,12 +47,12 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/athityakumar/colorls'
   spec.license       = 'MIT'
 
-  spec.required_ruby_version = '>= 2.5.0'
+  spec.required_ruby_version = '>= 2.6.0'
 
-  spec.files = IO.popen(
+  spec.files = %w[man/colorls.1 man/colorls.1 zsh/_colorls] + IO.popen(
     %w[git ls-files -z], external_encoding: Encoding::ASCII_8BIT
   ).read.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
+    f.match(%r{^(test|spec|features|[.]github)/})
   end
 
   spec.bindir        = 'exe'
@@ -79,7 +79,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '~> 1.22.0'
   spec.add_development_dependency 'rubocop-performance', '~> 1.13.0'
   spec.add_development_dependency 'rubocop-rake', '~> 0.5'
-  spec.add_development_dependency 'rubocop-rspec', '~> 2.0'
+  spec.add_development_dependency 'rubocop-rspec', '~> 2.9.0'
   spec.add_development_dependency 'rubygems-tasks', '~> 0'
   spec.add_development_dependency 'simplecov', '~> 0.21.2'
 end

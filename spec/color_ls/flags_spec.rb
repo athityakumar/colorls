@@ -20,9 +20,12 @@ RSpec.describe ColorLS::Flags do
       end.not_to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout
     }
 
-    it('does not display hidden files')        { expect { subject }.not_to output(/\.hidden-file/).to_stdout }
-    it('does not show a report')               { expect { subject }.not_to output(/Found \d+ contents/).to_stdout }
-    it('displays dirs & files alphabetically') { expect { subject }.to output(/a-file.+symlinks.+z-file/m).to_stdout }
+    it('does not display hidden files')         { expect { subject }.not_to output(/\.hidden-file/).to_stdout }
+    it('displays dirs & files alphabetically')  { expect { subject }.to output(/a-file.+symlinks.+z-file/m).to_stdout }
+
+    it 'does not show a report' do
+      expect { subject }.not_to output(/(Found \d+ items in total\.)|(Folders: \d+, Files: \d+\.)/).to_stdout
+    end
 
     it 'displays multiple files per line' do
       allow($stdout).to receive(:tty?).and_return(true)
@@ -352,11 +355,27 @@ RSpec.describe ColorLS::Flags do
     end
   end
 
-  context 'with unrecognized files' do
-    let(:args) { ['--report', FIXTURES] }
+  context 'with --report flag' do
+    let(:args) { ['--report', '--report=long', FIXTURES] }
 
-    it 'shows a report with unrecognized files' do
-      expect { subject }.to output(/Unrecognized files\s+: 3/).to_stdout
+    it 'shows a report with recognized and unrecognized files' do
+      expect { subject }.to output(/Recognized files\s+: 3\n.+Unrecognized files\s+: 3/).to_stdout
+    end
+  end
+
+  context 'with --report=short flag' do
+    let(:args) { ['--report=short', FIXTURES] }
+
+    it 'shows a brief report' do
+      expect { subject }.to output(/Folders: \d+, Files: \d+\./).to_stdout
+    end
+  end
+
+  context 'with --inode flag' do
+    let(:args) { ['--inode', FIXTURES] }
+
+    it 'shows inode number' do
+      expect { subject }.to output(/\d{7,}/).to_stdout
     end
   end
 
