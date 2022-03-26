@@ -42,7 +42,6 @@ module ColorLS
       init_long_format(mode,long_style_options)
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
-      @show_git     = show_git
       @git_status   = init_git_status(show_git)
       @time_style   = long_style_options.key?(:time_style) ? long_style_options[:time_style] : ''
       @indicator_style = indicator_style
@@ -141,6 +140,7 @@ module ColorLS
     end
 
     def init_git_status(show_git)
+      @show_git = show_git
       return {}.freeze unless show_git
 
       # stores git status information per directory
