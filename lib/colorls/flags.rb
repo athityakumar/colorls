@@ -106,10 +106,8 @@ module ColorLS
         colors: [],
         tree_depth: 3,
         show_inode: false,
-        show_group: true,
-        show_user: true,
         indicator_style: 'slash',
-        time_style: ''
+        long_style_options: {}
       }
     end
 
@@ -178,20 +176,36 @@ module ColorLS
       options.on('-C', 'list entries by columns instead of by lines')     { @opts[:mode] = :vertical }
     end
 
+    def default_long_style_options
+      {
+        show_group: true,
+        show_user: true,
+        time_style: '',
+        hard_links_count: true
+      }
+    end
+
     def add_long_style_options(options)
-      options.on('-l', '--long', 'use a long listing format')             { @opts[:mode] = :long }
+      long_style_options = default_long_style_options
+      options.on('-l', '--long', 'use a long listing format') { @opts[:mode] = :long }
       options.on('-o', 'use a long listing format without group information') do
         @opts[:mode] = :long
-        @opts[:show_group] = false
+        long_style_options[:show_group] = false
       end
       options.on('-g', 'use a long listing format without owner information') do
         @opts[:mode] = :long
-        @opts[:show_user] = false
+        long_style_options[:show_user] = false
       end
-      options.on('-G', '--no-group', 'show no group information in a long listing') { @opts[:show_group] = false }
+      options.on('-G', '--no-group', 'show no group information in a long listing') do
+        long_style_options[:show_group] = false
+      end
       options.on('--time-style=FORMAT', String, 'use time display format') do |time_style|
-        @opts[:time_style] = time_style
+        long_style_options[:time_style] = time_style
       end
+      options.on('--no-hardlinks', 'show no hard links count in a long listing') do
+        long_style_options[:hard_links_count] = false
+      end
+      @opts[:long_style_options] = long_style_options
     end
 
     def add_general_options(options)

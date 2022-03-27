@@ -27,8 +27,8 @@ module ColorLS
   class Core
     def initialize(all: false, sort: false, show: false,
       mode: nil, show_git: false, almost_all: false, colors: [], group: nil,
-      reverse: false, hyperlink: false, tree_depth: nil, show_inode: false, show_group: true, show_user: true,
-      indicator_style: 'slash', time_style: '')
+      reverse: false, hyperlink: false, tree_depth: nil, show_inode: false,
+      indicator_style: 'slash', long_style_options: {})
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -39,13 +39,13 @@ module ColorLS
       @show         = show
       @one_per_line = mode == :one_per_line
       @show_inode   = show_inode
-      init_long_format(mode,show_group,show_user)
+      init_long_format(mode,long_style_options)
       @tree         = {mode: mode == :tree, depth: tree_depth}
       @horizontal   = mode == :horizontal
-      @show_git     = show_git
       @git_status   = init_git_status(show_git)
-      @time_style   = time_style
+      @time_style   = long_style_options.key?(:time_style) ? long_style_options[:time_style] : ''
       @indicator_style = indicator_style
+      @hard_links_count = long_style_options.key?(:hard_links_count) ? long_style_options[:hard_links_count] : true
       # how much characters an item occupies besides its name
       @additional_chars_per_item = 12 + (@show_git ? 4 : 0) + (@show_inode ? 10 : 0)
 
@@ -133,13 +133,14 @@ module ColorLS
       end
     end
 
-    def init_long_format(mode, show_group, show_user)
+    def init_long_format(mode, long_style_options)
       @long = mode == :long
-      @show_group = show_group
-      @show_user = show_user
+      @show_group = long_style_options.key?(:show_group) ? long_style_options[:show_group] : true
+      @show_user = long_style_options.key?(:show_user) ? long_style_options[:show_user] : true
     end
 
     def init_git_status(show_git)
+      @show_git = show_git
       return {}.freeze unless show_git
 
       # stores git status information per directory
@@ -310,7 +311,8 @@ module ColorLS
 
       links = content.nlink.to_s.rjust(@linklength)
 
-      line_array = [mode_info(content.stats), links]
+      line_array = [mode_info(content.stats)]
+      line_array.push links if @hard_links_count
       line_array.push user_info(content) if @show_user
       line_array.push group_info(content.group) if @show_group
       line_array.concat [size_info(content.size), mtime_info(content.mtime)]

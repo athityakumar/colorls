@@ -577,4 +577,44 @@ RSpec.describe ColorLS::Flags do
 
     it { expect { subject }.to output(/#{mtime.strftime("%y-%m-%d %k:%M")}/).to_stdout }
   end
+
+  context 'with --no-hardlinks flag in a listing format' do
+    let(:args) { ['-l', '--no-hardlink', "#{FIXTURES}/a.txt"] }
+
+    before do
+      file_info = instance_double(
+        'FileInfo',
+        group: 'sys',
+        mtime: Time.now,
+        directory?: false,
+        owner: 'user',
+        name: 'a.txt',
+        show: 'a.txt',
+        nlink: 987,
+        size: 128,
+        blockdev?: false,
+        chardev?: false,
+        socket?: false,
+        symlink?: false,
+        stats: OpenStruct.new(
+          mode: 0o444, # read for user, owner, other
+          setuid?: true,
+          setgid?: true,
+          sticky?: true
+        ),
+        executable?: false
+      )
+
+      allow(ColorLS::FileInfo).to receive(:new).with(
+        path: File.join(FIXTURES, 'a.txt'),
+        parent: FIXTURES,
+        name: 'a.txt',
+        link_info: true
+      ) { file_info }
+    end
+
+    it 'lists without hard links count' do
+      expect { subject }.not_to output(/987/).to_stdout
+    end
+  end
 end

@@ -94,10 +94,10 @@ function OUT() {
 
 function summary() {
   if [[ $ERRORS -gt 0 ]]; then
-    printf '\n\n %d of %d tests failed.' "$ERRORS" "$TESTS" >&2
+    printf '\n\n %d of %d tests failed.\n\n' "$ERRORS" "$TESTS" >&2
     exit 1
   else
-    printf '\n\n %d tests passed.' "$TESTS" >&2
+    printf '\n\n %d tests passed.\n\n' "$TESTS" >&2
   fi
 }
 

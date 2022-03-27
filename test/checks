@@ -38,6 +38,7 @@ OK colorls --report
 OK colorls --report=long
 OK colorls --report=short
 OK colorls --inode
+OK colorls -l --no-hardlinks
 
 LC_ALL=C OK colorls spec/fixtures/
 LC_ALL=C OK colorls --git spec/fixtures/
