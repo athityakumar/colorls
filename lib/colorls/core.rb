@@ -339,8 +339,7 @@ module ColorLS
       @count[increment] += 1
       value = increment == :folders ? @folders[key] : @files[key]
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..].to_i(16)].pack('U') }
-      name = content.show
-      name = make_link(content) if @hyperlink
+      name = @hyperlink ? make_link(content) : content.show
       name += content.directory? && @indicator_style != 'none' ? '/' : ' '
       entry = "#{out_encode(logo)}  #{out_encode(name)}"
       entry = entry.bright if !content.directory? && content.executable?
@@ -428,7 +427,7 @@ module ColorLS
 
     def make_link(content)
       uri = Addressable::URI.convert_path(File.absolute_path(content.path))
-      "\033]8;;#{uri}\007#{content.name}\033]8;;\007"
+      "\033]8;;#{uri}\007#{content.show}\033]8;;\007"
     end
   end
 end
