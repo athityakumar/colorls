@@ -428,7 +428,7 @@ module ColorLS
 
     def make_link(content)
       uri = Addressable::URI.convert_path(File.absolute_path(content.path))
-      "\033]8;;#{uri}\007#{content.name}\033]8;;\007"
+      "\033]8;;#{uri}\007#{content.show}\033]8;;\007"
     end
   end
 end
