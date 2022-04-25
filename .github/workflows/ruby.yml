@@ -37,7 +37,7 @@ jobs:
     - name: Run tests
       run: bundle exec rake
     - name: Run checks
-      run: test/run
+      run: bash test/run
 
   publish:
     needs: test
