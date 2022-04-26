@@ -75,7 +75,7 @@ RSpec.describe ColorLS::Flags do
 
     it 'shows special permission bits' do
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
@@ -109,7 +109,7 @@ RSpec.describe ColorLS::Flags do
 
     it 'shows number of hardlinks' do
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
@@ -393,7 +393,7 @@ RSpec.describe ColorLS::Flags do
 
     before do
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
@@ -437,7 +437,7 @@ RSpec.describe ColorLS::Flags do
 
     before do
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
@@ -481,7 +481,7 @@ RSpec.describe ColorLS::Flags do
 
     before do
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
@@ -525,7 +525,7 @@ RSpec.describe ColorLS::Flags do
 
     before do
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
@@ -583,7 +583,7 @@ RSpec.describe ColorLS::Flags do
 
     before do
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
