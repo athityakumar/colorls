@@ -11,7 +11,7 @@ RSpec.describe ColorLS::Core do
       imagenes = 'Imágenes'.force_encoding(ColorLS.file_encoding)
 
       dir_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: true,
@@ -35,7 +35,7 @@ RSpec.describe ColorLS::Core do
       )
 
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
@@ -66,7 +66,7 @@ RSpec.describe ColorLS::Core do
 
     it 'works for `...`' do
       file_info = instance_double(
-        'FileInfo',
+        ColorLS::FileInfo,
         group: 'sys',
         mtime: Time.now,
         directory?: false,
