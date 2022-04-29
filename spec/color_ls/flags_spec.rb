@@ -322,10 +322,13 @@ RSpec.describe ColorLS::Flags do
   end
 
   context 'symlinked directory with trailing separator' do
-    let(:args) { ['-x', File.join(FIXTURES, 'symlinks', 'Supportlink', File::SEPARATOR)] }
+    link_to_dir = File.join(FIXTURES, 'symlinks', 'Supportlink', File::SEPARATOR)
+    let(:args) { ['-x', link_to_dir] }
 
     it 'shows the file in the linked directory' do
-      if File.symlink? File.join(FIXTURES, 'symlinks', 'Supportlink')
+      stat = File.lstat link_to_dir
+
+      if stat.directory?
         expect { subject }.to output(/yaml_sort_checker.rb/).to_stdout
       else
         skip 'symlinks not supported'
