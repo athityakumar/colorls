@@ -52,7 +52,7 @@ module ColorLS
 
       def git_prefix(repo_path)
         [
-          IO.popen(['git', '-C', repo_path, 'rev-parse', '--show-prefix'], err: :close, &:gets)&.chomp,
+          IO.popen(['git', '-C', repo_path, 'rev-parse', '--show-prefix'], err: File::NULL, &:gets)&.chomp,
           $CHILD_STATUS.success?
         ]
       rescue Errno::ENOENT

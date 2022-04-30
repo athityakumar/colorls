@@ -39,4 +39,10 @@ RSpec.describe ColorLS::Git do
       expect(subject.status('/repo/')).to include('subdir' => Set['M', 'D'])
     end
   end
+
+  context 'determining the git status' do
+    it 'does not output to stderr' do
+      expect { subject.status('.') }.not_to output.to_stderr
+    end
+  end
 end
