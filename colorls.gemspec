@@ -29,7 +29,7 @@ POST_INSTALL_MESSAGE = %(
 Gem::Specification.new do |spec|
   is_tagged = ENV['GITHUB_REF'] == "refs/tags/v#{ColorLS::VERSION}"
   is_origin = ENV['GITHUB_REPOSITORY_OWNER'] == 'athityakumar'
-  build_number = ENV['GITHUB_RUN_NUMBER']
+  build_number = ENV.fetch('GITHUB_RUN_NUMBER', nil)
 
   spec.name          = 'colorls'
   spec.version       = if build_number && is_origin && !is_tagged
@@ -82,5 +82,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop-rspec', '~> 2.10.0'
   spec.add_development_dependency 'rubygems-tasks', '~> 0'
   spec.add_development_dependency 'simplecov', '~> 0.21.2'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
 # rubocop:enable Metrics/BlockLength
