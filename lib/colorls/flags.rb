@@ -2,7 +2,6 @@
 
 require 'optparse'
 require 'colorls/version'
-require 'ostruct'
 
 module ColorLS
   class Flags
@@ -31,6 +30,8 @@ module ColorLS
       process_args
     end
 
+    Option = Struct.new(:flags, :desc)
+
     def options
       list = @parser.top.list + @parser.base.list
 
@@ -40,7 +41,7 @@ module ColorLS
         flags = o.short + o.long
         next if flags.empty?
 
-        OpenStruct.new(flags: flags, desc: o.desc)
+        Option.new(flags, o.desc)
       end
 
       result.compact
