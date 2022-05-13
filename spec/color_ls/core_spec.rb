@@ -25,12 +25,11 @@ RSpec.describe ColorLS::Core do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: false,
-          setgid?: false,
-          sticky?: false
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: false,
+                               setgid?: false,
+                               sticky?: false),
         executable?: true
       )
 
@@ -48,12 +47,11 @@ RSpec.describe ColorLS::Core do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: false,
-          setgid?: false,
-          sticky?: false
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: false,
+                               setgid?: false,
+                               sticky?: false),
         executable?: false
       )
 

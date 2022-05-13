@@ -88,12 +88,11 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: true,
-          setgid?: true,
-          sticky?: true
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: true,
+                               setgid?: true,
+                               sticky?: true),
         executable?: false
       )
 
@@ -122,12 +121,11 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: true,
-          setgid?: true,
-          sticky?: true
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: true,
+                               setgid?: true,
+                               sticky?: true),
         executable?: false
       )
 
@@ -409,12 +407,11 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: true,
-          setgid?: true,
-          sticky?: true
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: true,
+                               setgid?: true,
+                               sticky?: true),
         executable?: false
       )
 
@@ -453,12 +450,11 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: true,
-          setgid?: true,
-          sticky?: true
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: true,
+                               setgid?: true,
+                               sticky?: true),
         executable?: false
       )
 
@@ -497,12 +493,11 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: true,
-          setgid?: true,
-          sticky?: true
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: true,
+                               setgid?: true,
+                               sticky?: true),
         executable?: false
       )
 
@@ -541,12 +536,11 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: true,
-          setgid?: true,
-          sticky?: true
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: true,
+                               setgid?: true,
+                               sticky?: true),
         executable?: false
       )
 
@@ -599,12 +593,11 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: false,
-        stats: OpenStruct.new(
-          mode: 0o444, # read for user, owner, other
-          setuid?: true,
-          setgid?: true,
-          sticky?: true
-        ),
+        stats: instance_double(File::Stat,
+                               mode: 0o444, # read for user, owner, other
+                               setuid?: true,
+                               setgid?: true,
+                               sticky?: true),
         executable?: false
       )
 
