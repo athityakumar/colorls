@@ -76,7 +76,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'ronn', '~> 0'
   spec.add_development_dependency 'rspec', '~> 3.7'
   spec.add_development_dependency 'rspec-its', '~> 1.2'
-  spec.add_development_dependency 'rubocop', '~> 1.29.1'
+  spec.add_development_dependency 'rubocop', '~> 1.30.0'
   spec.add_development_dependency 'rubocop-performance', '~> 1.14.0'
   spec.add_development_dependency 'rubocop-rake', '~> 0.5'
   spec.add_development_dependency 'rubocop-rspec', '~> 2.10.0'
