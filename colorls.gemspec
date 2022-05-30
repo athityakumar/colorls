@@ -25,7 +25,6 @@ POST_INSTALL_MESSAGE = %(
   *******************************************************************
 )
 
-# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   is_tagged = ENV['GITHUB_REF'] == "refs/tags/v#{ColorLS::VERSION}"
   is_origin = ENV['GITHUB_REPOSITORY_OWNER'] == 'athityakumar'
@@ -84,4 +83,3 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.21.2'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
-# rubocop:enable Metrics/BlockLength
