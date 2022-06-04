@@ -91,3 +91,4 @@ yaml:             yml
 gz:               zip
 rar:              zip
 tar:              zip
+tgz:              zip
