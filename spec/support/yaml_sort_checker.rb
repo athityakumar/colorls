@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'open3' # workaround https://github.com/samg/diffy#119
 require 'diffy'
 
 # Check Yaml if Alphabetically sorted
