@@ -28,7 +28,7 @@ module ColorLS
     def initialize(all: false, sort: false, show: false,
       mode: nil, show_git: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_inode: false,
-      indicator_style: 'slash', long_style_options: {})
+      indicator_style: 'slash', long_style_options: {}, icons: true)
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -48,6 +48,7 @@ module ColorLS
       @hard_links_count = long_style_options.key?(:hard_links_count) ? long_style_options[:hard_links_count] : true
       # how much characters an item occupies besides its name
       @additional_chars_per_item = 12 + (@show_git ? 4 : 0) + (@show_inode ? 10 : 0)
+      @icons = icons
 
       init_colors colors
 
@@ -341,7 +342,10 @@ module ColorLS
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..].to_i(16)].pack('U') }
       name = @hyperlink ? make_link(content) : content.show
       name += content.directory? && @indicator_style != 'none' ? '/' : ' '
-      entry = "#{out_encode(logo)}  #{out_encode(name)}"
+      entry = "#{out_encode(name)}"
+      if @icons
+        entry = "#{out_encode(logo)}  #{out_encode(name)}"
+      end
       entry = entry.bright if !content.directory? && content.executable?
 
       "#{inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
