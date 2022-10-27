@@ -52,7 +52,7 @@ module ColorLS
       init_icons
     end
 
-    def get_additional_chars_per_item
+    def additional_chars_per_item
       12 + (@show_git ? 4 : 0) + (@show_inode ? 10 : 0)
     end
 
@@ -157,7 +157,7 @@ module ColorLS
     end
 
     def item_widths
-      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + get_additional_chars_per_item }
+      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + additional_chars_per_item }
     end
 
     def filter_hidden_contents
@@ -356,7 +356,7 @@ module ColorLS
         entry = fetch_string(content, *options(content))
         line << (' ' * padding)
         line << '  ' << entry.encode(Encoding.default_external, undef: :replace)
-        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - get_additional_chars_per_item
+        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - additional_chars_per_item
       end
       print line << "\n"
     end
