@@ -175,6 +175,7 @@ module ColorLS
       end
       options.on('-x', 'list entries by lines instead of by columns')     { @opts[:mode] = :horizontal }
       options.on('-C', 'list entries by columns instead of by lines')     { @opts[:mode] = :vertical }
+      options.on('--without-icons', 'list entries without icons')         { @opts[:icons] = false }
     end
 
     def default_long_style_options

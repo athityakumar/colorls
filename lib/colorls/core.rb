@@ -28,7 +28,7 @@ module ColorLS
     def initialize(all: false, sort: false, show: false,
       mode: nil, show_git: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_inode: false,
-      indicator_style: 'slash', long_style_options: {})
+      indicator_style: 'slash', long_style_options: {}, icons: true)
       @count = {folders: 0, recognized_files: 0, unrecognized_files: 0}
       @all          = all
       @almost_all   = almost_all
@@ -46,12 +46,14 @@ module ColorLS
       @time_style   = long_style_options.key?(:time_style) ? long_style_options[:time_style] : ''
       @indicator_style = indicator_style
       @hard_links_count = long_style_options.key?(:hard_links_count) ? long_style_options[:hard_links_count] : true
-      # how much characters an item occupies besides its name
-      @additional_chars_per_item = 12 + (@show_git ? 4 : 0) + (@show_inode ? 10 : 0)
+      @icons = icons
 
       init_colors colors
-
       init_icons
+    end
+
+    def additional_chars_per_item
+      12 + (@show_git ? 4 : 0) + (@show_inode ? 10 : 0)
     end
 
     def ls_dir(info)
@@ -155,7 +157,7 @@ module ColorLS
     end
 
     def item_widths
-      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + @additional_chars_per_item }
+      @contents.map { |item| Unicode::DisplayWidth.of(item.show) + additional_chars_per_item }
     end
 
     def filter_hidden_contents
@@ -341,7 +343,7 @@ module ColorLS
       logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..].to_i(16)].pack('U') }
       name = @hyperlink ? make_link(content) : content.show
       name += content.directory? && @indicator_style != 'none' ? '/' : ' '
-      entry = "#{out_encode(logo)}  #{out_encode(name)}"
+      entry = @icons ? "#{out_encode(logo)}  #{out_encode(name)}" : out_encode(name).to_s
       entry = entry.bright if !content.directory? && content.executable?
 
       "#{inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
@@ -354,7 +356,7 @@ module ColorLS
         entry = fetch_string(content, *options(content))
         line << (' ' * padding)
         line << '  ' << entry.encode(Encoding.default_external, undef: :replace)
-        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - @additional_chars_per_item
+        padding = widths[i] - Unicode::DisplayWidth.of(content.show) - additional_chars_per_item
       end
       print line << "\n"
     end
