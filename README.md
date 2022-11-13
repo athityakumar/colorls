@@ -120,7 +120,7 @@ Man pages have been added. Checkout `man colorls`.
 1. Install Ruby (preferably, version >= 2.6 via a version manager like [rbenv](https://github.com/rbenv/rbenv))
 2. [Download](https://www.nerdfonts.com/font-downloads) and install a Nerd Font so you can see the library icons. Have a look at the [Nerd Font README](https://github.com/ryanoasis/nerd-fonts/blob/master/readme.md) for installation instructions. We're using "Hack Nerd Font" for this guide.
 
-    *For MacOS users using the stock terminal - Please enable Nerd Font at Terminal > Preferences > Profiles > Text > Font. Click `change` and select `Hack Nerd Font` - Regular*
+    *Note for MacOS users using the stock terminal - Please enable Nerd Font at Terminal > Preferences > Profiles > Text > Font. Click `Change..` and select `Hack Nerd Font` - Regular*
 
     *Note for `iTerm2` users - Please enable the Nerd Font at iTerm2 > Preferences > Profiles > Text > Non-ASCII font > Hack Regular Nerd Font Complete.*
 
