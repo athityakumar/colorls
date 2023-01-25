@@ -55,7 +55,7 @@ RSpec.describe ColorLS::Core do
         executable?: false
       )
 
-      allow(::Dir).to receive(:entries).and_return([camera])
+      allow(Dir).to receive(:entries).and_return([camera])
 
       allow(ColorLS::FileInfo).to receive(:new).and_return(file_info)
 
