@@ -317,7 +317,7 @@ module ColorLS
       line_array.push links if @hard_links_count
       line_array.push user_info(content) if @show_user
       line_array.push group_info(content.group) if @show_group
-      line_array.concat [size_info(content.size), mtime_info(content.mtime)]
+      line_array.push(size_info(content.size), mtime_info(content.mtime))
       line_array.join('   ')
     end
 
