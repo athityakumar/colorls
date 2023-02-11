@@ -149,8 +149,8 @@ RSpec.describe ColorLS::Flags do
     end
 
     it 'returns no user / group info' do
-      allow(::Etc).to receive(:getpwuid).and_return(nil)
-      allow(::Etc).to receive(:getgrgid).and_return(nil)
+      allow(Etc).to receive(:getpwuid).and_return(nil)
+      allow(Etc).to receive(:getgrgid).and_return(nil)
 
       expect { subject }.to output(/\s+  \d+  \s+  \d+  .*  a.txt/mx).to_stdout
     end
@@ -338,7 +338,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--snafu'] }
 
     it 'issues a warning, hint about `--help` and exit' do # rubocop:todo RSpec/MultipleExpectations
-      allow(::Kernel).to receive(:warn) do |message|
+      allow(Kernel).to receive(:warn) do |message|
         expect(message).to output '--snafu'
       end
 
