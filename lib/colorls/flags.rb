@@ -218,7 +218,7 @@ module ColorLS
     end
 
     def get_long_style_symlink_options(options, long_style_options)
-      options.on('-H', 'show information on the destination of symbolic links') do
+      options.on('-L', 'show information on the destination of symbolic links') do
         long_style_options[:show_symbol_dest] = true
       end
       long_style_options

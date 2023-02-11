@@ -614,8 +614,8 @@ RSpec.describe ColorLS::Flags do
     end
   end
 
-  context 'with -H flag in a listing format' do
-    let(:args) { ['-l', '-H', "#{FIXTURES}/a.txt"] }
+  context 'with -L flag in a listing format' do
+    let(:args) { ['-l', '-L', "#{FIXTURES}/a.txt"] }
 
     before do
       file_info = instance_double(
