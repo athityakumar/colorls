@@ -613,4 +613,41 @@ RSpec.describe ColorLS::Flags do
       expect { subject }.not_to output(/987/).to_stdout
     end
   end
+
+  context 'with -L flag in a listing format' do
+    let(:args) { ['-l', '-L', "#{FIXTURES}/a.txt"] }
+
+    before do
+      file_info = instance_double(
+        ColorLS::FileInfo,
+        group: 'sys',
+        mtime: Time.now,
+        directory?: false,
+        owner: 'user',
+        name: 'a.txt',
+        show: 'a.txt',
+        nlink: 1,
+        size: 128,
+        blockdev?: false,
+        chardev?: false,
+        socket?: false,
+        symlink?: true,
+        link_target: "#{FIXTURES}/z.txt",
+        dead?: false,
+        executable?: false
+      )
+
+      allow(ColorLS::FileInfo).to receive(:new).and_call_original
+      allow(ColorLS::FileInfo).to receive(:new).with(
+        path: File.join(FIXTURES, 'a.txt'),
+        parent: FIXTURES,
+        name: 'a.txt',
+        link_info: true
+      ) { file_info }
+    end
+
+    it 'show information on the destination of symbolic links' do
+      expect { subject }.not_to output(/128/).to_stdout
+    end
+  end
 end

@@ -139,6 +139,7 @@ module ColorLS
       @long = mode == :long
       @show_group = long_style_options.key?(:show_group) ? long_style_options[:show_group] : true
       @show_user = long_style_options.key?(:show_user) ? long_style_options[:show_user] : true
+      @show_symbol_dest = long_style_options.key?(:show_symbol_dest) ? long_style_options[:show_symbol_dest] : false
     end
 
     def init_git_status(show_git)
@@ -333,6 +334,15 @@ module ColorLS
       end
     end
 
+    def update_content_if_show_symbol_dest(content, show_symbol_dest_flag)
+      return content unless show_symbol_dest_flag
+      return content unless content.symlink?
+      return content if content.link_target.nil?
+      return content if content.dead?
+
+      FileInfo.info(content.link_target)
+    end
+
     def out_encode(str)
       str.encode(Encoding.default_external, undef: :replace, replace: '')
     end
@@ -346,7 +356,10 @@ module ColorLS
       entry = @icons ? "#{out_encode(logo)}  #{out_encode(name)}" : out_encode(name).to_s
       entry = entry.bright if !content.directory? && content.executable?
 
-      "#{inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info(content)}"
+      symlink_info_string = symlink_info(content)
+      content = update_content_if_show_symbol_dest(content,@show_symbol_dest)
+
+      "#{inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info_string}"
     end
 
     def ls_line(chunk, widths)

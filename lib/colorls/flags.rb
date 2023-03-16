@@ -183,13 +183,26 @@ module ColorLS
         show_group: true,
         show_user: true,
         time_style: '',
-        hard_links_count: true
+        hard_links_count: true,
+        show_symbol_dest: false
       }
     end
 
     def add_long_style_options(options)
       long_style_options = default_long_style_options
       options.on('-l', '--long', 'use a long listing format') { @opts[:mode] = :long }
+      long_style_options = set_long_style_user_and_group_options(options, long_style_options)
+      options.on('--time-style=FORMAT', String, 'use time display format') do |time_style|
+        long_style_options[:time_style] = time_style
+      end
+      options.on('--no-hardlinks', 'show no hard links count in a long listing') do
+        long_style_options[:hard_links_count] = false
+      end
+      long_style_options = get_long_style_symlink_options(options, long_style_options)
+      @opts[:long_style_options] = long_style_options
+    end
+
+    def set_long_style_user_and_group_options(options, long_style_options)
       options.on('-o', 'use a long listing format without group information') do
         @opts[:mode] = :long
         long_style_options[:show_group] = false
@@ -201,13 +214,14 @@ module ColorLS
       options.on('-G', '--no-group', 'show no group information in a long listing') do
         long_style_options[:show_group] = false
       end
-      options.on('--time-style=FORMAT', String, 'use time display format') do |time_style|
-        long_style_options[:time_style] = time_style
+      long_style_options
+    end
+
+    def get_long_style_symlink_options(options, long_style_options)
+      options.on('-L', 'show information on the destination of symbolic links') do
+        long_style_options[:show_symbol_dest] = true
       end
-      options.on('--no-hardlinks', 'show no hard links count in a long listing') do
-        long_style_options[:hard_links_count] = false
-      end
-      @opts[:long_style_options] = long_style_options
+      long_style_options
     end
 
     def add_general_options(options)
