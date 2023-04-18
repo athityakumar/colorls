@@ -25,6 +25,8 @@ module ColorLS
   end
 
   class Core
+    MIN_SIZE_CHARS = 4
+
     def initialize(all: false, sort: false, show: false,
       mode: nil, show_git: false, almost_all: false, colors: [], group: nil,
       reverse: false, hyperlink: false, tree_depth: nil, show_inode: false,
@@ -120,6 +122,7 @@ module ColorLS
       layout.each_line do |line, widths|
         ls_line(line, widths)
       end
+      clear_chars_for_size
     end
 
     def init_colors(colors)
@@ -258,11 +261,25 @@ module ColorLS
       filesize = Filesize.new(filesize)
       size = @show_human_readable_size ? filesize.pretty : filesize.to_s
       size = size.split
-      size = "#{size[0][0..-4].rjust(4,' ')} #{size[1].ljust(3,' ')}"
+      size = "#{size[0][0..-4].rjust(chars_for_size,' ')} #{size[1].ljust(3,' ')}"
       return size.colorize(@colors[:file_large])  if filesize >= 512 * (1024 ** 2)
       return size.colorize(@colors[:file_medium]) if filesize >= 128 * (1024 ** 2)
 
       size.colorize(@colors[:file_small])
+    end
+
+    def chars_for_size
+      @chars_for_size ||= if @show_human_readable_size
+                            MIN_SIZE_CHARS
+                          else
+                            max_size = @contents.max_by(&:size).size
+                            reqd_chars = max_size.to_s.length
+                            [reqd_chars, MIN_SIZE_CHARS].max
+                          end
+    end
+
+    def clear_chars_for_size
+      @chars_for_size = nil
     end
 
     def mtime_info(file_mtime)
