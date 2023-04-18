@@ -140,6 +140,7 @@ module ColorLS
       @show_group = long_style_options.key?(:show_group) ? long_style_options[:show_group] : true
       @show_user = long_style_options.key?(:show_user) ? long_style_options[:show_user] : true
       @show_symbol_dest = long_style_options.key?(:show_symbol_dest) ? long_style_options[:show_symbol_dest] : false
+      @show_human_readable_size = long_style_options.key?(:human_readable_size) ? long_style_options[:human_readable_size] : true
     end
 
     def init_git_status(show_git)
@@ -254,7 +255,9 @@ module ColorLS
     end
 
     def size_info(filesize)
-      size = Filesize.new(filesize).pretty.split
+      filesize = Filesize.new(filesize)
+      size = @show_human_readable_size ? filesize.pretty : filesize.to_s
+      size = size.split
       size = "#{size[0][0..-4].rjust(4,' ')} #{size[1].ljust(3,' ')}"
       return size.colorize(@colors[:file_large])  if filesize >= 512 * (1024 ** 2)
       return size.colorize(@colors[:file_medium]) if filesize >= 128 * (1024 ** 2)
