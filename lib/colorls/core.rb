@@ -143,7 +143,8 @@ module ColorLS
       @show_group = long_style_options.key?(:show_group) ? long_style_options[:show_group] : true
       @show_user = long_style_options.key?(:show_user) ? long_style_options[:show_user] : true
       @show_symbol_dest = long_style_options.key?(:show_symbol_dest) ? long_style_options[:show_symbol_dest] : false
-      @show_human_readable_size = long_style_options.key?(:human_readable_size) ? long_style_options[:human_readable_size] : true
+      @show_human_readable_size =
+        long_style_options.key?(:human_readable_size) ? long_style_options[:human_readable_size] : true
     end
 
     def init_git_status(show_git)
