@@ -368,7 +368,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--report', '--report=long', FIXTURES] }
 
     it 'shows a report with recognized and unrecognized files' do
-      expect { subject }.to output(/Recognized files\s+: 3\n.+Unrecognized files\s+: 3/).to_stdout
+      expect { subject }.to output(/Recognized files\s+: 4\n.+Unrecognized files\s+: 3/).to_stdout
     end
   end
 
