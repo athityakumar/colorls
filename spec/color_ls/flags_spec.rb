@@ -140,6 +140,14 @@ RSpec.describe ColorLS::Flags do
     end
   end
 
+  context 'with --long and --non-human-readable flag for `2MB file`' do
+    let(:args) { ['--long', '--non-human-readable', "#{FIXTURES}/two_megabyte_file.txt"] }
+
+    it 'shows the file size in bytes' do
+      expect { subject }.to output(/#{2 * 1024 * 1024} B/).to_stdout
+    end
+  end
+
   context 'with --long flag on windows' do
     let(:args) { ['--long', "#{FIXTURES}/a.txt"] }
 
