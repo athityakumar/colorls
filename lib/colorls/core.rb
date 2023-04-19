@@ -24,7 +24,7 @@ module ColorLS
     @screen_width
   end
 
-  class Core
+  class Core # rubocop:disable Metrics/ClassLength
     MIN_SIZE_CHARS = 4
 
     def initialize(all: false, sort: false, show: false,
