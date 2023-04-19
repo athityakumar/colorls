@@ -144,7 +144,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--long', '--non-human-readable', "#{FIXTURES}/two_megabyte_file.txt"] }
 
     it 'shows the file size in bytes' do
-      expect { subject }.to output(/#{2 * 1024 * 1024} B/).to_stdout
+      expect { subject }.to output(/#{2 * 1024 * 1024}\sB/).to_stdout
     end
   end
 
