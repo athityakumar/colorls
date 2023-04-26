@@ -30,7 +30,7 @@ RSpec.describe ColorLS::Flags do
     it 'displays multiple files per line' do
       allow($stdout).to receive(:tty?).and_return(true)
 
-      expect { subject }.not_to output(/(.*\n){3}/).to_stdout
+      expect { subject }.not_to output(/(.*\n){4}/).to_stdout
     end
 
     it('does not display ./ or ../')           { expect { subject }.not_to output(%r(\.{1,2}/)).to_stdout }
@@ -137,6 +137,14 @@ RSpec.describe ColorLS::Flags do
       ) { file_info }
 
       expect { subject }.to output(/\S+\s+ 5 .*  a.txt/mx).to_stdout
+    end
+  end
+
+  context 'with --long and --non-human-readable flag for `2MB file`' do
+    let(:args) { ['--long', '--non-human-readable', "#{FIXTURES}/two_megabyte_file.txt"] }
+
+    it 'shows the file size in bytes' do
+      expect { subject }.to output(/#{2 * 1024 * 1024}\sB/).to_stdout
     end
   end
 
@@ -360,7 +368,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--report', '--report=long', FIXTURES] }
 
     it 'shows a report with recognized and unrecognized files' do
-      expect { subject }.to output(/Recognized files\s+: 3\n.+Unrecognized files\s+: 3/).to_stdout
+      expect { subject }.to output(/Recognized files\s+: 4\n.+Unrecognized files\s+: 3/).to_stdout
     end
   end
 
