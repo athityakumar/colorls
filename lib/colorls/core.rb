@@ -262,7 +262,7 @@ module ColorLS
       filesize = Filesize.new(filesize)
       size = @show_human_readable_size ? filesize.pretty : filesize.to_s
       size = size.split
-      size = "#{size[0][0..-4].rjust(chars_for_size,' ')} #{size[1].ljust(3,' ')}"
+      size = justify_size_info(size)
       return size.colorize(@colors[:file_large])  if filesize >= 512 * (1024 ** 2)
       return size.colorize(@colors[:file_medium]) if filesize >= 128 * (1024 ** 2)
 
@@ -277,6 +277,12 @@ module ColorLS
                             reqd_chars = max_size.to_s.length
                             [reqd_chars, MIN_SIZE_CHARS].max
                           end
+    end
+
+    def justify_size_info(size)
+      size_num = size[0][0..-4].rjust(chars_for_size, ' ')
+      size_unit = @show_human_readable_size ? size[1].ljust(3, ' ') : size[1]
+      "#{size_num} #{size_unit}"
     end
 
     def clear_chars_for_size
