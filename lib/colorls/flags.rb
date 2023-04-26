@@ -200,7 +200,7 @@ module ColorLS
         long_style_options[:hard_links_count] = false
       end
       long_style_options = get_long_style_symlink_options(options, long_style_options)
-      options.on('--nh', '--non-human-readable', 'show file sizes in bytes only') do
+      options.on('--non-human-readable', 'show file sizes in bytes only') do
         long_style_options[:human_readable_size] = false
       end
       @opts[:long_style_options] = long_style_options

@@ -113,10 +113,10 @@ Man pages have been added. Checkout `man colorls`.
 
   ![image](https://user-images.githubusercontent.com/17109060/32149084-9eb2a416-bd25-11e7-8fb7-a9d336c6e038.png)
 
-- Using `--nh` with `-l` :
+- Using `--non-human-readable` with `-l` :
   - This will print the file sizes in bytes (non-human readable format)
 
-  ![image](https://user-images.githubusercontent.com/19269206/233062206-caf4e31e-dea3-4874-8b2b-eb5d494873be.png)
+  ![image](https://user-images.githubusercontent.com/19269206/234581461-1e1fdd90-a362-4cea-ab82-5ca360746be8.png)
 
 # Installation
 
