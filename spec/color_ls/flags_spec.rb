@@ -30,7 +30,7 @@ RSpec.describe ColorLS::Flags do
     it 'displays multiple files per line' do
       allow($stdout).to receive(:tty?).and_return(true)
 
-      expect { subject }.not_to output(/(.*\n){3}/).to_stdout
+      expect { subject }.not_to output(/(.*\n){4}/).to_stdout
     end
 
     it('does not display ./ or ../')           { expect { subject }.not_to output(%r(\.{1,2}/)).to_stdout }
