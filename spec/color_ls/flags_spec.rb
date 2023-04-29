@@ -486,4 +486,12 @@ RSpec.describe ColorLS::Flags do
       expect { subject }.not_to output(/128/).to_stdout
     end
   end
+
+  context 'when argument is a file with relative path' do
+    let(:args) { ["#{FIXTURES}/a.txt"] }
+
+    it 'replicates the filepath provided in the argument' do
+      expect { subject }.to output(/#{args.first}/).to_stdout
+    end
+  end
 end
