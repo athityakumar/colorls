@@ -11,20 +11,21 @@ module ColorLS
 
     attr_reader :stats, :name, :path, :parent
 
-    def initialize(name:, parent:, path: nil, link_info: true)
+    def initialize(name:, parent:, path: nil, link_info: true, show_filepath: false)
       @name = name
       @parent = parent
       @path = path.nil? ? File.join(parent, name) : +path
       @stats = File.lstat(@path)
-      @show_name = nil
 
       @path.force_encoding(ColorLS.file_encoding)
 
       handle_symlink(@path) if link_info && @stats.symlink?
+      set_show_name(use_path: show_filepath)
     end
 
-    def self.info(path, link_info: true)
-      FileInfo.new(name: File.basename(path), parent: File.dirname(path), path: path, link_info: link_info)
+    def self.info(path, link_info: true, show_filepath: false)
+      FileInfo.new(name: File.basename(path), parent: File.dirname(path), path: path, link_info: link_info,
+                   show_filepath: show_filepath)
     end
 
     def self.dir_entry(dir, child, link_info: true)
@@ -32,10 +33,7 @@ module ColorLS
     end
 
     def show
-      return @show_name unless @show_name.nil?
-
-      @show_name = @name.encode(Encoding.find('filesystem'), Encoding.default_external,
-                                invalid: :replace, undef: :replace)
+      @show_name
     end
 
     def dead?
@@ -79,6 +77,22 @@ module ColorLS
       @dead = !File.exist?(path)
     rescue SystemCallError => e
       $stderr.puts "cannot read symbolic link: #{e}"
+    end
+
+    def show_basename
+      @name.encode(Encoding.find('filesystem'), Encoding.default_external,
+                   invalid: :replace, undef: :replace)
+    end
+
+    def show_relative_path
+      @path.encode(Encoding.find('filesystem'), Encoding.default_external,
+                   invalid: :replace, undef: :replace)
+    end
+
+    def set_show_name(use_path: false)
+      @show_name = show_basename unless use_path
+      @show_name = show_basename if directory?
+      @show_name = show_relative_path if use_path
     end
   end
 end

@@ -58,7 +58,7 @@ module ColorLS
 
     def group_files_and_directories
       infos = @args.flat_map do |arg|
-        FileInfo.info(arg)
+        FileInfo.info(arg, show_filepath: true)
       rescue Errno::ENOENT
         $stderr.puts "colorls: Specified path '#{arg}' doesn't exist.".colorize(:red)
         @exit_status_code = 2
