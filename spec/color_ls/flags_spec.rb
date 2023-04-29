@@ -100,7 +100,8 @@ RSpec.describe ColorLS::Flags do
         path: File.join(FIXTURES, 'a.txt'),
         parent: FIXTURES,
         name: 'a.txt',
-        link_info: true
+        link_info: true,
+        show_filepath: true
       ) { file_info }
 
       expect { subject }.to output(/r-Sr-Sr-T  .*  a.txt/mx).to_stdout
@@ -133,7 +134,8 @@ RSpec.describe ColorLS::Flags do
         path: File.join(FIXTURES, 'a.txt'),
         parent: FIXTURES,
         name: 'a.txt',
-        link_info: true
+        link_info: true,
+        show_filepath: true
       ) { file_info }
 
       expect { subject }.to output(/\S+\s+ 5 .*  a.txt/mx).to_stdout
@@ -427,7 +429,8 @@ RSpec.describe ColorLS::Flags do
         path: File.join(FIXTURES, 'a.txt'),
         parent: FIXTURES,
         name: 'a.txt',
-        link_info: true
+        link_info: true,
+        show_filepath: true
       ) { file_info }
     end
 
@@ -470,7 +473,8 @@ RSpec.describe ColorLS::Flags do
         path: File.join(FIXTURES, 'a.txt'),
         parent: FIXTURES,
         name: 'a.txt',
-        link_info: true
+        link_info: true,
+        show_filepath: true
       ) { file_info }
     end
 
@@ -513,7 +517,8 @@ RSpec.describe ColorLS::Flags do
         path: File.join(FIXTURES, 'a.txt'),
         parent: FIXTURES,
         name: 'a.txt',
-        link_info: true
+        link_info: true,
+        show_filepath: true
       ) { file_info }
     end
 
@@ -556,7 +561,8 @@ RSpec.describe ColorLS::Flags do
         path: File.join(FIXTURES, 'a.txt'),
         parent: FIXTURES,
         name: 'a.txt',
-        link_info: true
+        link_info: true,
+        show_filepath: true
       ) { file_info }
     end
 
@@ -613,7 +619,8 @@ RSpec.describe ColorLS::Flags do
         path: File.join(FIXTURES, 'a.txt'),
         parent: FIXTURES,
         name: 'a.txt',
-        link_info: true
+        link_info: true,
+        show_filepath: true
       ) { file_info }
     end
 
@@ -650,7 +657,8 @@ RSpec.describe ColorLS::Flags do
         path: File.join(FIXTURES, 'a.txt'),
         parent: FIXTURES,
         name: 'a.txt',
-        link_info: true
+        link_info: true,
+        show_filepath: true
       ) { file_info }
     end
 
