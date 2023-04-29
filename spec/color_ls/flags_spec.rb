@@ -108,7 +108,6 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--long', "#{FIXTURES}/a.txt"] }
 
     it 'shows special permission bits', :use_file_info_stub do
-
       expect { subject }.to output(/r-Sr-Sr-T  .*  a.txt/mx).to_stdout
     end
 
