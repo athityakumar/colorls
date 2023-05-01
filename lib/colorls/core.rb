@@ -381,9 +381,8 @@ module ColorLS
         color = @colors[:dir]
         group = :folders
       else
-        extension = File.extname(content.name).delete_prefix(".")
-        basename = File.basename(content.name, ".*").delete_prefix(".")
-        key = extension.empty? ? basename : extension
+        extension = File.extname(content.name).delete_prefix('.')
+        key = extension.empty? ? content.name.delete_prefix('.') : extension
         key = key.downcase.to_sym
         key = @file_aliases[key] unless @files.key? key
         color = file_color(content, key)
