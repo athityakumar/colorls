@@ -407,6 +407,7 @@ module ColorLS
                   when file.blockdev?   then :blockdev
                   when file.socket?     then :socket
                   when file.executable? then :executable_file
+                  when file.hidden?     then :hidden
                   when @files.key?(key) then :recognized_file
                   else                       :unrecognized_file
                   end
@@ -418,7 +419,7 @@ module ColorLS
         key = content.name.downcase.to_sym
         key = @folder_aliases[key] unless @folders.key? key
         key = :folder if key.nil?
-        color = @colors[:dir]
+        color = content.hidden? ? @colors[:hidden_dir] : @colors[:dir]
         group = :folders
       else
         key = File.extname(content.name).delete_prefix('.').downcase.to_sym
