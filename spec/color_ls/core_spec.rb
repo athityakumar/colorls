@@ -25,6 +25,7 @@ RSpec.describe ColorLS::Core do
         chardev?: false,
         socket?: false,
         symlink?: false,
+        hidden?: false,
         stats: instance_double(File::Stat,
                                mode: 0o444, # read for user, owner, other
                                setuid?: false,
@@ -47,6 +48,7 @@ RSpec.describe ColorLS::Core do
         chardev?: false,
         socket?: false,
         symlink?: false,
+        hidden?: false,
         stats: instance_double(File::Stat,
                                mode: 0o444, # read for user, owner, other
                                setuid?: false,
@@ -77,6 +79,7 @@ RSpec.describe ColorLS::Core do
         chardev?: false,
         socket?: false,
         symlink?: false,
+        hidden?: true,
         executable?: false
       )
 
