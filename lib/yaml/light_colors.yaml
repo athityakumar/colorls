@@ -12,6 +12,8 @@ link:      cyan
 socket:     darkgray
 blockdev:   darkgray
 chardev:    darkgray
+hidden:     seagreen
+hidden_dir: royalblue
 
 # Access Modes
 write:     red
