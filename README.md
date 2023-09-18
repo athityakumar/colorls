@@ -174,6 +174,14 @@ You can overwrite the existing icons and colors mapping by copying the yaml file
 
   Let's say that you're using the dark color scheme and would like to change the color of untracked file (`??`) in the `--git-status` flag to yellow. Copy the defaut `dark_colors.yaml` and change it.
 
+  Check if the `~/.config/colorls` directory exists. If it doesn't exist, create it using the following command:
+ 
+  ```sh
+  mkdir -p ~/.config/colorls
+  ```
+
+  And then
+
   ```sh
   cp $(dirname $(gem which colorls))/yaml/dark_colors.yaml ~/.config/colorls/dark_colors.yaml
   ```
