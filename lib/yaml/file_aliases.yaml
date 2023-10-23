@@ -6,6 +6,7 @@ flac:             audio
 m4a:              audio
 mp3:              audio
 ogg:              audio
+opus:             audio
 wav:              audio
 editorconfig:     conf
 scss:             css
@@ -23,11 +24,14 @@ gitconfig:        git
 gitignore:        git
 gitignore_global: git
 lhs:              hs
+avif:             image
 bmp:              image
 gif:              image
+heif:             image
 ico:              image
 jpeg:             image
 jpg:              image
+jxl:              image
 odg:              image
 png:              image
 pxm:              image
@@ -88,7 +92,9 @@ ods:              xls
 xlsx:             xls
 xul:              xml
 yaml:             yml
+7z:               zip
 gz:               zip
 rar:              zip
 tar:              zip
 tgz:              zip
+xz:               zip
