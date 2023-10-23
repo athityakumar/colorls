@@ -6,8 +6,8 @@ flac:             audio
 m4a:              audio
 mp3:              audio
 ogg:              audio
-wav:              audio
 opus:             audio
+wav:              audio
 editorconfig:     conf
 scss:             css
 docx:             doc
