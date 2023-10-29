@@ -22,9 +22,9 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     - `-A`   (or) `--almost-all`
     - `-d`   (or) `--dirs`
     - `-f`   (or) `--files`
-    - `-h`   (or) `--help`
+    - `--help`
     - `-l`   (or) `--long`
-    - `-r`   (or) `--report`
+    - `--report`
     - `--tree` (or) `--tree=[DEPTH]`
     - `--gs` (or) `--git-status`
     - `--sd` (or) `--sort-dirs` or `--group-directories-first`
@@ -67,7 +67,7 @@ Man pages have been added. Checkout `man colorls`.
 
   ![image](https://user-images.githubusercontent.com/17109060/32149065-5a27c9d4-bd25-11e7-9a2b-fd731d76a058.png)
 
-- With `-h` (or) `--help` : Prints a very helpful help menu
+- With `--help` : Prints a very helpful help menu
 
   ![image](https://user-images.githubusercontent.com/17109060/32149096-cf2cf5b0-bd25-11e7-84b6-909d79099c98.png)
 
@@ -75,7 +75,7 @@ Man pages have been added. Checkout `man colorls`.
 
   ![image](https://user-images.githubusercontent.com/17109060/32149049-2a63ae48-bd25-11e7-943c-5ceed25bd693.png)
 
-- With `-r` (or) `--report` : Shows brief report about number of files and folders shown
+- With `--report` : Shows brief report about number of files and folders shown
 
   ![image](https://user-images.githubusercontent.com/17109060/32149082-96a83fec-bd25-11e7-9081-7f77e4c90e90.png)
 
