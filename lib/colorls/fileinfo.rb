@@ -40,6 +40,10 @@ module ColorLS
       @dead
     end
 
+    def hidden?
+      @name.start_with?('.')
+    end
+
     def owner
       return @@users[@stats.uid] if @@users.key? @stats.uid
 

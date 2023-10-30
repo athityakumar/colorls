@@ -9,9 +9,11 @@ dead_link: red
 link:      cyan
 
 # special files
-socket:    darkgray
-blockdev:  darkgray
-chardev:   darkgray
+socket:     darkgray
+blockdev:   darkgray
+chardev:    darkgray
+hidden:     seagreen
+hidden_dir: royalblue
 
 # Access Modes
 write:     red
