@@ -122,8 +122,10 @@ Man pages have been added. Checkout `man colorls`.
 
 [(Back to top)](#table-of-contents)
 
-1. Install Ruby (preferably, version >= 2.6)
-2. [Download](https://www.nerdfonts.com/font-downloads) and install a Nerd Font. Have a look at the [Nerd Font README](https://github.com/ryanoasis/nerd-fonts/blob/master/readme.md) for installation instructions.
+1. Install Ruby (preferably, version >= 2.6 via a version manager like [rbenv](https://github.com/rbenv/rbenv))
+2. [Download](https://www.nerdfonts.com/font-downloads) and install a Nerd Font so you can see the library icons. Have a look at the [Nerd Font README](https://github.com/ryanoasis/nerd-fonts/blob/master/readme.md) for installation instructions. We're using "Hack Nerd Font" for this guide.
+
+    *Note for MacOS users using the stock terminal - Please enable Nerd Font at Terminal > Preferences > Profiles > Text > Font. Click `Change..` and select `Hack Nerd Font` - Regular*
 
     *Note for `iTerm2` users - Please enable the Nerd Font at iTerm2 > Preferences > Profiles > Text > Non-ASCII font > Hack Regular Nerd Font Complete.*
 
@@ -143,9 +145,13 @@ Man pages have been added. Checkout `man colorls`.
     source $(dirname $(gem which colorls))/tab_complete.sh
     ```
 
+    *Don't forget to restart your terminal*
+
 5. Start using `colorls` :tada:
 
 6. Have a look at [Recommended configurations](#recommended-configurations) and [Custom configurations](#custom-configurations).
+
+If you're having trouble following the installation guide above, here's a [video](https://replayable.io/replay/63703dff5b09d400696d2663/?share=R2Twi0SdQiqg8cxHyzem6g) reproducing steps 2 to 6.
 
 # Recommended configurations
 
