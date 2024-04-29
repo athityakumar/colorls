@@ -196,20 +196,36 @@ module ColorLS
     def sort_contents
       case @sort
       when :extension
-        @contents.sort_by! do |f|
-          name = f.name
-          ext = File.extname(name)
-          name = name.chomp(ext) unless ext.empty?
-          [ext, name].map { |s| CLocale.strxfrm(s) }
-        end
+        sort_by_extension
       when :time
         @contents.sort_by! { |a| -a.mtime.to_f }
       when :size
         @contents.sort_by! { |a| -a.size }
+      when :df
+        sort_by_dot_first
       else
         @contents.sort_by! { |a| CLocale.strxfrm(a.name) }
       end
       @contents.reverse! if @reverse
+    end
+
+    def sort_by_extension
+      @contents.sort_by! do |f|
+        name = f.name
+        ext = File.extname(name)
+        name = name.chomp(ext) unless ext.empty?
+        [ext, name].map { |s| CLocale.strxfrm(s) }
+      end
+    end
+
+    def sort_by_dot_first
+      @contents.sort_by! do |a|
+        name = a.name
+        # Check if the name starts with a dot
+        dot_prefix = name.start_with?('.') ? 0 : 1
+        # Return an array where dot-prefixed names are sorted first
+        [dot_prefix, CLocale.strxfrm(name)]
+      end
     end
 
     def group_contents

@@ -195,6 +195,16 @@ RSpec.describe ColorLS::Flags do
     end
   end
 
+  context 'with --sort=df flag' do
+    let(:args) { ['--sort=df', '--group-directories-first', '-1', FIXTURES] }
+
+    it 'sort dot-files and dot-folders first' do
+      allow($stdout).to receive(:tty?).and_return(true)
+
+      expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout
+    end
+  end
+
   context 'with --help flag' do
     let(:args) { ['--help', FIXTURES] }
 

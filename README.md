@@ -29,6 +29,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
     - `--gs` (or) `--git-status`
     - `--sd` (or) `--sort-dirs` or `--group-directories-first`
     - `--sf` (or) `--sort-files`
+    - `--df` (or) `--dots-first`
     - `-t`
   - [Combination of flags](#combination-of-flags)
 - [Installation](#installation)
