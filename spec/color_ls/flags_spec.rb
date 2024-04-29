@@ -27,6 +27,7 @@ RSpec.describe ColorLS::Flags do
       socket?: false,
       symlink?: false,
       stats: instance_double(File::Stat,
+                             directory?: false,
                              mode: 0o444, # read for user, owner, other
                              setuid?: true,
                              setgid?: true,
@@ -477,7 +478,8 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: true,
-        link_target: "#{FIXTURES}/z.txt",
+        link_target: 'z.txt',
+        parent: FIXTURES,
         dead?: false,
         executable?: false
       )

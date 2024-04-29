@@ -131,7 +131,7 @@ module ColorLS
         color = case key
                 when 'r' then :read
                 when 'w' then :write
-                when '-' then :no_access
+                when 'd', '-' then :no_access
                 when 'x', 's', 'S', 't', 'T' then :exec
                 end
         hash[key] = key.colorize(@colors[color]).freeze
@@ -261,9 +261,11 @@ module ColorLS
     def mode_info(stat)
       m = stat.mode
 
-      format_mode(m >> 6, stat.setuid?, 's') +
-        format_mode(m >> 3, stat.setgid?, 's') +
-        format_mode(m, stat.sticky?, 't')
+      info = stat.directory? ? @modes['d'] : @modes['-']
+      info += format_mode(m >> 6, stat.setuid?, 's')
+      info += format_mode(m >> 3, stat.setgid?, 's')
+      info += format_mode(m, stat.sticky?, 't')
+      info
     end
 
     def user_info(content)
@@ -383,7 +385,9 @@ module ColorLS
       return content if content.link_target.nil?
       return content if content.dead?
 
-      FileInfo.info(content.link_target)
+      target = content.link_target
+      target = File.join(content.parent, target) if !target.start_with?('/') && !target.start_with?('\\')
+      FileInfo.info(target)
     end
 
     def out_encode(str)
@@ -392,17 +396,30 @@ module ColorLS
 
     def fetch_string(content, key, color, increment)
       @count[increment] += 1
-      value = increment == :folders ? @folders[key] : @files[key]
-      logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..].to_i(16)].pack('U') }
-      name = @hyperlink ? make_link(content) : content.show
-      name += content.directory? && @indicator_style != 'none' ? '/' : ' '
-      entry = @icons ? "#{out_encode(logo)}  #{out_encode(name)}" : out_encode(name).to_s
-      entry = entry.bright if !content.directory? && content.executable?
-
       symlink_info_string = symlink_info(content)
+      symlink_content = update_content_if_show_symbol_dest(content,true)
+      entry, color = fetch_string_entry(content, symlink_content, key, color, increment)
+      git_info_string = git_info(content)
+
       content = update_content_if_show_symbol_dest(content,@show_symbol_dest)
 
-      "#{inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info_string}"
+      "#{inode(content)} #{long_info(content)} #{git_info_string} #{entry.colorize(color)}#{symlink_info_string}"
+    end
+
+    def fetch_string_name(content, symlink_content)
+      name = @hyperlink ? make_link(content) : content.show
+      name += (content.directory? || symlink_content.directory?) && @indicator_style != 'none' ? '/' : ' '
+      name
+    end
+
+    def fetch_string_entry(content, symlink_content, key, color, increment)
+      key, color, = options(symlink_content) if content.symlink?
+      value = increment == :folders || symlink_content.directory? ? @folders[key] : @files[key]
+      logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..].to_i(16)].pack('U') }
+      name = fetch_string_name(content, symlink_content)
+      entry = @icons ? "#{out_encode(logo)}  #{out_encode(name)}" : out_encode(name).to_s
+      entry = entry.bright if !content.directory? && !content.symlink? && content.executable?
+      [entry, color]
     end
 
     def ls_line(chunk, widths)
