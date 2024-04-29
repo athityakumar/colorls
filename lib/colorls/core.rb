@@ -431,20 +431,38 @@ module ColorLS
 
     def options(content)
       if content.directory?
-        key = content.name.downcase.to_sym
-        key = @folder_aliases[key] unless @folders.key? key
-        key = :folder if key.nil?
-        color = @colors[:dir]
-        group = :folders
+        dir_options(content)
       else
-        key = File.extname(content.name).delete_prefix('.').downcase.to_sym
-        key = @file_aliases[key] unless @files.key? key
-        color = file_color(content, key)
-        group = @files.key?(key) ? :recognized_files : :unrecognized_files
-        key = :file if key.nil?
+        file_options(content)
       end
+    end
 
+    def dir_options(content)
+      key = content.name.downcase.to_sym
+      key = @folder_aliases[key] unless @folders.key? key
+      key = :folder if key.nil?
+      color = @colors[:dir]
+      group = :folders
       [key, color, group]
+    end
+
+    def file_options(content)
+      key = determine_key_for_file(content)
+      key = @file_aliases[key] unless @files.key? key
+      color = file_color(content, key)
+      group = @files.key?(key) ? :recognized_files : :unrecognized_files
+      key = :file if key.nil?
+      [key, color, group]
+    end
+
+    def determine_key_for_file(content)
+      extension = File.extname(content.name).delete_prefix('.').downcase
+      if extension.empty?
+        filename = content.name.match(/\A\.?(.+)/)[1]
+        filename.downcase.to_sym
+      else
+        extension.to_sym
+      end || :default
     end
 
     def tree_contents(path)
