@@ -198,15 +198,39 @@ module ColorLS
       when :extension
         sort_by_extension
       when :time
-        @contents.sort_by! { |a| -a.mtime.to_f }
+        sort_by_time
       when :size
-        @contents.sort_by! { |a| -a.size }
+        sort_by_size
       when :df
         sort_by_dot_first
       else
-        @contents.sort_by! { |a| CLocale.strxfrm(a.name) }
+        sort_normal
       end
       @contents.reverse! if @reverse
+    end
+
+    def sort_by_size
+      @contents.sort_by! do |f|
+        link_context = update_content_if_show_symbol_dest(f, true)
+        is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        [is_dir, -f.size]
+      end
+    end
+
+    def sort_by_time
+      @contents.sort_by! do |f|
+        link_context = update_content_if_show_symbol_dest(f, true)
+        is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        [is_dir, -f.mtime.to_f]
+      end
+    end
+
+    def sort_normal
+      @contents.sort_by! do |f|
+        link_context = update_content_if_show_symbol_dest(f, true)
+        is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        [is_dir, CLocale.strxfrm(f.name)]
+      end
     end
 
     def sort_by_extension
@@ -219,10 +243,15 @@ module ColorLS
     end
 
     def sort_by_dot_first
-      @contents.sort_by! do |a|
-        name = a.name
+      @contents.sort_by! do |f|
+        name = f.name
+        link_context = update_content_if_show_symbol_dest(f, true)
         # Check if the name starts with a dot
-        dot_prefix = name.start_with?('.') ? 0 : 1
+        dot_prefix = if f.symlink? && link_context.directory?
+                       name.start_with?('.') ? 0 : 1
+                     else
+                       name.start_with?('.') ? 2 : 3
+                     end
         # Return an array where dot-prefixed names are sorted first
         [dot_prefix, CLocale.strxfrm(name)]
       end
