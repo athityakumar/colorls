@@ -24,6 +24,9 @@ otf:              font
 ttf:              font
 woff:             font
 woff2:            font
+gdb_history:      gdbinit
+gef.rc:           gdbinit
+git-credentials:  git
 gitattributes:    git
 gitconfig:        git
 gitignore:        git
