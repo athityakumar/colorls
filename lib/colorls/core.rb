@@ -211,24 +211,36 @@ module ColorLS
 
     def sort_by_size
       @contents.sort_by! do |f|
-        link_context = update_content_if_show_symbol_dest(f, true)
-        is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        if @group
+          link_context = update_content_if_show_symbol_dest(f, true)
+          is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        else
+          is_dir = 0
+        end
         [is_dir, -f.size]
       end
     end
 
     def sort_by_time
       @contents.sort_by! do |f|
-        link_context = update_content_if_show_symbol_dest(f, true)
-        is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        if @group
+          link_context = update_content_if_show_symbol_dest(f, true)
+          is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        else
+          is_dir = 0
+        end
         [is_dir, -f.mtime.to_f]
       end
     end
 
     def sort_normal
       @contents.sort_by! do |f|
-        link_context = update_content_if_show_symbol_dest(f, true)
-        is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        if @group
+          link_context = update_content_if_show_symbol_dest(f, true)
+          is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        else
+          is_dir = 0
+        end
         [is_dir, CLocale.strxfrm(f.name)]
       end
     end
@@ -242,15 +254,24 @@ module ColorLS
       end
     end
 
+    def sort_by_dot_first_grouped(content)
+      name = content.name
+      link_context = update_content_if_show_symbol_dest(content, true)
+      # Check if the name starts with a dot
+      if content.symlink? && link_context.directory?
+        name.start_with?('.') ? 0 : 1
+      else
+        name.start_with?('.') ? 2 : 3
+      end
+    end
+
     def sort_by_dot_first
       @contents.sort_by! do |f|
         name = f.name
-        link_context = update_content_if_show_symbol_dest(f, true)
-        # Check if the name starts with a dot
-        dot_prefix = if f.symlink? && link_context.directory?
-                       name.start_with?('.') ? 0 : 1
+        dot_prefix = if @group
+                       sort_by_dot_first_grouped(f)
                      else
-                       name.start_with?('.') ? 2 : 3
+                       name.start_with?('.') ? 0 : 1
                      end
         # Return an array where dot-prefixed names are sorted first
         [dot_prefix, CLocale.strxfrm(name)]
