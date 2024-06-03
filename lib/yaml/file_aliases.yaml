@@ -78,7 +78,6 @@ rhistory:         r
 gemfile:          rb
 gemspec:          rb
 guardfile:        rb
-lock:             rb
 mkshrc:           rb
 procfile:         rb
 rakefile:         rb
