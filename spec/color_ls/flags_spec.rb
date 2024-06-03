@@ -27,6 +27,7 @@ RSpec.describe ColorLS::Flags do
       socket?: false,
       symlink?: false,
       stats: instance_double(File::Stat,
+                             directory?: false,
                              mode: 0o444, # read for user, owner, other
                              setuid?: true,
                              setgid?: true,
@@ -189,6 +190,16 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--sort=size', '--group-directories-first', '-1', FIXTURES] }
 
     it 'sorts results by size' do
+      allow($stdout).to receive(:tty?).and_return(true)
+
+      expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout
+    end
+  end
+
+  context 'with --sort=df flag' do
+    let(:args) { ['--sort=df', '--group-directories-first', '-1', FIXTURES] }
+
+    it 'sort dot-files and dot-folders first' do
       allow($stdout).to receive(:tty?).and_return(true)
 
       expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout
@@ -467,7 +478,8 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: true,
-        link_target: "#{FIXTURES}/z.txt",
+        link_target: 'z.txt',
+        parent: FIXTURES,
         dead?: false,
         executable?: false
       )
