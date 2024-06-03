@@ -53,6 +53,11 @@ ipynb:            py
 pyc:              py
 rdata:            r
 rds:              r
+<<<<<<< main
+=======
+rhistory:         r
+gem:              rb
+>>>>>>> local
 gemfile:          rb
 gemspec:          rb
 guardfile:        rb
