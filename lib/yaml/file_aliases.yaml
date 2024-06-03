@@ -94,6 +94,7 @@ bash_completion:  shell
 bash_env:         shell
 bash_functions:   shell
 bash_history:     shell
+bash_login:       shell
 bash_logout:      shell
 bash_profile:     shell
 bashrc:           shell
