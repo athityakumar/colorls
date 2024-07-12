@@ -407,6 +407,7 @@ module ColorLS
                   when file.blockdev?   then :blockdev
                   when file.socket?     then :socket
                   when file.executable? then :executable_file
+                  when file.hidden?     then :hidden
                   when @files.key?(key) then :recognized_file
                   else                       :unrecognized_file
                   end
@@ -415,20 +416,32 @@ module ColorLS
 
     def options(content)
       if content.directory?
-        key = content.name.downcase.to_sym
-        key = @folder_aliases[key] unless @folders.key? key
-        key = :folder if key.nil?
-        color = @colors[:dir]
-        group = :folders
+        options_directory(content).values_at(:key, :color, :group)
       else
-        key = File.extname(content.name).delete_prefix('.').downcase.to_sym
-        key = @file_aliases[key] unless @files.key? key
-        color = file_color(content, key)
-        group = @files.key?(key) ? :recognized_files : :unrecognized_files
-        key = :file if key.nil?
+        options_file(content).values_at(:key, :color, :group)
       end
+    end
 
-      [key, color, group]
+    def options_directory(content)
+      key = content.name.downcase.to_sym
+      key = @folder_aliases[key] unless @folders.key?(key)
+      key = :folder if key.nil?
+
+      color = content.hidden? ? @colors[:hidden_dir] : @colors[:dir]
+
+      {key: key, color: color, group: :folders}
+    end
+
+    def options_file(content)
+      key = File.extname(content.name).delete_prefix('.').downcase.to_sym
+      key = @file_aliases[key] unless @files.key?(key)
+
+      color = file_color(content, key)
+      group = @files.key?(key) ? :recognized_files : :unrecognized_files
+
+      key = :file if key.nil?
+
+      {key: key, color: color, group: group}
     end
 
     def tree_contents(path)
