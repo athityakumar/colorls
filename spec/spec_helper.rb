@@ -6,7 +6,7 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 
-if ENV['CI'] == 'true'
+if ENV['CI'] == 'never' # FIXME: migrate to new Codecov uploader / action
   require 'codecov'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end

@@ -113,6 +113,9 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Max: 8
 
+Gemspec/RequireMFA:
+  Enabled: false
+
 # TODO -----------------------------------------------------------------
 
 Style/Documentation:
