@@ -103,6 +103,14 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--long', FIXTURES] }
 
     it('lists file info') { expect { subject }.to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout }
+
+    it 'rounds up file size to nearest MiB' do
+      expect { subject }.to output(/2 MiB[^\n]* 20kb-less-than-2mb\.txt/).to_stdout
+    end
+
+    it 'rounds down file size to nearest MiB' do
+      expect { subject }.to output(/1 MiB[^\n]* 20kb-more-than-1mb\.txt/).to_stdout
+    end
   end
 
   context 'with --long flag for `a.txt`' do
