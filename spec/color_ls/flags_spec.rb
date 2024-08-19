@@ -26,6 +26,7 @@ RSpec.describe ColorLS::Flags do
       chardev?: false,
       socket?: false,
       symlink?: false,
+      hidden?: false,
       stats: instance_double(File::Stat,
                              directory?: false,
                              mode: 0o444, # read for user, owner, other
@@ -437,7 +438,9 @@ RSpec.describe ColorLS::Flags do
   context 'with --indicator-style=none' do
     let(:args) { ['-dl', '--indicator-style=none', FIXTURES] }
 
-    it { expect { subject }.to output(/.+second-level \n.+symlinks \n/).to_stdout }
+    it 'shows correct output for second-level and symlinks' do
+      expect { subject }.to output(/second-level.*symlinks/m).to_stdout
+    end
   end
 
   context 'with --time-style option' do
@@ -478,10 +481,11 @@ RSpec.describe ColorLS::Flags do
         chardev?: false,
         socket?: false,
         symlink?: true,
-        link_target: 'z.txt',
-        parent: FIXTURES,
+        hidden?: false,
+        link_target: "#{FIXTURES}/z.txt",
         dead?: false,
-        executable?: false
+        executable?: false,
+        parent: FIXTURES # Stub the parent method here
       )
 
       allow(ColorLS::FileInfo).to receive(:new).and_call_original

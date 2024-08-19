@@ -490,6 +490,7 @@ module ColorLS
                   when file.blockdev?   then :blockdev
                   when file.socket?     then :socket
                   when file.executable? then :executable_file
+                  when file.hidden?     then :hidden
                   when @files.key?(key) then :recognized_file
                   else                       :unrecognized_file
                   end
@@ -498,28 +499,32 @@ module ColorLS
 
     def options(content)
       if content.directory?
-        dir_options(content)
+        options_directory(content).values_at(:key, :color, :group)
       else
-        file_options(content)
+        options_file(content).values_at(:key, :color, :group)
       end
     end
 
-    def dir_options(content)
+    def options_directory(content)
       key = content.name.downcase.to_sym
-      key = @folder_aliases[key] unless @folders.key? key
+      key = @folder_aliases[key] unless @folders.key?(key)
       key = :folder if key.nil?
-      color = @colors[:dir]
-      group = :folders
-      [key, color, group]
+
+      color = content.hidden? ? @colors[:hidden_dir] : @colors[:dir]
+
+      {key: key, color: color, group: :folders}
     end
 
-    def file_options(content)
-      key = determine_key_for_file(content)
-      key = @file_aliases[key] unless @files.key? key
+    def options_file(content)
+      key = File.extname(content.name).delete_prefix('.').downcase.to_sym
+      key = @file_aliases[key] unless @files.key?(key)
+
       color = file_color(content, key)
       group = @files.key?(key) ? :recognized_files : :unrecognized_files
+
       key = :file if key.nil?
-      [key, color, group]
+
+      {key: key, color: color, group: group}
     end
 
     def determine_key_for_file(content)
