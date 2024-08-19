@@ -75,6 +75,7 @@ pyx:              py
 rdata:            r
 rds:              r
 rhistory:         r
+gem:              rb
 gemfile:          rb
 gemspec:          rb
 guardfile:        rb
