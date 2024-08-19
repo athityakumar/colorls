@@ -516,7 +516,7 @@ module ColorLS
     end
 
     def options_file(content)
-      key = File.extname(content.name).delete_prefix('.').downcase.to_sym
+      key = determine_key_for_file(content)
       key = @file_aliases[key] unless @files.key?(key)
 
       color = file_color(content, key)
