@@ -39,6 +39,7 @@ svg:              image
 tiff:             image
 webp:             image
 jar:              java
+mjs:              js
 properties:       json
 tsx:              jsx
 license:          md
