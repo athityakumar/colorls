@@ -66,7 +66,7 @@ RSpec.describe ColorLS::Flags do
     it 'displays multiple files per line' do
       allow($stdout).to receive(:tty?).and_return(true)
 
-      expect { subject }.not_to output(/(.*\n){4}/).to_stdout
+      expect { subject }.not_to output(/(.*\n){7}/).to_stdout
     end
 
     it('does not display ./ or ../')           { expect { subject }.not_to output(%r(\.{1,2}/)).to_stdout }
@@ -104,6 +104,14 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--long', FIXTURES] }
 
     it('lists file info') { expect { subject }.to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout }
+
+    it 'rounds up file size to nearest MiB' do
+      expect { subject }.to output(/2 MiB[^\n]* 20kb-less-than-2mb\.txt/).to_stdout
+    end
+
+    it 'rounds down file size to nearest MiB' do
+      expect { subject }.to output(/1 MiB[^\n]* 20kb-more-than-1mb\.txt/).to_stdout
+    end
   end
 
   context 'with --long flag for `a.txt`' do
@@ -358,7 +366,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--report', '--report=long', FIXTURES] }
 
     it 'shows a report with recognized and unrecognized files' do
-      expect { subject }.to output(/Recognized files\s+: 4\n.+Unrecognized files\s+: 3/).to_stdout
+      expect { subject }.to output(/Recognized files\s+: 6\n.+Unrecognized files\s+: 3/).to_stdout
     end
   end
 

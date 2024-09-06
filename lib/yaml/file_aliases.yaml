@@ -51,6 +51,7 @@ svg:              image
 tiff:             image
 webp:             image
 jar:              java
+mjs:              js
 properties:       json
 tsx:              jsx
 lesshst:          less
