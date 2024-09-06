@@ -15,23 +15,11 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 # Table of contents
 
+- [Color LS](#color-ls)
+- [Table of contents](#table-of-contents)
 - [Usage](#usage)
-  - [Flags](#flags)
-    - `-1`
-    - `-a`   (or) `--all`
-    - `-A`   (or) `--almost-all`
-    - `-d`   (or) `--dirs`
-    - `-f`   (or) `--files`
-    - `--help`
-    - `-l`   (or) `--long`
-    - `--report`
-    - `--tree` (or) `--tree=[DEPTH]`
-    - `--gs` (or) `--git-status`
-    - `--sd` (or) `--sort-dirs` or `--group-directories-first`
-    - `--sf` (or) `--sort-files`
-    - `--df` (or) `--dots-first`
-    - `-t`
-  - [Combination of flags](#combination-of-flags)
+    - [Flags](#flags)
+    - [Combination of flags](#combination-of-flags)
 - [Installation](#installation)
 - [Recommended configurations](#recommended-configurations)
 - [Custom configurations](#custom-configurations)
@@ -95,6 +83,7 @@ Man pages have been added. Checkout `man colorls`.
 - With `--sf` (or) `--sort-files` : Shows files first, followed by directories
 
   ![image](https://user-images.githubusercontent.com/17109060/32149071-6b379de4-bd25-11e7-8764-a0c577e526a1.png)
+- With `--df` (or) `--dots-first` : Shows hidden directoryes and files first, followed by regular directories and files
 
 - With `-t` : Sort by modification time, newest first (NEED TO ADD IMAGE)
 
