@@ -2,6 +2,7 @@ pkg/
 *.gem
 .bundle/
 .yardoc/
+.vscode/
 Gemfile.lock
 /_yardoc/
 *.DS_store

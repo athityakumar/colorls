@@ -1,0 +1,91 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "rdbg",
+            "useTerminal": true,
+            "name": "Debug colorls with rdbg - full documentation",
+            "request": "launch",
+            "script": "${workspaceFolder}/exe/colorls",
+            "args": [
+                "-laA",
+                "--sd",
+                "--gs",
+                "--df",
+                "--report=long"
+            ],
+            "askParameters": false
+        },
+        {
+            "type": "rdbg",
+            "useTerminal": true,
+            "name": "Debug colorls with rdbg - dots-first",
+            "request": "launch",
+            "script": "${workspaceFolder}/exe/colorls",
+            "args": [
+                "-laA",
+                "--sd",
+                "--gs",
+                "--df",
+                "--sort=df",
+                "--report=long",
+                // "-l",
+                // "-L",
+                // "--sort=time",
+                // "--reverse",
+                // "~/src/WindowsTerminalLayoutManager"
+                // "~/src/"
+                "C:\\Users\\dmitr"
+            ],
+            "askParameters": false
+        },
+        {
+            "type": "rdbg",
+            "useTerminal": true,
+            "name": "Debug colorls test",
+            "request": "launch",
+            "script": "/home/mzw7p2/.rbenv/shims/bundle",
+            "args": [
+                "exe",
+                "rspec"
+            ],
+            "cwd": "${workspaceFolder}",
+            "askParameters": false
+        },
+        {
+            "type": "rdbg",
+            "useTerminal": true,
+            "name": "Debug colorls with rdbg - size",
+            "request": "launch",
+            "script": "${workspaceFolder}/exe/colorls",
+            "args": [
+                "-laA",
+                "--sd",
+                "--gs",
+                "--sort=size",
+                "--report=long"
+            ],
+            "askParameters": false
+        },
+        {
+            "type": "rdbg",
+            "useTerminal": true,
+            "name": "Debug colorls with rdbg - help",
+            "request": "launch",
+            "script": "${workspaceFolder}/exe/colorls",
+            "args": [
+                "--help"
+            ],
+            "askParameters": false
+        },
+        {
+            "type": "rdbg",
+            "name": "Attach with rdbg",
+            "request": "attach",
+            "debugPort": "1234"
+        }
+    ]
+}
