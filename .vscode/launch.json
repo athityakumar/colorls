@@ -26,19 +26,19 @@
             "request": "launch",
             "script": "${workspaceFolder}/exe/colorls",
             "args": [
-                // "-laA",
-                // "--sd",
-                // "--gs",
-                // "--df",
-                // "--sort=df",
-                // "--report=long",
+                "-laA",
+                "--sd",
+                "--gs",
+                "--df",
+                "--sort=df",
+                "--report=long",
                 // "-l",
                 // "-L",
                 // "--sort=time",
-                "--reverse",
+                // "--reverse",
                 // "~/src/WindowsTerminalLayoutManager"
                 // "~/src/"
-                "spec/fixtures"
+                "C:\\Users\\dmitr"
             ],
             "askParameters": false
         },

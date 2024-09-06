@@ -436,7 +436,7 @@ module ColorLS
       return content if content.dead?
 
       target = content.link_target
-      target = File.join(content.parent, target) if !target.start_with?('/') && !target.start_with?('\\')
+      target = File.join(content.parent, target) unless File.absolute_path?(target)
       FileInfo.info(target)
     end
 
