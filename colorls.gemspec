@@ -65,7 +65,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'filesize', '~> 0'
   spec.add_runtime_dependency 'manpages', '~> 0'
   spec.add_runtime_dependency 'rainbow', '>= 2.2', '< 4.0'
-  spec.add_runtime_dependency 'unicode-display_width', '>= 1.7', '< 3.0'
+  spec.add_runtime_dependency 'unicode-display_width', '>= 1.7', '< 4.0'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'codecov', '~> 0.1'
