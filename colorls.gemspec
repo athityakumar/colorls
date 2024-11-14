@@ -69,7 +69,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'codecov', '~> 0.1'
-  spec.add_development_dependency 'diffy', '3.4.2'
+  spec.add_development_dependency 'diffy', '3.4.3'
   spec.add_development_dependency 'rake', '~> 13'
   spec.add_development_dependency 'rdoc', '~> 6.1'
   spec.add_development_dependency 'ronn-ng', '~> 0'
