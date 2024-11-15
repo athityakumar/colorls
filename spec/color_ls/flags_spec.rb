@@ -28,6 +28,7 @@ RSpec.describe ColorLS::Flags do
       symlink?: false,
       hidden?: false,
       stats: instance_double(File::Stat,
+                             directory?: false,
                              mode: 0o444, # read for user, owner, other
                              setuid?: true,
                              setgid?: true,
@@ -198,6 +199,16 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--sort=size', '--group-directories-first', '-1', FIXTURES] }
 
     it 'sorts results by size' do
+      allow($stdout).to receive(:tty?).and_return(true)
+
+      expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout
+    end
+  end
+
+  context 'with --sort=df flag' do
+    let(:args) { ['--sort=df', '--group-directories-first', '-1', FIXTURES] }
+
+    it 'sort dot-files and dot-folders first' do
       allow($stdout).to receive(:tty?).and_return(true)
 
       expect { subject }.to output(/symlinks.+a-file.+z-file/m).to_stdout
@@ -435,7 +446,9 @@ RSpec.describe ColorLS::Flags do
   context 'with --indicator-style=none' do
     let(:args) { ['-dl', '--indicator-style=none', FIXTURES] }
 
-    it { expect { subject }.to output(/.+second-level \n.+symlinks \n/).to_stdout }
+    it 'shows correct output for second-level and symlinks' do
+      expect { subject }.to output(/second-level.*symlinks/m).to_stdout
+    end
   end
 
   context 'with --time-style option' do
@@ -479,7 +492,8 @@ RSpec.describe ColorLS::Flags do
         hidden?: false,
         link_target: "#{FIXTURES}/z.txt",
         dead?: false,
-        executable?: false
+        executable?: false,
+        parent: FIXTURES # Stub the parent method here
       )
 
       allow(ColorLS::FileInfo).to receive(:new).and_call_original

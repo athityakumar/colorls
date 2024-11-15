@@ -131,7 +131,7 @@ module ColorLS
         color = case key
                 when 'r' then :read
                 when 'w' then :write
-                when '-' then :no_access
+                when 'd', '-' then :no_access
                 when 'x', 's', 'S', 't', 'T' then :exec
                 end
         hash[key] = key.colorize(@colors[color]).freeze
@@ -196,20 +196,86 @@ module ColorLS
     def sort_contents
       case @sort
       when :extension
-        @contents.sort_by! do |f|
-          name = f.name
-          ext = File.extname(name)
-          name = name.chomp(ext) unless ext.empty?
-          [ext, name].map { |s| CLocale.strxfrm(s) }
-        end
+        sort_by_extension
       when :time
-        @contents.sort_by! { |a| -a.mtime.to_f }
+        sort_by_time
       when :size
-        @contents.sort_by! { |a| -a.size }
+        sort_by_size
+      when :df
+        sort_by_dot_first
       else
-        @contents.sort_by! { |a| CLocale.strxfrm(a.name) }
+        sort_normal
       end
       @contents.reverse! if @reverse
+    end
+
+    def sort_by_size
+      @contents.sort_by! do |f|
+        if @group
+          link_context = update_content_if_show_symbol_dest(f, true)
+          is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        else
+          is_dir = 0
+        end
+        [is_dir, -f.size]
+      end
+    end
+
+    def sort_by_time
+      @contents.sort_by! do |f|
+        if @group
+          link_context = update_content_if_show_symbol_dest(f, true)
+          is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        else
+          is_dir = 0
+        end
+        [is_dir, -f.mtime.to_f]
+      end
+    end
+
+    def sort_normal
+      @contents.sort_by! do |f|
+        if @group
+          link_context = update_content_if_show_symbol_dest(f, true)
+          is_dir = f.symlink? && link_context.directory? ? 0 : 1
+        else
+          is_dir = 0
+        end
+        [is_dir, CLocale.strxfrm(f.name)]
+      end
+    end
+
+    def sort_by_extension
+      @contents.sort_by! do |f|
+        name = f.name
+        ext = File.extname(name)
+        name = name.chomp(ext) unless ext.empty?
+        [ext, name].map { |s| CLocale.strxfrm(s) }
+      end
+    end
+
+    def sort_by_dot_first_grouped(content)
+      name = content.name
+      link_context = update_content_if_show_symbol_dest(content, true)
+      # Check if the name starts with a dot
+      if content.symlink? && link_context.directory?
+        name.start_with?('.') ? 0 : 1
+      else
+        name.start_with?('.') ? 2 : 3
+      end
+    end
+
+    def sort_by_dot_first
+      @contents.sort_by! do |f|
+        name = f.name
+        dot_prefix = if @group
+                       sort_by_dot_first_grouped(f)
+                     else
+                       name.start_with?('.') ? 0 : 1
+                     end
+        # Return an array where dot-prefixed names are sorted first
+        [dot_prefix, CLocale.strxfrm(name)]
+      end
     end
 
     def group_contents
@@ -245,9 +311,11 @@ module ColorLS
     def mode_info(stat)
       m = stat.mode
 
-      format_mode(m >> 6, stat.setuid?, 's') +
-        format_mode(m >> 3, stat.setgid?, 's') +
-        format_mode(m, stat.sticky?, 't')
+      info = stat.directory? ? @modes['d'] : @modes['-']
+      info += format_mode(m >> 6, stat.setuid?, 's')
+      info += format_mode(m >> 3, stat.setgid?, 's')
+      info += format_mode(m, stat.sticky?, 't')
+      info
     end
 
     def user_info(content)
@@ -367,7 +435,9 @@ module ColorLS
       return content if content.link_target.nil?
       return content if content.dead?
 
-      FileInfo.info(content.link_target)
+      target = content.link_target
+      target = File.join(content.parent, target) unless File.absolute_path?(target)
+      FileInfo.info(target)
     end
 
     def out_encode(str)
@@ -376,17 +446,30 @@ module ColorLS
 
     def fetch_string(content, key, color, increment)
       @count[increment] += 1
-      value = increment == :folders ? @folders[key] : @files[key]
-      logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..].to_i(16)].pack('U') }
-      name = @hyperlink ? make_link(content) : content.show
-      name += content.directory? && @indicator_style != 'none' ? '/' : ' '
-      entry = @icons ? "#{out_encode(logo)}  #{out_encode(name)}" : out_encode(name).to_s
-      entry = entry.bright if !content.directory? && content.executable?
-
       symlink_info_string = symlink_info(content)
+      symlink_content = update_content_if_show_symbol_dest(content,true)
+      entry, color = fetch_string_entry(content, symlink_content, key, color, increment)
+      git_info_string = git_info(content)
+
       content = update_content_if_show_symbol_dest(content,@show_symbol_dest)
 
-      "#{inode(content)} #{long_info(content)} #{git_info(content)} #{entry.colorize(color)}#{symlink_info_string}"
+      "#{inode(content)} #{long_info(content)} #{git_info_string} #{entry.colorize(color)}#{symlink_info_string}"
+    end
+
+    def fetch_string_name(content, symlink_content)
+      name = @hyperlink ? make_link(content) : content.show
+      name += (content.directory? || symlink_content.directory?) && @indicator_style != 'none' ? '/' : ' '
+      name
+    end
+
+    def fetch_string_entry(content, symlink_content, key, color, increment)
+      key, color, = options(symlink_content) if content.symlink?
+      value = increment == :folders || symlink_content.directory? ? @folders[key] : @files[key]
+      logo  = value.gsub(/\\u[\da-f]{4}/i) { |m| [m[-4..].to_i(16)].pack('U') }
+      name = fetch_string_name(content, symlink_content)
+      entry = @icons ? "#{out_encode(logo)}  #{out_encode(name)}" : out_encode(name).to_s
+      entry = entry.bright if !content.directory? && !content.symlink? && content.executable?
+      [entry, color]
     end
 
     def ls_line(chunk, widths)
@@ -433,7 +516,7 @@ module ColorLS
     end
 
     def options_file(content)
-      key = File.extname(content.name).delete_prefix('.').downcase.to_sym
+      key = determine_key_for_file(content)
       key = @file_aliases[key] unless @files.key?(key)
 
       color = file_color(content, key)
@@ -442,6 +525,16 @@ module ColorLS
       key = :file if key.nil?
 
       {key: key, color: color, group: group}
+    end
+
+    def determine_key_for_file(content)
+      extension = File.extname(content.name).delete_prefix('.').downcase
+      if extension.empty?
+        filename = content.name.match(/\A\.?(.+)/)[1]
+        filename.downcase.to_sym
+      else
+        extension.to_sym
+      end || :default
     end
 
     def tree_contents(path)
