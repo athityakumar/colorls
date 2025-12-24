@@ -74,7 +74,7 @@ module ColorLS
       sort_contents   if @sort
       group_contents  if @group
 
-      return print "\n   Nothing to show here\n".colorize(@colors[:empty]) if @contents.empty?
+      return print "\n   Directory is empty!\n".colorize(@colors[:empty]) if @contents.empty?
 
       ls
     end
