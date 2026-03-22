@@ -15,22 +15,11 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 # Table of contents
 
+- [Color LS](#color-ls)
+- [Table of contents](#table-of-contents)
 - [Usage](#usage)
-  - [Flags](#flags)
-    - `-1`
-    - `-a`   (or) `--all`
-    - `-A`   (or) `--almost-all`
-    - `-d`   (or) `--dirs`
-    - `-f`   (or) `--files`
-    - `--help`
-    - `-l`   (or) `--long`
-    - `--report`
-    - `--tree` (or) `--tree=[DEPTH]`
-    - `--gs` (or) `--git-status`
-    - `--sd` (or) `--sort-dirs` or `--group-directories-first`
-    - `--sf` (or) `--sort-files`
-    - `-t`
-  - [Combination of flags](#combination-of-flags)
+    - [Flags](#flags)
+    - [Combination of flags](#combination-of-flags)
 - [Installation](#installation)
 - [Recommended configurations](#recommended-configurations)
 - [Custom configurations](#custom-configurations)
@@ -70,6 +59,7 @@ Man pages have been added. Checkout `man colorls`.
 - With `--help` : Prints a very helpful help menu
 
   ![image](https://user-images.githubusercontent.com/17109060/32149096-cf2cf5b0-bd25-11e7-84b6-909d79099c98.png)
+  ![Screenshot 2024-09-06 180229](https://github.com/user-attachments/assets/eceb8631-96e7-41e5-b5ed-ac621f5dc83c)
 
 - With `-l` (or) `--long` : Shows in long listing format
 
@@ -94,7 +84,9 @@ Man pages have been added. Checkout `man colorls`.
 - With `--sf` (or) `--sort-files` : Shows files first, followed by directories
 
   ![image](https://user-images.githubusercontent.com/17109060/32149071-6b379de4-bd25-11e7-8764-a0c577e526a1.png)
+- With `--df` (or) `--dots-first` : Shows hidden directoryes and files first, followed by regular directories and files
 
+  ![Screenshot 2024-09-06 175641](https://github.com/user-attachments/assets/338c026c-ff96-4ed8-9f63-36d828074da7)
 - With `-t` : Sort by modification time, newest first (NEED TO ADD IMAGE)
 
 - With color options : `--light` or `--dark` can be passed as a flag, to choose the appropriate color scheme. By default, the dark color scheme is chosen. In order to tweak any color, read [Custom configurations](#custom-configurations).

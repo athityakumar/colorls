@@ -1,2 +1,5 @@
+.oh-my-bash: .bash
+.oh-my-vim: .vim
 bin: config
 include: config
+.nvm: node_modules

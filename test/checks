@@ -15,6 +15,9 @@ OK colorls -r
 
 OK colorls --sd
 OK colorls --sf
+OK colorls -laA --df
+OK colorls -laA --dots-first
+OK colorls -laA --sort=df
 OK colorls --hyperlink
 OK colorls -t
 OK colorls --sort=time

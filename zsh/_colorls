@@ -1,0 +1,60 @@
+#compdef colorls
+
+typeset -A opt_args
+local context state line
+
+_arguments -s -S \
+  "-a[do not ignore entries starting with .]" \
+  "--all[do not ignore entries starting with .]" \
+  "-A[do not list . and ..]" \
+  "--almost-all[do not list . and ..]" \
+  "-d[show only directories]" \
+  "--dirs[show only directories]" \
+  "-f[show only files]" \
+  "--files[show only files]" \
+  "--gs[show git status for each file]" \
+  "--git-status[show git status for each file]" \
+  "-p[append / indicator to directories]" \
+  "-i[show inode number]" \
+  "--inode[show inode number]" \
+  "--report[show report: short, long (default if omitted)]" \
+  "--indicator-style[append indicator with style STYLE to entry names: none, slash (-p) (default)]" \
+  "--format[use format: across (-x), horizontal (-x), long (-l), single-column (-1), vertical (-C)]" \
+  "-1[list one file per line]" \
+  "--tree[shows tree view of the directory]" \
+  "-x[list entries by lines instead of by columns]" \
+  "-C[list entries by columns instead of by lines]" \
+  "--without-icons[list entries without icons]" \
+  "-l[use a long listing format]" \
+  "--long[use a long listing format]" \
+  "-o[use a long listing format without group information]" \
+  "-g[use a long listing format without owner information]" \
+  "-G[show no group information in a long listing]" \
+  "--no-group[show no group information in a long listing]" \
+  "--time-style[use time display format]" \
+  "--no-hardlinks[show no hard links count in a long listing]" \
+  "-L[show information on the destination of symbolic links]" \
+  "--non-human-readable[show file sizes in bytes only]" \
+  "--sd[sort directories first]" \
+  "--sort-dirs[sort directories first]" \
+  "--group-directories-first[sort directories first]" \
+  "--sf[sort files first]" \
+  "--sort-files[sort files first]" \
+  "--df[sort dot-files and dot-folders first]" \
+  "--dots-first[sort dot-files and dot-folders first]" \
+  "-t[sort by modification time, newest first]" \
+  "-U[do not sort; list entries in directory order]" \
+  "-S[sort by file size, largest first]" \
+  "-X[sort by file extension]" \
+  "--sort[sort by WORD instead of name: none, size (-S), time (-t), extension (-X), df (--df)]" \
+  "-r[reverse order while sorting]" \
+  "--reverse[reverse order while sorting]" \
+  "-h[]" \
+  "--human-readable[]" \
+  "--color[colorize the output: auto, always (default if omitted), never]" \
+  "--light[use light color scheme]" \
+  "--dark[use dark color scheme]" \
+  "--hyperlink[]" \
+  "--help[prints this help]" \
+  "--version[show version]" \
+  '*:file:_files' && return 0

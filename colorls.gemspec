@@ -12,6 +12,8 @@ POST_INSTALL_MESSAGE = %(
     Sort by files : -sf flag has been renamed to --sf
     Git status    : -gs flag has been renamed to --gs
 
+    Sort Dots First: --df, --dots-first - sort dot-files and dot-folders first
+
     Clubbed flags : `colorls -ald` works
     Help menu     : `colorls -h` provides all possible flag options
 

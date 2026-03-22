@@ -116,23 +116,24 @@ module ColorLS
       options.separator ''
       options.separator 'sorting options:'
       options.separator ''
+      configure_sort_options(options)
+    end
+
+    def configure_sort_options(options)
       options.on('--sd', '--sort-dirs', '--group-directories-first', 'sort directories first') { @opts[:group] = :dirs }
       options.on('--sf', '--sort-files', 'sort files first')                               { @opts[:group] = :files }
+      options.on('--df', '--dots-first', 'sort dot-files and dot-folders first')           { @opts[:sort] = :df }
       options.on('-t', 'sort by modification time, newest first')                          { @opts[:sort] = :time }
       options.on('-U', 'do not sort; list entries in directory order')                     { @opts[:sort] = false }
       options.on('-S', 'sort by file size, largest first')                                 { @opts[:sort] = :size }
       options.on('-X', 'sort by file extension')                                           { @opts[:sort] = :extension }
       options.on(
         '--sort=WORD',
-        %w[none time size extension],
-        'sort by WORD instead of name: none, size (-S), time (-t), extension (-X)'
+        %w[none time size extension df],
+        'sort by WORD instead of name: none, size (-S), time (-t), extension (-X), df (--df)'
       ) do |word|
-        @opts[:sort] = case word
-                       when 'none' then false
-                       else word.to_sym
-                       end
+        @opts[:sort] = (word == 'none' ? false : word.to_sym)
       end
-
       options.on('-r', '--reverse', 'reverse order while sorting') { @opts[:reverse] = true }
     end
 
