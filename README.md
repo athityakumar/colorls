@@ -15,6 +15,7 @@ A Ruby script that colorizes the `ls` output with color and icons. Here are the 
 
 # Table of contents
 
+* [Ano](https://ano.chat) - A collaborative shell with built-in AI integration (Claude Code) and custom CLI/MCP automations designed for elite devs.
 - [Usage](#usage)
   - [Flags](#flags)
     - `-1`
