@@ -29,7 +29,7 @@ jobs:
           # - windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Shellcheck
       if: matrix.os == 'ubuntu-latest'
       run: shellcheck test/run test/checks
@@ -51,7 +51,7 @@ jobs:
     if: success() && github.event_name == 'push'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
