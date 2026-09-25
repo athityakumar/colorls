@@ -52,7 +52,7 @@ RSpec.describe ColorLS::Flags do
     it('does not list file info') {
       expect do
         subject
-      end.not_to output(/((r|-).*(w|-).*(x|-).*){3}/).to_stdout
+      end.not_to output(/((r|-)(w|-)(x|-)){3}/).to_stdout
     }
 
     it('does not display hidden files')         { expect { subject }.not_to output(/\.hidden-file/).to_stdout }
@@ -435,7 +435,7 @@ RSpec.describe ColorLS::Flags do
   context 'with --indicator-style=none' do
     let(:args) { ['-dl', '--indicator-style=none', FIXTURES] }
 
-    it { expect { subject }.to output(/.+second-level \n.+symlinks \n/).to_stdout }
+    it { expect { subject }.to output(/.+second-level\n.+symlinks\n/).to_stdout }
   end
 
   context 'with --time-style option' do
@@ -509,7 +509,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['-F', '-1', FIXTURES] }
 
     it 'appends / to directories' do
-      expect { subject }.to output(/symlinks\//).to_stdout
+      expect { subject }.to output(%r{symlinks/}).to_stdout
     end
   end
 
@@ -525,7 +525,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['--indicator-style=classify', '-1', FIXTURES] }
 
     it 'appends / to directories' do
-      expect { subject }.to output(/symlinks\//).to_stdout
+      expect { subject }.to output(%r{symlinks/}).to_stdout
     end
   end
 
@@ -545,7 +545,7 @@ RSpec.describe ColorLS::Flags do
     let(:args) { ['-FR', '-1', FIXTURES] }
 
     it 'applies both classify and recursive' do
-      expect { subject }.to output(/symlinks\//).to_stdout
+      expect { subject }.to output(%r{symlinks/}).to_stdout
     end
 
     it 'shows recursive content' do

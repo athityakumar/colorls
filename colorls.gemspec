@@ -61,9 +61,11 @@ Gem::Specification.new do |spec|
   spec.post_install_message = POST_INSTALL_MESSAGE
 
   spec.add_runtime_dependency 'addressable', '~> 2.7'
+  spec.add_runtime_dependency 'base64', '~> 0'
   spec.add_runtime_dependency 'clocale', '~> 0'
   spec.add_runtime_dependency 'filesize', '~> 0'
   spec.add_runtime_dependency 'manpages', '~> 0'
+  spec.add_runtime_dependency 'ostruct', '~> 0'
   spec.add_runtime_dependency 'rainbow', '>= 2.2', '< 4.0'
   spec.add_runtime_dependency 'unicode-display_width', '>= 1.7', '< 4.0'
 
