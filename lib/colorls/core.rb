@@ -27,6 +27,18 @@ module ColorLS
   class Core # rubocop:disable Metrics/ClassLength
     MIN_SIZE_CHARS = 4
 
+    # Leading character of the permissions column printed by `ls -l`, keyed by the
+    # file type bits of `File::Stat#mode` (see `S_IFMT`).
+    FILE_TYPES = {
+      0o0140000 => 's', # socket
+      0o0120000 => 'l', # symbolic link
+      0o0100000 => '-', # regular file
+      0o0060000 => 'b', # block device
+      0o0040000 => 'd', # directory
+      0o0020000 => 'c', # character device
+      0o0010000 => 'p'  # named pipe (FIFO)
+    }.freeze
+
     # rubocop:disable Metrics/MethodLength
     def initialize(all: false, sort: false, show: false,
       mode: nil, show_git: false, almost_all: false, colors: [], group: nil,
@@ -257,12 +269,15 @@ module ColorLS
       @modes[m_r] + @modes[m_w] + @modes[m_x]
     end
 
-    def mode_info(stat)
-      m = stat.mode
+    def type_info(stat)
+      FILE_TYPES.fetch(stat.mode & 0o170000, '-')
+    end
 
-      format_mode(m >> 6, stat.setuid?, 's') +
-        format_mode(m >> 3, stat.setgid?, 's') +
-        format_mode(m, stat.sticky?, 't')
+    def mode_info(stat)
+      type_info(stat) +
+        format_mode(stat.mode >> 6, stat.setuid?, 's') +
+        format_mode(stat.mode >> 3, stat.setgid?, 's') +
+        format_mode(stat.mode, stat.sticky?, 't')
     end
 
     def user_info(content)

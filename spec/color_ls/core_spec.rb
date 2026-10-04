@@ -85,5 +85,33 @@ RSpec.describe ColorLS::Core do
 
       expect { subject.ls_files([file_info]) }.to output(/[.]{3}/).to_stdout
     end
+
+    describe '#mode_info' do
+      def stat_double(mode:)
+        instance_double(File::Stat,
+                        mode: mode, # permission and file type bits only
+                        setuid?: (mode & 0o4000) != 0,
+                        setgid?: (mode & 0o2000) != 0,
+                        sticky?: (mode & 0o1000) != 0)
+      end
+
+      # rubocop:disable RSpec/ExampleLength
+      it 'prefixes the permissions with the file type' do
+        expect(subject.mode_info(stat_double(mode: 0o100644))).to eq('-rw-r--r--') # regular file
+        expect(subject.mode_info(stat_double(mode: 0o040755))).to eq('drwxr-xr-x') # directory
+        expect(subject.mode_info(stat_double(mode: 0o010644))).to eq('prw-r--r--') # pipe, issue #490
+        expect(subject.mode_info(stat_double(mode: 0o140755))).to eq('srwxr-xr-x') # socket
+        expect(subject.mode_info(stat_double(mode: 0o020644))).to eq('crw-r--r--') # character device
+        expect(subject.mode_info(stat_double(mode: 0o060644))).to eq('brw-r--r--') # block device
+        expect(subject.mode_info(stat_double(mode: 0o120777))).to eq('lrwxrwxrwx') # symlink
+      end
+      # rubocop:enable RSpec/ExampleLength
+
+      it 'keeps setuid, setgid and sticky bits' do
+        expect(subject.mode_info(stat_double(mode: 0o104755))).to eq('-rwsr-xr-x')
+        expect(subject.mode_info(stat_double(mode: 0o102755))).to eq('-rwxr-sr-x')
+        expect(subject.mode_info(stat_double(mode: 0o041755))).to eq('drwxr-xr-t')
+      end
+    end
   end
 end
